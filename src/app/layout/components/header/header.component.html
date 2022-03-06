@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand-lg headerMain fixed-top"><div id="headerLogo">
+    <a class="navbar-brand" href="/customersearch"><img src="/assets/images/kpnlogotransparant.png" height="30"></a>
+    <a class="navbar-brand__title" href="/customersearch">Hotspots Service Tool</a></div>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto"> 
+			<li class="list-group-item" style="border:0px;color: #090">(laatste login: {{userPrevLogin}})</li> 
+            <li class="nav-item dropdown" ngbDropdown>
+                <a href="javascript:void(0)" class="nav-link" ngbDropdownToggle>
+                    <i class="fa fa-user"></i> {{loginUser}} <b class="caret"></b>
+                </a>
+                <div class="dropdown-menu-right" ngbDropdownMenu style="left: auto">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="onLoggedout()">
+                        <i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' | translate }}
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,59 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update';">
+		<h1 mat-dialog-title class="dialog-box-header">Wijzigen Keten</h1>
+
+		<form [formGroup]="chainupdateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate
+			*ngIf="action === 'Update'; else elseAdd">
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Keten Name</mat-label>
+						<input matInput formControlName="chainname" placeholder="Keten"
+							autocomplete="off" ngModel="{{local_data.chainname}}">
+						<mat-error *ngIf="hasErrorUpdate('chainname', 'required')">Keten Name is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="full-column" fxLayoutGap="20px">  
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+	<ng-container *ngIf="action === 'Add';">
+		<h1 mat-dialog-title class="dialog-box-header">Toevoegen Keten</h1>
+		<form [formGroup]="chaincreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Keten Name</mat-label>
+						<input matInput formControlName="chainname" placeholder="Keten"
+							autocomplete="off">
+						<mat-error *ngIf="hasError('chainname', 'required')">Keten Name is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+</div>

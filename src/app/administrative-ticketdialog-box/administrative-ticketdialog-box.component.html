@@ -1,0 +1,564 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elseupdatestatus">
+		<h1 mat-dialog-title class="dialog-box-header">Wijzigen - Administratief Ticket - {{local_data.location_name}}</h1>
+		<div *ngIf="!local_data.backoffice">
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : {{local_data.locationdata.customerid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : {{local_data.locationdata.fulladdress}}
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : {{local_data.locationdata.locationchain}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : {{local_data.locationdata.locationtypeid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : {{local_data.locationdata.accountmanagerid}}
+				</mat-label>
+			</div>
+		</div>
+      </div>
+		<form [formGroup]="ticketcreateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+				
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="TicketContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('TicketContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled') && _commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="TicketContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="TicketContactPersonEmail" placeholder="E-mailadres"
+								autocomplete="off" [readonly]="!isBillingUser">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="TicketContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Kanaal</mat-label>
+							<mat-select disableOptionCentering formControlName="channel"
+								panelClass="my-select-panel-class" placeholder="Kanaal" ngModel="{{local_data.channelid}}"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+								<mat-option *ngFor="let productnameSingle of channelList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('channel', 'required')">Kanaal is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Ticket type</mat-label>
+							<mat-select disableOptionCentering formControlName="issuetype"
+								panelClass="my-select-panel-class" placeholder="Ticket Type" ngModel="{{local_data.issuetypeid}}"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+								<mat-option *ngFor="let productnameSingle of issuetypeList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('issuetype', 'required')">Ticket type is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					
+					
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Oplosgroep </mat-label>
+							<mat-select disableOptionCentering formControlName="installprovider"
+								panelClass="my-select-panel-class" placeholder="Oplosgroep" ngModel="{{local_data.installproviderid}}"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+								<mat-option *ngFor="let productnameSingle of installproviderList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('installprovider', 'required')">Oplosgroep is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					
+				</div>
+
+				
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Prioriteit</mat-label>
+							<mat-select disableOptionCentering formControlName="urgency" 
+								panelClass="my-select-panel-class" placeholder="Prioriteit" ngModel="{{local_data.urgencyid}}"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+								<mat-option *ngFor="let productnameSingle of urgencyList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('urgency', 'required')">Prioriteit is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Astrid ticketnummer </mat-label>
+							<input matInput formControlName="ticketno" ngModel="{{local_data.ticketno}}" placeholder="Astrid ticketnummer" autocomplete="off"
+								maxlength="20" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+
+					
+				</div>
+
+
+				<div class="form-row">
+					<div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Korte omschrijving </mat-label>
+							<input matInput ngModel="{{local_data.shortdescription}}" formControlName="shortdescription" placeholder="Korte omschrijving" autocomplete="off"
+								maxlength="30" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+								<mat-error *ngIf="hasError('shortdescription', 'required')">Korte omschrijving is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					
+				</div>
+
+
+				<div class="form-row">
+					
+
+					<div class="col-md-6">
+					<mat-form-field class="focusformfield" *ngIf="isplandateedit" appearance="outline" style="width: 100%;">
+						<mat-label>Plandatum  </mat-label>
+						<input  matInput  [matDatepicker]="pickerupdate1"
+							formControlName="plandate"
+							[min]="minBillingDate" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+						<mat-datepicker-toggle  matSuffix [for]="pickerupdate1"></mat-datepicker-toggle>
+						<mat-datepicker  #pickerupdate1></mat-datepicker>
+						<mat-error *ngIf="hasError('plandate', 'required')">Plandatum is verplicht</mat-error>
+					</mat-form-field>
+
+					<mat-form-field class="focusformfield" *ngIf="!isplandateedit" appearance="outline" style="width: 100%;">
+						<mat-label>Plandatum </mat-label>
+						<input  readonly matInput  [matDatepicker]="pickerupdate1" ngModel="{{local_data.plandateEdit}}"
+							formControlName="plandate"
+							[min]="minBillingDate">
+						<mat-datepicker-toggle style="display: none;"  matSuffix [for]="pickerupdate1"></mat-datepicker-toggle>
+						<mat-datepicker style="display: none;" #pickerupdate1></mat-datepicker>
+						
+					</mat-form-field>
+					</div>
+
+					<div class="col-md-6" *ngIf="issuenextstateList">
+						<mat-form-field  class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>State</mat-label>
+							<mat-select disableOptionCentering formControlName="issuestate" (selectionChange)="makeRemarkBlank($event.value)"
+								panelClass="my-select-panel-class" placeholder="State" 
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')">
+								<mat-option *ngIf="issuenextstateList?.length>0"
+									[value]="issuenextstateList[0].currentstate_id" innerText={{issuenextstateList[0].currentstatename}}>
+								</mat-option>
+								<ng-container  *ngFor="let state of issuenextstateList">
+									<mat-option *ngIf="state.nextstate_id!=0"
+										[value]="state.nextstate_id" innerText={{state.nextstatename}}>
+									</mat-option>
+								</ng-container>
+							</mat-select>
+							<mat-error *ngIf="hasError('issuestate', 'required')">State is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-left: 14%;margin-right: 14%;margin-top: 20px;" *ngIf="communicationgroupList">
+					<div class="col-12">
+					  <ul class="dbgOuter">
+						<label>Communicationgroup</label>
+						<li  *ngFor="let list of communicationgroupList">
+							<label class="chkcontainer">{{list.communicationname}}
+							<input type="checkbox" id="{{list.communicationvalue}}" class="dbgCheck1" 
+							value="{{list.communicationvalue}}" (change)="onValidationCheck($event.target)"
+							 [checked]="local_data.communicationgroup.indexOf(list.communicationvalue)>=0" 
+							 [disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')"/>
+							
+							<span class="checkmark"></span>
+						</label>
+						</li>
+						
+					  </ul>
+					</div>
+				  </div>
+				<mat-error *ngIf="isCommErr" style="margin-top: 15px;
+				padding-left: 35%;">Communicationgroup is verplicht</mat-error>
+
+
+				<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfieldtextarea" appearance="outline" style="margin-top: 3%;margin-bottom: 0.6%;width:100%;">
+							<mat-label>Uitgebreide omschrijving </mat-label>
+							<textarea rows="5" ngModel="{{local_data.description}}" matInput formControlName="description" rows="6" cols="20" maxlength="250" placeholder=" Uitgebreide omschrijving"
+							[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditRemark','disabled')"></textarea>	
+							<mat-error *ngIf="hasError('description', 'required')">Uitgebreide omschrijving is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row">
+					
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea"  appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Oplossing</mat-label>
+							<textarea rows="5" ngModel="{{local_data.solution}}" matInput formControlName="solution" rows="6" cols="20" maxlength="250" placeholder="Oplossing"
+							[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabEditView','disabled')"></textarea>
+						</mat-form-field>
+					</div>
+				</div>
+				
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan </button>
+					</mat-card-actions>
+				</div>
+
+
+				<div style="margin:15px;"></div>
+				<app-ticketauditlog [ticketid]="ticketid"></app-ticketauditlog>
+
+			</div>
+		</form>
+
+
+		
+	</ng-container>
+
+	<ng-template #elseupdatestatus>
+		<ng-container *ngIf="action === 'UpdateStatus'; else elseAdd" [formGroup]="ztvclassicupdatestatusform">
+			<h1 mat-dialog-title class="dialog-box-header">Wijzigen Orderstatus</h1>
+			<div class="full-column">
+				<mat-form-field appearance="outline" style="margin-right:2%">
+					<mat-label>Orderstatus</mat-label>
+					<mat-select disableOptionCentering formControlName="orderstatus" panelClass="my-select-panel-class"
+						placeholder="Orderstatus" ngModel="{{local_data.orderstatus}}">
+						<mat-option *ngFor="let orderstatusSingle of orderUpdatedStatusList"
+							[value]="orderstatusSingle.id">
+							{{orderstatusSingle.name}}
+						</mat-option>
+					</mat-select>
+					<mat-error *ngIf="hasErrorUpdateStatus('orderstatus', 'required')">Orderstatus is verplicht
+					</mat-error>
+				</mat-form-field>
+			</div>
+			<div mat-dialog-actions align="center">
+				<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+					class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+				<button [disabled]="buttondisabled" mat-raised-button (click)="onUpdatestatus()"
+					class="redir-main-loc can-crt-mid">Opslaan</button>
+			</div>
+		</ng-container>
+	</ng-template>
+
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Aanmaken - Administratief Ticket - {{local_data.location_name}}</h1>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : {{local_data.locationdata.customerid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : {{local_data.locationdata.fulladdress}}
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : {{local_data.locationdata.locationchain}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : {{local_data.locationdata.locationtypeid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : {{local_data.locationdata.accountmanagerid}}
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="ticketcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+				
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="TicketContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('TicketContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="TicketContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="TicketContactPersonEmail" placeholder="E-mailadres"
+								autocomplete="off" [readonly]="!isBillingUser">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="TicketContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Kanaal</mat-label>
+							<mat-select disableOptionCentering formControlName="channel"
+								panelClass="my-select-panel-class" placeholder="Kanaal">
+								<mat-option *ngFor="let productnameSingle of channelList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('channel', 'required')">Kanaal is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Ticket type</mat-label>
+							<mat-select disableOptionCentering formControlName="issuetype"
+								panelClass="my-select-panel-class" placeholder="Ticket Type"
+								ngModel="{{selectedIssueType}}"
+								>
+								<mat-option *ngFor="let productnameSingle of issuetypeList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('issuetype', 'required')">Ticket type is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					
+					
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Oplosgroep </mat-label>
+							<mat-select disableOptionCentering formControlName="installprovider"
+								panelClass="my-select-panel-class" placeholder="Oplosgroep">
+								<mat-option *ngFor="let productnameSingle of installproviderList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('installprovider', 'required')">Oplosgroep is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					
+				</div>
+
+				
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Prioriteit</mat-label>
+							<mat-select disableOptionCentering formControlName="urgency"
+								panelClass="my-select-panel-class" placeholder="Prioriteit"
+								>
+								<mat-option *ngFor="let productnameSingle of urgencyList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('urgency', 'required')">Prioriteit is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Astrid ticketnummer </mat-label>
+							<input matInput formControlName="ticketno" placeholder="Astrid ticketnummer" autocomplete="off"
+								maxlength="20">
+						</mat-form-field>
+					</div>
+
+					
+				</div>
+
+
+				<div class="form-row">
+					<div class="col-md-6">
+						<mat-form-field class="focusformfieldtextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label> Korte omschrijving </mat-label>
+							<input matInput formControlName="shortdescription" placeholder=" Korte omschrijving" autocomplete="off"
+								maxlength="30">
+								<mat-error *ngIf="hasError('shortdescription', 'required')">Korte omschrijving is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+
+				<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfieldtextarea" appearance="outline" style="margin-top: 5%;margin-bottom: 0.6%;width:100%;">
+							<mat-label>Uitgebreide omschrijving</mat-label>
+							<textarea rows="5" matInput formControlName="description" rows="6" cols="20" maxlength="250" placeholder="Uitgebreide omschrijving"></textarea>	
+							<mat-error *ngIf="hasError('description', 'required')">Uitgebreide omschrijving is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row">
+					
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Oplossing</mat-label>
+							<textarea rows="5" matInput formControlName="solution" rows="6" cols="20" maxlength="250" placeholder="Oplossing"></textarea>
+						</mat-form-field>
+					</div>
+				</div>
+				
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+
+
+
+	
+	
+
+</div>
+
+

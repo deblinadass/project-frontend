@@ -1,0 +1,794 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elseupdatestatus">
+		<h1 mat-dialog-title class="dialog-box-header" innerText="Wijzigen Order - Marketing producten - {{this.local_data.location_name}}"></h1>
+		<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="60px">
+					<mat-label>
+						<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+					</mat-label>
+	
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+					</mat-label>
+				</div>
+			</div>
+		<form [formGroup]="mktcreateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;">
+				
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+				
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MKTContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('MKTContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'ContactButton','add','disabled') && _commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MKTContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MKTContactPersonEmail" placeholder="E-mailadres"
+								autocomplete="off" [readonly]="!isBillingUser">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MKTContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+		
+				<div class="form-row">
+					<div class="col-md-3">
+
+						<mat-form-field style="display: none;">
+							<input matInput formControlName="MKTCatRefID" ngModel="{{MKTCatRefID}}" placeholder="MKTCatRefID" autocomplete="off">
+						</mat-form-field>
+		
+
+						<mat-form-field class="focusformfield" appearance="outline"
+						style="width: 176%;margin-bottom: 9%;margin-top: 6%;">
+							<mat-label>Product</mat-label>
+							<mat-select formControlName="MktProductNaam" ngModel="{{MktProductNaam}}"
+								panelClass="my-select-panel-class" placeholder="Product" (selectionChange)="selectPricePlan($event.value)">
+								<mat-option *ngFor="let productnameSingle of productnameList"
+								[value]="productnameSingle.productname" [disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+								{{productnameSingle.productnamevalue}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 5%;" *ngIf="mktcreateform.controls.MktProductNaam.invalid">
+								Product naam is verplicht
+							</mat-error>
+						</mat-form-field>
+						<div class="col-md-2">
+							<mat-form-field style="display: none;">
+								<mat-label>Aantal</mat-label>
+								<input matInput formControlName="MktOrderAmount" placeholder="Aantal"
+									autocomplete="off" readonly>
+							</mat-form-field>
+						</div>
+					</div>
+					
+					
+				</div>
+
+				
+
+				<!-- Add Row-->
+
+				<div class="form-row">
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button [disabled]="isdisabledadd"
+							fxFlex="nogrow" (click)="addUnitUpdate()" title="Toevoegen"
+							*ngIf="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="col-md-12" style="padding: 0px;">
+					<div formArrayName="MktOrderAddon">
+						<div class="" *ngFor="let unit of mktcreateform.controls.MktOrderAddon.controls; let i=index">
+							<div [formGroupName]="i">
+								<div class="form-row">
+									<div class="col-md-3">
+										<mat-form-field style="display: none;">
+											<input matInput formControlName="MKTAddOnCatRefID"
+												placeholder="MKTAddOnCatRefID" autocomplete="off">
+										</mat-form-field>
+										<mat-form-field appearance="outline" class="addonField focusformfield"
+											style="margin-bottom: 3%;width:100%;">
+											<mat-label>Item </mat-label>
+											<mat-select disableOptionCentering formControlName="MKTAddOnName"
+												(selectionChange)="selectAddon(i,$event.value)" panelClass="my-select-panel-class"
+												placeholder="Item"  [disabled]="isstart || _commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+												<mat-option *ngFor="let addonSingle of orderaddonlist"
+												[value]="addonSingle.productname">
+												{{addonSingle.productnamevalue}}
+												</mat-option>
+											</mat-select>
+											<mat-error style="margin-top: 5%;" *ngIf="unit.controls.MKTAddOnName.invalid">
+												Item is verplicht
+											</mat-error>
+										</mat-form-field>
+									</div>
+
+									<div class="col-md-1" >
+
+										<button type="button"  [disableRipple]="true" [disabled]="isdisabled" mat-icon-button fxFlex="nogrow"
+											class="addonField" (click)="removeUnit(i)"
+											style="margin-bottom: 3%;width:100%;" *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+											<mat-icon>delete</mat-icon>
+										</button>
+									</div>
+									<div class="col-md-2">
+										<mat-form-field appearance="outline" class="addonField "
+											style="margin-bottom: 3%;width:100%;">
+											<mat-label>Inhoud verpakking</mat-label>
+											<input matInput formControlName="MKTAddOnInhoudVerpakking"
+												placeholder="Inhoud verpakking" autocomplete="off" readonly>
+
+
+										</mat-form-field>
+									</div>
+									<div class="col-md-2">
+										<mat-form-field appearance="outline" class="addonField "
+											style="margin-bottom: 3%;width:100%;">
+											<mat-label>Max bestelbaar</mat-label>
+											<input matInput formControlName="MKTAddOnMaxBestelbaar"
+												placeholder="Max bestelbaar" autocomplete="off" readonly>
+											
+
+										</mat-form-field>
+									</div>
+									<div class="col-md-2"></div>
+									
+									<div class="col-md-2">
+										<mat-form-field appearance="outline" class="addonField focusformfield"
+											style="margin-bottom: 3%;width:100%;">
+											<mat-label>Aantal</mat-label>
+											<input [readonly]="isstart" matInput formControlName="MKTAddOnAantal" 
+												placeholder="Aantal" autocomplete="off">
+												<mat-error  style="margin-top: 5%;" *ngIf="unit.get('MKTAddOnAantal').hasError('required')">
+													Aantal is verplicht
+												</mat-error>
+												<mat-error  style="margin-top: 5%;" *ngIf="unit.get('MKTAddOnAantal').hasError('max')">
+													Aantal te groot
+												</mat-error>
+
+	
+										</mat-form-field>
+									</div>
+						
+							
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:15px;margin-top: 5%;">Orderbevestiging en opmerking</h5>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;" class="focusformfield">
+							<mat-label>E-mail</mat-label>
+							<input matInput placeholder="1234@xyz.nl" formControlName="MktOrderUserConfirmationEmail" ngModel="{{MktOrderUserConfirmationEmail}}"
+							  pattern="\s*[-+.'\w]+@[-.\w]+\.[-.\w]+\s*"  [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+							  <mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderUserConfirmationEmail.invalid">
+								E-mail is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<mat-form-field appearance="outline" style="width: 102%;margin-top: 3%;">
+							<mat-label>Eigen referentie klant</mat-label>
+							<input matInput formControlName="customerremarks" ngModel="{{customerremarks}}"  placeholder="Eigen referentie klant" autocomplete="off"
+								maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opmerking </mat-label>
+							<input matInput formControlName="description"  placeholder="Omschrijving" autocomplete="off"
+								ngModel="{{remarks}}" maxlength="50"  [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditRemark','disabled')">
+						</mat-form-field>
+					</div>
+				</div>
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:6px;margin-top: 4%;">Verzendwijze</h5>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Per post </mat-label>
+							<input matInput formControlName="OrderShipmentMode" ngModel="{{OrderShipmentMode}}" placeholder="Per post" autocomplete="off"
+								maxlength="50" readonly>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 3%;" class="focusformfield">
+							<mat-label>Ter attentie van </mat-label>
+							<input matInput formControlName="MktOrderShipmentTAV" ngModel="{{MktOrderShipmentTAV}}" placeholder="Ter attentie van" autocomplete="off"
+								maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+								<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentTAV.invalid">
+										Ter attentie van is verplicht
+								</mat-error>
+	
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Straatnaam </mat-label>
+							<input matInput ngModel="{{MktOrderShipmentStreet}}" formControlName="MktOrderShipmentStreet" placeholder="Straatnaam" autocomplete="off"
+								maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+								<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentStreet.invalid">
+										Straatnaam is verplicht
+								</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Huisnummer </mat-label>
+							<input matInput ngModel="{{MktOrderShipmentHouseNo}}" formControlName="MktOrderShipmentHouseNo" placeholder="Huisnummer" autocomplete="off"
+								maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+								<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentHouseNo.invalid">
+										Huisnummer is verplicht
+								</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 135%;margin-top: 6%;" >
+							<mat-label>Huisnummer toevoeging </mat-label>
+							<input matInput ngModel="{{MktOrderShipmentHouseNoExt}}" formControlName="MktOrderShipmentHouseNoExt" placeholder="Huisnummer toevoeging" autocomplete="off"
+								maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+								
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Postcode </mat-label>
+							<input matInput ngModel="{{MktOrderShipmentPostalCode}}" formControlName="MktOrderShipmentPostalCode" placeholder="Postcode" autocomplete="off"
+								maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+								<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentPostalCode.invalid">
+										Postcode is verplicht
+								</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Plaatsnaam </mat-label>
+							<input matInput ngModel="{{MktOrderShipmentCity}}" formControlName="MktOrderShipmentCity" placeholder="Plaatsnaam" autocomplete="off"
+								maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+								<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentCity.invalid">
+										Plaatsnaam is verplicht
+								</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 136%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Land </mat-label>
+							<input matInput ngModel="{{MktOrderShipmentCountry}}" formControlName="MktOrderShipmentCountry" placeholder="Land" autocomplete="off"
+								maxlength="50" readonly>
+							
+						</mat-form-field>
+					</div>
+				</div>
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:-13px;margin-top:4%">Track & Trace</h5>
+				<div class="form-row">
+						<div class="col-md-12">
+								<mat-form-field appearance="outline" style="width: 100%;margin-top: 3%;" class="focusformfield">
+										<mat-label>Track & Trace </mat-label>
+										<input matInput formControlName="ordertrackcode" ngModel="{{ordertrackcode}}" placeholder="ordertrackcode" autocomplete="off"
+											maxlength="50" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MKTTab','MKTTabEditView','disabled')">
+											<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.ordertrackcode.invalid">
+												ordertrackcode is verplicht
+											</mat-error>
+				
+								</mat-form-field>
+						</div>
+					</div>
+
+				
+
+
+				
+				
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+				<div style="margin:15px;"></div>
+				<app-mktorderauditlog [hstorderid]="hstorderid"></app-mktorderauditlog>
+
+			</div>
+
+		</form>
+	</ng-container>
+
+	<ng-template #elseupdatestatus>
+		<ng-container *ngIf="action === 'UpdateStatus'; else elseAdd" [formGroup]="mktupdatestatusform" >
+			<h1 mat-dialog-title class="dialog-box-header">Wijzigen Orderstatus - - Marketing producten - {{this.local_data.location_name}}</h1>
+			<div class="full-column">
+				<mat-form-field appearance="outline" style="margin-right:2%">
+					<mat-label>Orderstatus</mat-label>
+					<mat-select disableOptionCentering formControlName="orderstatus" panelClass="my-select-panel-class"
+						placeholder="Orderstatus" ngModel="{{local_data.orderstatus}}">
+						<mat-option *ngFor="let orderstatusSingle of orderUpdatedStatusList"
+							[value]="orderstatusSingle.id">
+							{{orderstatusSingle.name}}
+						</mat-option>
+					</mat-select>
+					<mat-error *ngIf="hasErrorUpdateStatus('orderstatus', 'required')">Orderstatus is verplicht
+					</mat-error>
+				</mat-form-field>
+			</div>
+			<div mat-dialog-actions align="center">
+				<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+					class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+				<button [disabled]="buttondisabled" mat-raised-button (click)="onUpdatestatus()"
+					class="redir-main-loc can-crt-mid">Opslaan</button>
+			</div>
+		</ng-container>
+	</ng-template>
+
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Nieuwe Order - Marketing producten - {{this.local_data.location_name}}</h1>
+		<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="60px">
+					<mat-label>
+						<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+					</mat-label>
+	
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+					</mat-label>
+				</div>
+			</div>
+		<form [formGroup]="mktcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;">
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+				
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MKTContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('MKTContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MKTContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MKTContactPersonEmail" placeholder="E-mailadres"
+								autocomplete="off" [readonly]="!isBillingUser">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MKTContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				
+				<div class="form-row">
+					<div class="col-md-3">
+
+						<mat-form-field style="display: none;">
+							<input matInput formControlName="MKTCatRefID" placeholder="MKTCatRefID" autocomplete="off">
+						</mat-form-field>
+
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 176%;margin-bottom: 9%;margin-top: 6%;">
+							<mat-label>Product</mat-label>
+							<mat-select formControlName="MktProductNaam" panelClass="my-select-panel-class"
+								placeholder="Product" (selectionChange)="selectPricePlan($event.value)">
+								<mat-option *ngFor="let productnameSingle of productnameList"
+									[value]="productnameSingle.productname">
+									{{productnameSingle.productnamevalue}}
+								</mat-option>
+							</mat-select>
+							
+							<mat-error style="margin-top: 5%;" *ngIf="mktcreateform.controls.MktProductNaam.invalid">
+								Product naam is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-2">
+							<mat-form-field style="display: none;">
+								<mat-label>Aantal</mat-label>
+								<input matInput formControlName="MktOrderAmount" placeholder="Aantal"
+									autocomplete="off" readonly>
+							</mat-form-field>
+					</div>
+
+
+				</div>
+
+
+
+				<!-- Add Row-->
+				<div class="form-row">
+					<div class="col-md-1">
+						<button [disableRipple]="true" [disabled]="isdisabledadd" class="mat-addon-plus" type="button" mat-icon-button
+							fxFlex="nogrow" (click)="addUnit()" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+				<div class="col-md-12" style="padding: 0px;">
+					<div formArrayName="MktOrderAddon">
+						<div class="" *ngFor="let unit of mktcreateform.controls.MktOrderAddon.controls; let i=index">
+							<div [formGroupName]="i">
+								<div class="form-row">
+									<div class="col-md-3">
+										<mat-form-field style="display: none;">
+											<input matInput formControlName="MKTAddOnCatRefID"
+												placeholder="MKTAddOnCatRefID" autocomplete="off">
+										</mat-form-field>
+
+										<mat-form-field appearance="outline" class="addonField focusformfield"
+											style="width:100%;">
+											<mat-label>Item </mat-label>
+											<mat-select disableOptionCentering formControlName="MKTAddOnName" [disabled]="isstart"
+												(selectionChange)="selectAddon(i, $event.value)" panelClass="my-select-panel-class"
+												placeholder="Item">
+												<mat-option *ngFor="let addonSingle of orderaddonlist"
+													[value]="addonSingle.productname">
+													{{addonSingle.productnamevalue}}
+												</mat-option>
+											</mat-select>
+											<mat-error style="margin-top: 5%;" *ngIf="unit.controls.MKTAddOnName.invalid">
+												Item is verplicht
+											</mat-error>
+										</mat-form-field>
+									</div>
+
+
+									<div class="col-md-1">
+										<button type="button" [disabled]="isdisabled" [disableRipple]="true" mat-icon-button fxFlex="nogrow"
+											class="addonField" (click)="removeUnit(i)"
+											style="margin-bottom: 3%;width:100%;" title="Verwijderen">
+											<mat-icon>delete</mat-icon>
+										</button>
+									</div>
+
+									
+									<div class="col-md-2">
+										<mat-form-field appearance="outline" class="addonField "
+											style="margin-bottom: 3%;width:100%;">
+											<mat-label>Inhoud verpakking</mat-label>
+											<input matInput formControlName="MKTAddOnInhoudVerpakking"
+												placeholder="Inhoud verpakking" autocomplete="off" readonly>
+
+
+										</mat-form-field>
+									</div>
+									<div class="col-md-2">
+										<mat-form-field appearance="outline" class="addonField "
+											style="margin-bottom: 3%;width:100%;">
+											<mat-label>Max bestelbaar</mat-label>
+											<input matInput formControlName="MKTAddOnMaxBestelbaar"
+												placeholder="Max bestelbaar" autocomplete="off" readonly>
+											
+
+										</mat-form-field>
+									</div>
+									<div class="col-md-2"></div>
+									
+									<div class="col-md-2">
+										<mat-form-field appearance="outline" class="addonField focusformfield"
+											style="margin-bottom: 3%;width:100%;">
+											<mat-label>Aantal</mat-label>
+											<input matInput formControlName="MKTAddOnAantal" [readonly]="isstart"
+												placeholder="Aantal" autocomplete="off">
+												<mat-error  style="margin-top: 5%;" *ngIf="unit.get('MKTAddOnAantal').hasError('required')">
+													Aantal is verplicht
+												</mat-error>
+												<mat-error  style="margin-top: 5%;" *ngIf="unit.get('MKTAddOnAantal').hasError('max')">
+													Aantal te groot
+												</mat-error>
+
+										</mat-form-field>
+									</div>
+						
+		
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:15px;margin-top: 5%;">Orderbevestiging en opmerking</h5>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;" class="focusformfield">
+							<mat-label>E-mail</mat-label>
+							<input matInput placeholder="1234@xyz.nl" formControlName="MktOrderUserConfirmationEmail"
+							  pattern="\s*[-+.'\w]+@[-.\w]+\.[-.\w]+\s*">
+							<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderUserConfirmationEmail.invalid">
+								E-mail is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<mat-form-field appearance="outline" style="width: 102%;margin-top: 3%;">
+							<mat-label>Eigen referentie klant</mat-label>
+							<input matInput formControlName="customerremarks" placeholder="Eigen referentie klant" autocomplete="off"
+								maxlength="50">
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field appearance="outline" style="margin-bottom: 5%;width:100%;margin-top: 1%;">
+							<mat-label>Opmerking </mat-label>
+							<input matInput formControlName="description" placeholder="Omschrijving" autocomplete="off"
+								maxlength="255">
+						</mat-form-field>
+					</div>
+				</div>
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:15px;">Verzendwijze</h5>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;" class="focusformfield">
+							<mat-label>Per post </mat-label>
+							<input matInput formControlName="OrderShipmentMode" placeholder="Per post" autocomplete="off"
+								maxlength="50" readonly>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 3%;" class="focusformfield">
+							<mat-label>Ter attentie van </mat-label>
+							<input matInput formControlName="MktOrderShipmentTAV" placeholder="Ter attentie van" autocomplete="off"
+								maxlength="50">
+							
+							<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentTAV.invalid">
+									Ter attentie van is verplicht
+							</mat-error>
+
+						</mat-form-field>
+					</div>
+					
+				</div>
+				<div class="col-md-3">
+					<mat-form-field appearance="outline" style="display:none;" class="focusformfield">
+						<mat-label>Track & Trace </mat-label>
+						<input matInput formControlName="ordertrackcode"  placeholder="ordertrackcode" autocomplete="off"
+							maxlength="50">
+							<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.ordertrackcode.invalid">
+								ordertrackcode is verplicht
+							</mat-error>
+
+					</mat-form-field>
+				</div>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Straatnaam </mat-label>
+							<input matInput ngModel="{{locationdata_dict.streetname}}" formControlName="MktOrderShipmentStreet" placeholder="Straatnaam" autocomplete="off"
+								maxlength="50">
+							
+							<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentStreet.invalid">
+									Straatnaam is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Huisnummer </mat-label>
+							<input matInput ngModel="{{locationdata_dict.housenumber}}" formControlName="MktOrderShipmentHouseNo" placeholder="Huisnummer" autocomplete="off"
+								maxlength="50">
+							<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentHouseNo.invalid">
+									Huisnummer is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 135%;margin-top: 6%;" >
+							<mat-label>Huisnummer toevoeging </mat-label>
+							<input matInput ngModel="{{locationdata_dict.housenumberaddition}}" formControlName="MktOrderShipmentHouseNoExt" placeholder="Huisnummer toevoeging" autocomplete="off"
+								maxlength="50">
+							
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Postcode </mat-label>
+							<input matInput ngModel="{{locationdata_dict.postcode}}" formControlName="MktOrderShipmentPostalCode" placeholder="Postcode" autocomplete="off"
+								maxlength="50">
+							<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentPostalCode.invalid">
+									Postcode is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Plaatsnaam </mat-label>
+							<input matInput ngModel="{{locationdata_dict.city}}" formControlName="MktOrderShipmentCity" placeholder="Plaatsnaam" autocomplete="off"
+								maxlength="50">
+							<mat-error style="margin-top: 3%;" *ngIf="mktcreateform.controls.MktOrderShipmentCity.invalid">
+									Plaatsnaam is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" ></div>
+					<div class="col-md-3">
+						<mat-form-field appearance="outline" style="width: 130%;margin-top: 6%;" class="focusformfield">
+							<mat-label>Land </mat-label>
+							<input matInput formControlName="MktOrderShipmentCountry" placeholder="Land" autocomplete="off"
+								maxlength="50" readonly>
+							
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+</div>

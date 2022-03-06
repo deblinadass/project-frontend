@@ -1,0 +1,773 @@
+<ng-container *ngIf="docname === 'offerte'">
+    <h1 mat-dialog-title class="dialog-box-header">Offerte genereren</h1>
+    <form [formGroup]="doccreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <div mat-dialog-content>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Contactpersoon</mat-label>
+                        <mat-select disableOptionCentering formControlName="contactperson"
+                            panelClass="my-select-panel-class" placeholder="Contactpersoon">
+                            <mat-option *ngFor="let contactname of contactpersons" [value]="contactname.id">
+                                {{contactname.contactpersonfirstname}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('contactperson', 'required')">Contactpersoon is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Product</mat-label>
+                        <input matInput formControlName="PRODUCTNAAM" placeholder="Product" autocomplete="off">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Aantal</mat-label>
+                        <input matInput formControlName="PRODUCTAANTAL" placeholder="Aantal" autocomplete="off">
+                        <mat-error *ngIf="hasError('PRODUCTAANTAL', 'required')">Aantal is verplicht</mat-error>
+                        <mat-error *ngIf="hasError('PRODUCTAANTAL','pattern')">Aantal is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Prijs</mat-label>
+                        <input matInput formControlName="TOTAALBEDRAG" placeholder="Prijs" autocomplete="off">
+                        <mat-error *ngIf="hasError('TOTAALBEDRAG', 'required')">Prijs is verplicht</mat-error>
+                        <mat-error *ngIf="hasError('TOTAALBEDRAG','pattern')">Prijs is
+                            verplicht
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Naam</mat-label>
+                        <input matInput formControlName="TEKENNAAM" placeholder="Naam" autocomplete="off">
+                        <mat-error *ngIf="hasError('TEKENNAAM', 'required')">Naam is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Functie</mat-label>
+                        <input matInput formControlName="TEKENFUNCTIE" placeholder="Functie" autocomplete="off">
+                        <mat-error *ngIf="hasError('TEKENFUNCTIE', 'required')">Functie is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field class="focusformfield" appearance="outline">
+                        <mat-label>Geboortedatum</mat-label>
+                        <input matInput [matDatepicker]="pickerupdate1" formControlName="GEBDAT">
+                        <mat-datepicker-toggle matSuffix [for]="pickerupdate1"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerupdate1></mat-datepicker>
+                        <mat-error *ngIf="!doccreateform.get('GEBDAT').valid">Ongeldige datum</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Legitimatie type</mat-label>
+                        <mat-select disableOptionCentering formControlName="LEGTYPE" panelClass="my-select-panel-class"
+                            placeholder="Legitimatie type">
+                            <mat-option *ngFor="let legitimatietype of legitimatietypes" [value]="legitimatietype.name">
+                                {{legitimatietype.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('LEGTYPE', 'required')">Legitimatie type is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Legitimatie nummer</mat-label>
+                        <input matInput formControlName="LEGNR" placeholder="Legitimatie nummer" autocomplete="off">
+                        <mat-error *ngIf="hasError('LEGNR', 'required')">Legitimatie nummer is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field class="focusformfield" appearance="outline">
+                        <mat-label>Tekendatum</mat-label>
+                        <input matInput [matDatepicker]="pickerupdate2" formControlName="TEKENDATUM">
+                        <mat-datepicker-toggle matSuffix [for]="pickerupdate2"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerupdate2></mat-datepicker>
+                        <mat-error *ngIf="!doccreateform.get('TEKENDATUM').valid">Ongeldige datum</mat-error>
+                    </mat-form-field>
+
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                        class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+                </div>
+                <div class="col-md-2">
+                    <button [disabled]="buttondisabled" mat-raised-button class="redir-main-loc can-crt-mid">Brief
+                        maken</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="docname === 'brief-(bevestiging-opzegging)'">
+    <h1 mat-dialog-title class="dialog-box-header">Bevestiging opzegging </h1>
+    <form [formGroup]="doccreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <div mat-dialog-content>
+
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field class="focusformfield" appearance="outline" style="margin-top: 2%;">
+                        <mat-label>Einddatum</mat-label>
+                        <input matInput [matDatepicker]="pickerupdate1" formControlName="EINDDATUM">
+                        <mat-datepicker-toggle matSuffix [for]="pickerupdate1"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerupdate1></mat-datepicker>
+                        <mat-error style="margin-top: 2%;" *ngIf="!doccreateform.get('EINDDATUM').valid">Ongeldige datum
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+
+
+            <div class="form-row">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                        class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+                </div>
+                <div class="col-md-2">
+                    <button [disabled]="buttondisabled" mat-raised-button class="redir-main-loc can-crt-mid">Brief
+                        maken</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </form>
+</ng-container>
+
+
+<ng-container
+    *ngIf="(docname === 'brief-(contractbreuk-nevennetwerk)') || (docname === 'brief-(contractbreuk-uitzetten-netwerk)')">
+    <h1 *ngIf="(docname === 'brief-(contractbreuk-nevennetwerk)')" mat-dialog-title class="dialog-box-header">
+        Contractbreuk brief nevennetwerk </h1>
+    <h1 *ngIf="(docname === 'brief-(contractbreuk-uitzetten-netwerk)')" mat-dialog-title class="dialog-box-header">
+        Contractbreuk brief uitzetten netwerk </h1>
+    <form [formGroup]="doccreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <div mat-dialog-content>
+
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field class="focusformfield" appearance="outline" style="margin-top: 2%;">
+                        <mat-label>Contractbreuk datum</mat-label>
+                        <input matInput [matDatepicker]="pickerupdate1" formControlName="CONTRACTBREUKDATUM">
+                        <mat-datepicker-toggle matSuffix [for]="pickerupdate1"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerupdate1></mat-datepicker>
+                        <mat-error style="margin-top: 2%;" *ngIf="!doccreateform.get('CONTRACTBREUKDATUM').valid">
+                            Ongeldige datum</mat-error>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" style="margin-top: 2%;">
+                        <mat-label>Schade bedrag</mat-label>
+                        <input matInput formControlName="SCHADEBEDRAG" placeholder="€XX,XX" autocomplete="off">
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('SCHADEBEDRAG', 'required')">Schade bedrag is
+                            verplicht</mat-error>
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('SCHADEBEDRAG','pattern')">Schade bedrag is
+                            verplicht
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" style="margin-top: 2%;">
+                        <mat-label>In rekening te brengen bedrag (som)</mat-label>
+                        <input matInput formControlName="REKENINGBEDRAG" placeholder="€XX,XX" autocomplete="off">
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('REKENINGBEDRAG', 'required')">In rekening te
+                            brengen bedrag (som) is verplicht</mat-error>
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('REKENINGBEDRAG','pattern')">In rekening te
+                            brengen bedrag (som) is
+                            verplicht
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+            <div class="form-row">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                        class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+                </div>
+                <div class="col-md-2">
+                    <button [disabled]="buttondisabled" mat-raised-button class="redir-main-loc can-crt-mid">Brief
+                        maken</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="docname === 'overeenkomst-addendum'">
+    <h1 mat-dialog-title class="dialog-box-header">overeenkomst-addendum</h1>
+    <form [formGroup]="doccreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <div mat-dialog-content>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="focusformfield" style="margin-top: 4%;">
+                        <mat-label>Overeenkomst / Addendum </mat-label>
+                        <mat-select disableOptionCentering formControlName="DOCUMENTHEADER"
+                            panelClass="my-select-panel-class" placeholder="Overeenkomst / Addendum">
+                            <mat-option *ngFor="let docheader of docheaders" [value]="docheader.name">
+                                {{docheader.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('DOCUMENTHEADER', 'required')">Docheader is
+                            verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:2%">
+                <div class="col-1">
+                    <input type="checkbox" style="background-color: #d3d3d3;" formControlName="facturatiegegevens"
+                        id="facturatiegegevens" [(ngModel)]="isChecked90"
+                        (change)="checkValue(isChecked90?'1':'0','facturatiegegevens')"><span
+                        class="checkmark">Facturatiegegevens</span> </div>
+                <div class="col-5"></div>
+                <div class="col-1"><input type="checkbox" formControlName="contractgegevens" id="contractgegevens"
+                    [(ngModel)]="isChecked91" (change)="checkValue(isChecked91?'1':'0')"><span
+                        class="checkmark">Contractgegevens</span> </div>
+
+
+            </div>
+
+            <div class="form-row" style="margin-top:2%">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Revenueshare kraskaarten</mat-label>
+                        <input matInput formControlName="Kraskaarten" placeholder="Kraskaarten %" autocomplete="off">
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('Kraskaarten','pattern')">Kraskaarten is
+                            verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Revenueshare credit card</mat-label>
+                        <input matInput formControlName="Creditcard" placeholder="Creditcard %" autocomplete="off">
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('Creditcard','pattern')">Creditcard is
+                            verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="focusformfield">
+                        <mat-label>Contactpersoon</mat-label>
+                        <mat-select disableOptionCentering formControlName="contactperson"
+                            panelClass="my-select-panel-class" placeholder="Contactpersoon">
+                            <mat-option *ngFor="let contactname of contactpersons" [value]="contactname.id">
+                                {{contactname.contactpersonfirstname}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('contactperson', 'required')">Contactpersoon
+                            is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="focusformfield">
+                        <mat-label>Business Model</mat-label>
+                        <mat-select disableOptionCentering formControlName="BUSINESSMODEL"
+                            panelClass="my-select-panel-class" placeholder="Business Model">
+                            <mat-option *ngFor="let businessmodel of businessmodels" [value]="businessmodel.name">
+                                {{businessmodel.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('BUSINESSMODEL', 'required')">Business Model
+                            is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline"
+                        *ngIf="this.doccreateform.get('DOCUMENTHEADER').value == 'Overeenkomst'">
+                        <mat-label>Contractduur</mat-label>
+                        <input matInput formControlName="Looptijd" placeholder="maanden" autocomplete="off">
+                        <mat-error *ngIf="hasError('Looptijd', 'pattern')">Contractduur is verplicht</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline"
+                        *ngIf="this.doccreateform.get('DOCUMENTHEADER').value == 'Addendum'">
+                        <mat-label>Verlenging</mat-label>
+                        <input matInput formControlName="Verlenging" placeholder="maanden" autocomplete="off">
+                        <mat-error *ngIf="hasError('Verlenging', 'pattern')">Verlenging is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+
+
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Maandelijkse kosten (ex. btw)</mat-label>
+                        <input matInput formControlName="MAANDELIJKSEKOSTEN" placeholder="€XX,XX" autocomplete="off">
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('MAANDELIJKSEKOSTEN','pattern')">Maandelijkse
+                            kosten is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Eenmalige kosten (ex. btw)</mat-label>
+                        <input matInput formControlName="EENMALIGEKOSTEN" placeholder="€XX,XX" autocomplete="off">
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('EENMALIGEKOSTEN','pattern')">Eenmalige
+                            kosten is verplicht</mat-error>
+                    </mat-form-field>
+
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Aantal accesspoints:</mat-label>
+                        <input matInput formControlName="ACCESSPOINTSAANTAL" placeholder="Aantal accesspoints"
+                            autocomplete="off">
+                        <mat-error style="margin-top: 2%;" *ngIf="hasError('ACCESSPOINTSAANTAL', 'required')">Aantal
+                            accesspoints is verplicht</mat-error>
+                        <mat-error *ngIf="hasError('ACCESSPOINTSAANTAL','pattern')">Aantal accesspoints is verplicht
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Ordernummer</mat-label>
+                        <input matInput formControlName="ORDERNUMMER" placeholder="Ordernummer" autocomplete="off">
+
+                    </mat-form-field>
+
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Opmerking</mat-label>
+                        <input matInput formControlName="OPMERKING" placeholder="Opmerking" autocomplete="off"
+                            maxlength="50">
+
+                    </mat-form-field>
+                </div>
+
+            </div>
+            <h1 mat-dialog-title class="dialog-box-header" style="font-size: 116%;">Selecteer de gewenste voorwaarden
+            </h1>
+            <div class="form-row" style="margin-top:2%">
+                <div class="col-1">
+                    <input type="checkbox" style="background-color: #d3d3d3;" formControlName="Scope" id="Scope"
+                    [(ngModel)]="isChecked1" (change)="checkValue(isChecked1?'1':'0','Scope')"><span
+                        class="checkmark">Reikwijdtevereenkomst</span></div>
+                <div class="col-5"></div>
+                <div class="col-1" style="padding-top:5px;"><input type="checkbox" formControlName="Marketing"
+                        id="Marketing" [(ngModel)]="isChecked2" (change)="checkValue(isChecked2?'1':'0')"><span
+                        class="checkmark">Marketing</span></div>
+
+            </div>
+
+
+
+            <div class="form-row" style="margin-top:2%">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                        class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+                </div>
+                <div class="col-md-2">
+                    <button [disabled]="buttondisabled" mat-raised-button class="redir-main-loc can-crt-mid">Brief
+                        maken</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="docname === 'Oplevering'">
+    <h1 mat-dialog-title class="dialog-box-header">Brief Oplevering</h1>
+    <form [formGroup]="doccreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <div mat-dialog-content>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Contactpersoon</mat-label>
+                        <mat-select disableOptionCentering formControlName="contactperson"
+                            panelClass="my-select-panel-class" placeholder="Contactpersoon">
+                            <mat-option *ngFor="let contactname of contactpersons" [value]="contactname.id">
+                                {{contactname.contactpersonfirstname}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('contactperson', 'required')">Contactpersoon is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Bestelaccount</mat-label>
+                        <mat-select disableOptionCentering formControlName="BESTELACCOUNT"
+                            panelClass="my-select-panel-class" placeholder="Bestelaccount">
+                            <mat-option *ngFor="let account of orderaccounts" [value]="account.orderaccount">
+                                {{account.orderaccount}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('BESTELACCOUNT', 'required')">Bestelaccount is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                        class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+                </div>
+                <div class="col-md-2">
+                    <button [disabled]="buttondisabled" mat-raised-button class="redir-main-loc can-crt-mid">Brief
+                        maken</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="docname === 'Specifieke Voorwaarden KPN Hotspots'">
+    <h1 mat-dialog-title class="dialog-box-header">Selecteer de gewenste voorwaarden</h1>
+    <form [formGroup]="doccreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+        <div mat-dialog-content>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" [checked]="definities_check" [(ngModel)]="definities_check"
+                        formControlName="Definities" disabled>
+
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Definities</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Reikwijdte_overeenkomst"
+                        id=fox_cas_service>
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Reikwijdte overeenkomst</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Marketing">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Marketing</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Verkrijgen_internetverbinding">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Verkrijgen internetverbinding</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Gebruikersprofiel">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Gebruikersprofiel</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="ISRA_punt">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">ISRA-punt</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Stacken_2">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Stacken 2</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Stacken_4">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Stacken 4</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="FTU">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">FTU</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="FttH">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">FttH</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="FttO">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">FttO</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Overige_Bandbreedte">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Overige Bandbreedte</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Bestaande_glas_access">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Bestaande glas access</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Levering_internet">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Levering internet connectiviteit door Partner</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Stroomvoorziening">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Stroomvoorziening</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="WiFi_dekking_vooraf_bepaald">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">WiFi dekking - vooraf bepaald</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="WiFi_dekking_niet_vooraf_bepaald">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">WiFi dekking - niet vooraf bepaald</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="WiFi_dekking_WLAN_Partner">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">WiFi dekking - WLAN Partner</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Ongewijzigde_WiFi_dekking">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Ongewijzigde WiFi dekking</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Vervallen_locatie">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Vervallen/verhuizen/verbouwing locatie</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Vervangen_apparatuur">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Vervangen apparatuur</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Servicelevel_afspraken_standaard">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Servicelevel afspraken (standaard)</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Servicelevel_afspraken_high">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Servicelevel afspraken (high)</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Masten">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Masten</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Netwerk_Locatie">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Netwerk Locatie</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Bekabeling_overige_infrastructuur">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Bekabeling/overige infrastructuur</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="COAX">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">COAX</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Projectleider">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Projectleider</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Bekabelde_aansluiting">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Bekabelde aansluiting</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Overname_bekabeling_na_opheffing">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Overname bekabeling na opheffing</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Overname_netwerk">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Overname netwerk</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Tarieven_eindgebruikers">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Tarieven eindgebruikers</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Indexering">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Indexering</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Terugname_codekaarten">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Terugname codekaarten</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Schade">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Schade</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-1">
+                    <input type="checkbox" class="chk_class" formControlName="Timely_uitzetten_WiFi_dienstverlening">
+                </div>
+                <div class="col-md-5">
+                    <span class="span-check">Timely uitzetten WiFi dienstverlening</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                        class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+                </div>
+                <div class="col-md-2">
+                    <button [disabled]="buttondisabled" mat-raised-button class="redir-main-loc can-crt-mid">Brief
+                        maken</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </form>
+</ng-container>

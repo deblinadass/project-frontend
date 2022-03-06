@@ -1,0 +1,686 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elsetransfer">
+		<h1 mat-dialog-title class="dialog-box-header" innerText='Aanvraag - Wijzigen WLAN - {{local_data.location_name}}'></h1>
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}>
+					</span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}>
+					</span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span
+						innerText={{local_data.locationdata.accountmanagerid}}>
+					</span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="WLANcreateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Gegevens Technisch contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactid', 'required')">Type Kraskaart is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled') && _commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonTelephone', 'required')">Aantal is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonEmail"
+								placeholder="E-mailadres" autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonEmail','required')">Prijs is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerMultiserviceWlanWishdate"
+								(dateChange)="dateValidation()" formControlName="MultiserviceWlanWishdate"
+								[min]="minDate"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+							<mat-datepicker-toggle matSuffix [for]="pickerMultiserviceWlanWishdate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerMultiserviceWlanWishdate></mat-datepicker>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanWishdate', 'required')">Wensdatum is verplicht
+							</mat-error>
+
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemar </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemar"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4" *ngIf="hasnextstateid!=0">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Opdracht status</mat-label>
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="Opdracht status"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+
+								<mat-option *ngIf="issuenextstateList" [value]="issuenextstateList[0].currentstate_id" innerText={{issuenextstateList[0].currentstatename}}>
+									
+								</mat-option>
+								<mat-option *ngFor="let state of issuenextstateList" [value]="state.nextstate_id" innerText={{state.nextstatename}}>
+									
+								</mat-option>
+
+
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('orderstate', 'required')">Opdracht
+								status is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opdracht </mat-label>
+							<textarea matInput formControlName="description" placeholder="Opdracht" autocomplete="off"
+								maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>MER Switch aanwezig </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanSwitchPresent"
+								panelClass="my-select-panel-class" placeholder="MER Switch aanwezig"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+								<mat-option *ngFor="let wlanSwitch of wlanswitch" [value]="wlanSwitch.id">
+									{{wlanSwitch.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanSwitchPresent', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemer plaatsen MER Switch </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanInstallContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemer plaatsen MER Switch">
+								<mat-option *ngFor="let communication of communicationgroupInstallContractorList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanInstallContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>WLAN gebruikers profiel </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanUserProfile"
+								panelClass="my-select-panel-class" placeholder="WLAN gebruikers profiel"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+								<mat-option *ngFor="let wlanUserProfile of wlanuserprofile"
+									[value]="wlanUserProfile.id">
+									{{wlanUserProfile.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanUserProfile', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>SSID naam </mat-label>
+							<input matInput formControlName="MultiserviceWlanSSID" placeholder="SSID naam"
+								autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>SSID beschrijving </mat-label>
+							<input matInput formControlName="MultiserviceWlanSSIDDescription"
+								placeholder="SSID beschrijving" autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Broadcast SSID </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanBroadcastSSID"
+								panelClass="my-select-panel-class" placeholder="Broadcast SSID"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+								<mat-option *ngFor="let wlanBSSID of wlanbroadbandssid" [value]="wlanBSSID.id">
+									{{wlanBSSID.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanBroadcastSSID', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Encryptie </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanEncryptionType"
+								panelClass="my-select-panel-class" placeholder="Encryptie"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+								<mat-option *ngFor="let wlanEncryption of wlanencryption" [value]="wlanEncryption.id">
+									{{wlanEncryption.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanEncryptionType', 'required')">Encryptie verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Passphrase </mat-label>
+							<input matInput formControlName="MultiserviceWlanPassphrase" placeholder="Passphrase"
+								autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Prioriteit </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanHighPriority"
+								panelClass="my-select-panel-class" placeholder="Prioriteit"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditView','disabled')">
+								<mat-option *ngFor="let wlanPriority of wlanpriority" [value]="wlanPriority.id">
+									{{wlanPriority.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanHighPriority', 'required')">Prioriteit verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Order Update - voortgangsmelding </mat-label>
+							<textarea rows="5" matInput formControlName="MultiserviceWlanProgressNotification"
+								placeholder="Opdracht" autocomplete="off"
+								ngModel="{{local_data.MultiserviceWlanProgressNotification}}" maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANEditRemark','disabled')"></textarea>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanProgressNotification', 'required')">Order Update -
+								voortgangsmelding is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+	<ng-template #elsetransfer>
+		<ng-container *ngIf="action === 'UpdateStatus'; else elseAdd" [formGroup]="hotspotscreateform">
+			<h1 mat-dialog-title class="dialog-box-header">Wijzigen Orderstatus - Kraskaart -
+				{{local_data.location_name}}</h1>
+			<form [formGroup]="hotspotscreateform" #f="ngForm" (ngSubmit)="onUpdateStatus(f)" novalidate>
+				<div class="full-column">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Orderstatus</mat-label>
+
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="State"
+								ngModel="{{local_data.orderstatus}}">
+								<mat-option *ngFor="let state of SCardOrderStatus" [value]="state.id">
+									{{state.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top:10px;" *ngIf="hasError('orderstate', 'required')">Orderstatus
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div mat-dialog-actions align="center">
+					<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+						class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+					<button [disabled]="buttondisabled" mat-raised-button
+						class="redir-main-loc can-crt-mid">Opslaan</button>
+				</div>
+			</form>
+		</ng-container>
+	</ng-template>
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Aanvraag - WLAN - {{local_data.location_name}}</h1>
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : {{local_data.locationdata.customerid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : {{local_data.locationdata.fulladdress}}
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : {{local_data.locationdata.locationchain}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : {{local_data.locationdata.locationtypeid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : {{local_data.locationdata.accountmanagerid}}
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="WLANcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Gegevens Technisch contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactid', 'required')">Type Kraskaart is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonTelephone', 'required')">Aantal is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonEmail"
+								placeholder="E-mailadres" autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonEmail','required')">Prijs is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerMultiserviceWlanWishdate"
+								(dateChange)="dateValidation()" formControlName="MultiserviceWlanWishdate"
+								[min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerMultiserviceWlanWishdate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerMultiserviceWlanWishdate></mat-datepicker>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanWishdate', 'required')">Wensdatum is verplicht
+							</mat-error>
+
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemar </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemar">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opdracht </mat-label>
+							<textarea matInput formControlName="description" placeholder="Opdracht" autocomplete="off"
+								maxlength="250"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>MER Switch aanwezig </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanSwitchPresent"
+								panelClass="my-select-panel-class" placeholder="MER Switch aanwezig">
+								<mat-option *ngFor="let wlanSwitch of wlanswitch" [value]="wlanSwitch.id">
+									{{wlanSwitch.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanSwitchPresent', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemer plaatsen MER Switch </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanInstallContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemer plaatsen MER Switch">
+								<mat-option *ngFor="let communication of communicationgroupInstallContractorList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanInstallContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>WLAN gebruikers profiel </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanUserProfile"
+								panelClass="my-select-panel-class" placeholder="WLAN gebruikers profiel">
+								<mat-option *ngFor="let wlanUserProfile of wlanuserprofile"
+									[value]="wlanUserProfile.id">
+									{{wlanUserProfile.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanUserProfile', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>SSID naam </mat-label>
+							<input matInput formControlName="MultiserviceWlanSSID" placeholder="SSID naam"
+								autocomplete="off">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>SSID beschrijving </mat-label>
+							<input matInput formControlName="MultiserviceWlanSSIDDescription"
+								placeholder="SSID beschrijving" autocomplete="off">
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Broadcast SSID </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanBroadcastSSID"
+								panelClass="my-select-panel-class" placeholder="Broadcast SSID">
+								<mat-option *ngFor="let wlanBSSID of wlanbroadbandssid" [value]="wlanBSSID.id">
+									{{wlanBSSID.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanBroadcastSSID', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Encryptie </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanEncryptionType"
+								panelClass="my-select-panel-class" placeholder="Encryptie">
+								<mat-option *ngFor="let wlanEncryption of wlanencryption" [value]="wlanEncryption.id">
+									{{wlanEncryption.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanEncryptionType', 'required')">Encryptie verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Passphrase </mat-label>
+							<input matInput formControlName="MultiserviceWlanPassphrase" placeholder="Passphrase"
+								autocomplete="off">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Prioriteit </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceWlanHighPriority"
+								panelClass="my-select-panel-class" placeholder="Prioriteit">
+								<mat-option *ngFor="let wlanPriority of wlanpriority" [value]="wlanPriority.id">
+									{{wlanPriority.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanHighPriority', 'required')">Prioriteit verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+
+
+
+
+
+
+</div>

@@ -1,0 +1,1016 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elsetransfer">
+		<h1 mat-dialog-title class="dialog-box-header"
+			innerText='Wijzigen Order - Kraskaart - {{local_data.location_name}}'></h1>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="60px">
+					<mat-label>
+						<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+					</mat-label>
+	
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+					</mat-label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="full-column" fxLayoutGap="40px">
+					<mat-label>
+						<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+					</mat-label>
+				</div>
+			</div>
+		<form [formGroup]="scratchcardcreateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+
+
+				
+				<mat-form-field style="display: none;">
+					<input ngModel="{{local_data.productcatalogue}}" matInput formControlName="SCardOrderCatRefID"
+						placeholder="SCardOrderCatRefID" autocomplete="off">
+				</mat-form-field>
+
+				<mat-form-field style="display: none;">
+					<input matInput ngModel="{{local_data.SCardOrderTypeKraskaartID}}"
+						formControlName="SCardOrderTypeKraskaartID" placeholder="SCardOrderTypeKraskaartID"
+						autocomplete="off">
+				</mat-form-field>
+
+				<mat-form-field style="display: none;">
+					<input ngModel="{{local_data.SCardOrderRTLMemoline}}" matInput
+						formControlName="SCardOrderRTLMemoline" placeholder="SCardOrderRTLMemoline" autocomplete="off">
+				</mat-form-field>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+				
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="SCardContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled') && _commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="SCardContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="SCardContactPersonEmail" placeholder="E-mailadres"
+								autocomplete="off" [readonly]="!isBillingUser">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="SCardContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Kraskaart</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Type Kraskaart</mat-label>
+							<mat-select ngModel="{{local_data.SCardOrderCardType}}" disableOptionCentering
+								formControlName="SCardOrderCardType" panelClass="my-select-panel-class"
+								placeholder="Type Kraskaart" (selectionChange)="selectTypePlan($event.value)"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+								<mat-option *ngFor="let productnameSingle of productnameList"
+									[value]="productnameSingle.productname">
+									{{productnameSingle.productnamevalue}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderCardType', 'required')">Type
+								Kraskaart is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Aantal </mat-label>
+							<input matInput formControlName="SCardOrderQuantity"
+								ngModel="{{local_data.SCardOrderQuantity}}" placeholder="Aantal" autocomplete="off"
+								maxlength="20"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderQuantity', 'required')">
+								Aantal is verplicht</mat-error>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderQuantity','max')">Ongeldige
+								waarde</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Prijs </mat-label>
+							<input matInput [readonly]="!isBillingUser" ngModel="{{local_data.SCardOrderPrice}}"
+								formControlName="SCardOrderPrice" placeholder="Prijs" autocomplete="off" maxlength="20">
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderPrice','required')">Prijs is
+								verplicht</mat-error>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderPrice','pattern')">Ongeldige
+								waarde</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Bedrag </mat-label>
+							<input matInput ngModel="{{local_data.SCardOrderTotalPrice}}"
+								formControlName="SCardOrderTotalPrice" readonly placeholder="Bedrag" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Eerste kaart nummer</mat-label>
+							<input matInput formControlName="SCardStartNumber" placeholder="Eerste kaart nummer"
+								autocomplete="off" maxlength="20" ngModel="{{local_data.SCardStartNumber}}"
+								readonly='{{scratchcardstartreadonly}}'>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardStartNumber', 'required')">
+								Eerste kaart nummer is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Laatste kaart nummer</mat-label>
+							<input matInput readonly formControlName="SCardEndNumber" placeholder="Laatste kaart nummer"
+								autocomplete="off" maxlength="20" ngModel="{{local_data.SCardEndNumber}}">
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardEndNumber','required')">Laatste
+								kaart nummer is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1" *ngIf="scratchcardbuttondisplay">
+						<button type="button" class="icon_btn" title="invoer Kraskaarten" mat-icon-button
+							(click)="getScratchCardEndNumber()">
+							<mat-icon>event_note</mat-icon>
+						</button>
+					</div>
+					<div class="col-md-1" *ngIf="scratchcardbuttondisplay">
+						<button type="button" class="icon_btn" title="wis dit pakje" mat-icon-button
+							(click)="clearScratchCardNumber()">
+							<mat-icon> delete</mat-icon>
+						</button>
+					</div>
+
+				</div>
+				<div class="form-row" style="margin-bottom: 4%;">
+					<div class="col-md-3">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>State</mat-label>
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="State">
+								<mat-option *ngIf="ordernextstateList" [value]="ordernextstateList[0].currentstate_id"
+									innerText={{ordernextstateList[0].currentstatename}}>
+								</mat-option>
+								<ng-container *ngFor="let state of ordernextstateList">
+									<mat-option *ngIf="state.nextstate_id!=0" [value]="state.nextstate_id"
+										innerText={{state.nextstatename}}>
+									</mat-option>
+								</ng-container>
+							</mat-select>
+							<mat-error *ngIf="hasError('orderstate', 'required')">State is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Activatie en restrictie</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Activatie bij uitlevering</mat-label>
+							<mat-select disableOptionCentering formControlName="SCardOrderActivateOnShipment"
+								ngModel="{{local_data.SCardOrderActivateOnShipment}}" panelClass="my-select-panel-class"
+								placeholder="Activatie bij uitlevering"
+								(selectionChange)="selectActivation($event.value)"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+								<mat-option *ngFor="let ordership of orderActvateOnDelivery" [value]="ordership.id">
+									{{ordership.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('SCardOrderActivateOnShipment', 'required')">Activatie bij uitlevering
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" *ngIf="isActivation" appearance="outline"
+							style="width: 100%">
+							<mat-label>Activatiedatum </mat-label>
+							<input matInput [matDatepicker]="pickerSCardOrderActivationDate"
+								ngModel="{{local_data.SCardOrderActivationDate}}" (dateChange)="dateValidation()"
+								formControlName="SCardOrderActivationDate" [min]="minDate"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+							<mat-datepicker-toggle matSuffix [for]="pickerSCardOrderActivationDate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerSCardOrderActivationDate></mat-datepicker>
+
+
+						</mat-form-field>
+					</div>
+
+
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Restrictie op locatie</mat-label>
+							<mat-select ngModel="{{local_data.SCardOrderRestrictionOnLocation}}" disableOptionCentering
+								formControlName="SCardOrderRestrictionOnLocation" panelClass="my-select-panel-class"
+								placeholder="Restrictie op locatie"
+								(selectionChange)="selectRestrictionOnLocation($event.value)"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+								<mat-option *ngFor="let ordership of orderrestrictOnLocation" [value]="ordership.id">
+									{{ordership.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('SCardOrderRestrictionOnLocation', 'required')">Restrictie op locatie is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" *ngIf="isRestrictionOnChain"
+							style="width: 100%;">
+							<mat-select ngModel="{{chainid}}" disableOptionCentering
+								formControlName="SCardOrderValidForLocation" placeholder="Geldig op locatie"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+								<mat-option>
+									<ngx-mat-select-search disableOptionCentering [formControl]="chainFilteringCtrl"
+										placeholderLabel="Zoek chain..." i18n-placeholderLabel>
+									</ngx-mat-select-search>
+								</mat-option>
+								<mat-option *ngIf="noRecordFound == 0">{{ 'Geen chains gevonden' }}</mat-option>
+
+								<mat-option *ngFor="let chain of filteredServerSideChains | async"
+									[value]="chain.chainid"> {{chain.chainname}}
+								</mat-option>
+							</mat-select>
+
+						</mat-form-field>
+					</div>
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Overige gegevens</h5>
+
+				<div class="form-row" style="margin-bottom:4%">
+
+					<div class="col-md-8">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label> Eigen referentie klant </mat-label>
+							<input matInput formControlName="customerremarks" ngModel="{{local_data.customerremarks}}"
+								placeholder="Eigen referentie klant" autocomplete="off" maxlength="50"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+
+						</mat-form-field>
+					</div>
+
+
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Omschrijving </mat-label>
+							<input matInput formControlName="description" ngModel="{{local_data.opmerking}}"
+								placeholder="Omschrijving" autocomplete="off" maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditRemark','disabled')">
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Verzendwijze</h5>
+
+				<div class="col-md-3" style="display:none">
+					<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+						<mat-label>Facturatiestatus</mat-label>
+						<input matInput ngModel="{{local_data.facturatie_status}}" formControlName="facturatie_status"
+							placeholder="Facturatiestatus" autocomplete="off" readonly>
+					</mat-form-field>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Per Post/ Per Mail</mat-label>
+							<mat-select ngModel="{{local_data.SCardOrderShipmentMode}}" disableOptionCentering
+								formControlName="SCardOrderShipmentMode" panelClass="my-select-panel-class"
+								placeholder="Per Post/ Per Mail" (selectionChange)="selectShipmentMode($event.value)"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+								<mat-option *ngFor="let ordership of ordershipmentMode" [value]="ordership.id">
+									{{ordership.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentMode', 'required')">
+								Per Post/ Per Mail verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Ter attentie van </mat-label>
+							<input matInput formControlName="SCardOrderShipmentTAV" placeholder="Ter attentie van"
+								autocomplete="off" ngModel="{{local_data.SCardOrderShipmentTAV}}"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<div class="form-row" *ngIf="shipmentmail">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label> E-mail </mat-label>
+							<input matInput formControlName="SCardOrderShipmentEmail"
+								ngModel="{{local_data.SCardOrderShipmentEmail}}" placeholder="E-mail" autocomplete="off"
+								maxlength="20"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentEmail', 'email')">E-mail verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+
+
+
+
+
+				<div class="form-row" *ngIf="shipmentpost">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Straatnaam </mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentStreet}}"
+								formControlName="SCardOrderShipmentStreet" placeholder="Straatnaam" autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Huisnummer</mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentHouseNo}}"
+								formControlName="SCardOrderShipmentHouseNo" placeholder="Huisnummer" autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Huisnummer toevoeging </mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentHouseNoExt}}"
+								formControlName="SCardOrderShipmentHouseNoExt" placeholder="Huisnummer toevoeging"
+								autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<div class="form-row" *ngIf="shipmentpost">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Postcode</mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentPostalCode}}"
+								formControlName="SCardOrderShipmentPostalCode" placeholder="Postcode" autocomplete="off"
+								maxlength="20"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Plaatsnaam </mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentCity}}"
+								formControlName="SCardOrderShipmentCity" placeholder="City" autocomplete="off"
+								maxlength="20"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-select ngModel="{{countryid}}" disableOptionCentering
+								formControlName="SCardOrderShipmentCountry" placeholder="Zoek Land"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+								<mat-option>
+									<ngx-mat-select-search disableOptionCentering [formControl]="countryFilteringCtrl"
+										placeholderLabel="Zoek Land..." i18n-placeholderLabel>
+									</ngx-mat-select-search>
+								</mat-option>
+								<mat-option *ngIf="noRecordFound == 0">{{ 'Geen Land gevonden' }}</mat-option>
+
+								<mat-option *ngFor="let country of filteredServerSideCountry | async"
+									[value]="country.countryid"> {{country.countryname}}
+								</mat-option>
+							</mat-select>
+
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:4%;">Track & Trace Link</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label> Track & Trace Link </mat-label>
+							<input matInput formControlName="ordertrackcode" ngModel="{{local_data.ordertrackcode}}"
+								placeholder="Track&Trace Link" autocomplete="off" maxlength="500"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ScratchcardTab','ScratchcardTabEditView','disabled')">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+
+
+
+	</ng-container>
+
+	<ng-template #elsetransfer>
+		<ng-container *ngIf="action === 'UpdateStatus'; else elseAdd" [formGroup]="scratchcardcreateform">
+			<h1 mat-dialog-title class="dialog-box-header">Wijzigen Orderstatus - Kraskaart -
+				{{local_data.location_name}}</h1>
+			<form [formGroup]="scratchcardcreateform" #f="ngForm" (ngSubmit)="onUpdateStatus(f)" novalidate>
+				<div class="full-column">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Orderstatus</mat-label>
+
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="State"
+								ngModel="{{local_data.orderstatus}}">
+								<mat-option *ngFor="let state of SCardOrderStatus" [value]="state.id">
+									{{state.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top:10px;" *ngIf="hasError('orderstate', 'required')">Orderstatus
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div mat-dialog-actions align="center">
+					<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+						class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+					<button [disabled]="buttondisabled" mat-raised-button
+						class="redir-main-loc can-crt-mid">Opslaan</button>
+				</div>
+			</form>
+		</ng-container>
+	</ng-template>
+
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Nieuwe Order - Kraskaart - {{local_data.location_name}}</h1>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="scratchcardcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				
+				<mat-form-field style="display: none;">
+					<input matInput formControlName="SCardOrderCatRefID" placeholder="SCardOrderCatRefID"
+						autocomplete="off">
+				</mat-form-field>
+
+				<mat-form-field style="display: none;">
+					<input matInput formControlName="SCardOrderTypeKraskaartID" placeholder="SCardOrderTypeKraskaartID"
+						autocomplete="off">
+				</mat-form-field>
+
+				<mat-form-field style="display: none;">
+					<input matInput formControlName="SCardOrderRTLMemoline" placeholder="SCardOrderRTLMemoline"
+						autocomplete="off">
+				</mat-form-field>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+				
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="SCardContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="SCardContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="SCardContactPersonEmail" placeholder="E-mailadres"
+								autocomplete="off" [readonly]="!isBillingUser">
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="SCardContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Kraskaart</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Type Kraskaart</mat-label>
+							<mat-select disableOptionCentering formControlName="SCardOrderCardType"
+								panelClass="my-select-panel-class" placeholder="Type Kraskaart"
+								(selectionChange)="selectTypePlan($event.value)">
+								<mat-option *ngFor="let productnameSingle of productnameList"
+									[value]="productnameSingle.productname">
+									{{productnameSingle.productnamevalue}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderCardType', 'required')">Type
+								Kraskaart is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Aantal </mat-label>
+							<input matInput formControlName="SCardOrderQuantity" placeholder="Aantal"
+								autocomplete="off">
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderQuantity', 'required')">
+								Aantal is verplicht</mat-error>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderQuantity','max')">Ongeldige
+								waarde</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Prijs </mat-label>
+							<input matInput formControlName="SCardOrderPrice" placeholder="Prijs" autocomplete="off"
+								[readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderPrice','required')">Prijs is
+								verplicht</mat-error>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderPrice','pattern')">Ongeldige
+								waarde</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Bedrag </mat-label>
+							<input matInput formControlName="SCardOrderTotalPrice" readonly placeholder="Bedrag"
+								autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Activatie en restrictie</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Activatie bij uitlevering</mat-label>
+							<mat-select disableOptionCentering formControlName="SCardOrderActivateOnShipment"
+								panelClass="my-select-panel-class" placeholder="Activatie bij uitlevering"
+								(selectionChange)="selectActivation($event.value)">
+								<mat-option *ngFor="let ordership of orderActvateOnDelivery" [value]="ordership.id">
+									{{ordership.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('SCardOrderActivateOnShipment', 'required')">Activatie bij uitlevering
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" *ngIf="isActivation" appearance="outline"
+							style="width: 100%">
+
+							<mat-label>Activatiedatum </mat-label>
+							<input matInput [matDatepicker]="pickerSCardOrderActivationDate"
+								(dateChange)="dateValidation()" formControlName="SCardOrderActivationDate"
+								[min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerSCardOrderActivationDate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerSCardOrderActivationDate></mat-datepicker>
+
+							<!--<input matInput [matDatepicker]="picker"  formControlName="SCardOrderActivationDate">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>-->
+						</mat-form-field>
+					</div>
+
+
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Restrictie op locatie</mat-label>
+							<mat-select disableOptionCentering formControlName="SCardOrderRestrictionOnLocation"
+								panelClass="my-select-panel-class" placeholder="Restrictie op locatie"
+								(selectionChange)="selectRestrictionOnLocation($event.value)">
+								<mat-option *ngFor="let ordership of orderrestrictOnLocation" [value]="ordership.id">
+									{{ordership.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('SCardOrderRestrictionOnLocation', 'required')">Restrictie op locatie is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" *ngIf="isRestrictionOnChain"
+							style="width: 100%;">
+							<mat-select disableOptionCentering formControlName="SCardOrderValidForLocation"
+								placeholder="Geldig op locatie">
+								<mat-option>
+									<ngx-mat-select-search disableOptionCentering [formControl]="chainFilteringCtrl"
+										placeholderLabel="Zoek chain..." i18n-placeholderLabel>
+									</ngx-mat-select-search>
+								</mat-option>
+								<mat-option *ngIf="noRecordFound == 0">{{ 'Geen chains gevonden' }}</mat-option>
+
+								<mat-option *ngFor="let chain of filteredServerSideChains | async"
+									[value]="chain.chainid"> {{chain.chainname}}
+								</mat-option>
+							</mat-select>
+
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Overige gegevens</h5>
+				<div class="form-row">
+					<div class="col-md-8">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label> Eigen referentie klant </mat-label>
+							<input matInput formControlName="customerremarks" placeholder="Eigen referentie klant"
+								autocomplete="off" maxlength="50">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Omschrijving </mat-label>
+							<input matInput formControlName="description" placeholder="Omschrijving" autocomplete="off"
+								maxlength="250">
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Verzendwijze</h5>
+
+				<div class="col-md-3" style="display:none">
+					<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+						<mat-label>Facturatiestatus</mat-label>
+						<input matInput formControlName="facturatie_status" placeholder="Facturatiestatus"
+							autocomplete="off" readonly>
+					</mat-form-field>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Per Post/ Per Mail</mat-label>
+							<mat-select disableOptionCentering formControlName="SCardOrderShipmentMode"
+								panelClass="my-select-panel-class" placeholder="Per Post/ Per Mail"
+								(selectionChange)="selectShipmentMode($event.value)">
+								<mat-option *ngFor="let ordership of ordershipmentMode" [value]="ordership.id">
+									{{ordership.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentMode', 'required')">
+								Per Post/ Per Mail verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Ter attentie van </mat-label>
+							<input matInput formControlName="SCardOrderShipmentTAV" placeholder="Ter attentie van"
+								autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row" *ngIf="shipmentmail">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label> E-mail </mat-label>
+							<input matInput formControlName="SCardOrderShipmentEmail" placeholder="E-mail"
+								autocomplete="off">
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentEmail', 'email')">E-mail verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+
+
+
+				<div class="form-row" *ngIf="shipmentpost">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Straatnaam </mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentStreet}}"
+								formControlName="SCardOrderShipmentStreet" placeholder="Straatnaam" autocomplete="off">
+							<!--<mat-error  style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentStreet', 'required')">Street is verplicht</mat-error>
+							-->
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Huisnummer</mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentHouseNo}}"
+								formControlName="SCardOrderShipmentHouseNo" placeholder="Huisnummer" autocomplete="off">
+							<!--<mat-error  style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentHouseNo', 'required')">Housenummer is verplicht</mat-error>
+							-->
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Huisnummer toevoeging </mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentHouseNoExt}}"
+								formControlName="SCardOrderShipmentHouseNoExt" placeholder="Huisnummer toevoeging"
+								autocomplete="off">
+							<!--<mat-error  style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentHouseNoExt', 'required')">House nummer extension is verplicht</mat-error>
+							-->
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<div class="form-row" *ngIf="shipmentpost">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Postcode</mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentPostalCode}}"
+								formControlName="SCardOrderShipmentPostalCode" placeholder="Postcode"
+								autocomplete="off">
+							<!--<mat-error  style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentPostalCode', 'required')">Postal code is verplicht</mat-error>
+							-->
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Plaatsnaam </mat-label>
+							<input matInput ngModel="{{SCardOrderShipmentCity}}"
+								formControlName="SCardOrderShipmentCity" placeholder="Plaatsnaam" autocomplete="off">
+							<!--<mat-error  style="margin-top: 9px;" *ngIf="hasError('SCardOrderShipmentCity', 'required')">City is verplicht</mat-error>
+							-->
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-select ngModel="{{countryid}}" disableOptionCentering
+								formControlName="SCardOrderShipmentCountry" placeholder="Zoek Land">
+								<mat-option>
+									<ngx-mat-select-search disableOptionCentering [formControl]="countryFilteringCtrl"
+										placeholderLabel="Zoek Land..." i18n-placeholderLabel>
+									</ngx-mat-select-search>
+								</mat-option>
+								<mat-option *ngIf="noRecordFound == 0">{{ 'Geen Land gevonden' }}</mat-option>
+
+								<mat-option *ngFor="let country of filteredServerSideCountry | async"
+									[value]="country.countryid"> {{country.countryname}}
+								</mat-option>
+							</mat-select>
+
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row" style="display: none;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label> Track & Trace Link </mat-label>
+							<input matInput formControlName="ordertrackcode" placeholder="Track&Trace Link"
+								autocomplete="off" maxlength="500">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+
+
+
+
+
+
+</div>

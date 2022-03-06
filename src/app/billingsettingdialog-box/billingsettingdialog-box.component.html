@@ -1,0 +1,391 @@
+<div style="position: relative;">
+
+	<!--<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>-->
+	
+	<ng-container *ngIf="action === 'Update'; else elseDelete">
+		<h1 mat-dialog-title class="dialog-box-header" innerText='Wijzigen - Terugkerende factuurregel - {{this.local_data.location_name}}'></h1>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="billingsettingupdateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate
+			*ngIf="action === 'Update'; else elseAdd">
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 3%;">
+					<mat-form-field  class="focusformfield" appearance="outline" style="margin-right:2%;width: 32%;">
+						<mat-label>Hoofdproduct</mat-label>
+						<mat-select disableOptionCentering ngModel="{{local_data.productmain}}" (selectionChange)="selectmainproduct()"
+							formControlName="productmain" panelClass="my-select-panel-class" placeholder="Hoofdproduct">
+							<mat-option *ngFor="let productmainSingle of productmainList"
+								[value]="productmainSingle.id">
+								{{productmainSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('productmain', 'required')">Hoofdproduct is verplicht
+						</mat-error>
+					</mat-form-field>
+
+					<mat-form-field class="focusformfield" appearance="outline" style="width: 32%;">
+						<mat-label>Memoline</mat-label>
+						<mat-select disableOptionCentering ngModel="{{local_data.productname}}"
+							formControlName="productname" panelClass="my-select-panel-class" placeholder="Memoline">
+							<mat-option *ngFor="let productnameSingle of selectedproductnameList"
+								[value]="productnameSingle.id">
+								{{productnameSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('productname', 'required')">Productnaam is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%;width: 32%;">
+						<mat-label>Startdatum</mat-label>
+						<input matInput [matDatepicker]="pickerupdate" formControlName="startdate" ngModel="{{local_data.startdate}}" [min]="minBillingDate" (dateChange)="dateValidationUpdate()"
+						 >
+						<mat-datepicker-toggle matSuffix [for]="pickerupdate"></mat-datepicker-toggle>
+						<mat-datepicker #pickerupdate></mat-datepicker>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('startdate', 'required')">Startdatum is verplicht</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" style="width: 32%;">
+						<mat-label>Einddatum</mat-label>
+						<input matInput [matDatepicker]="pickerupdate1" formControlName="enddate" ngModel="{{local_data.enddate}}" [min]="minBillingDate" (dateChange)="dateValidationUpdateEnd()"
+						 >
+						<mat-datepicker-toggle matSuffix [for]="pickerupdate1"></mat-datepicker-toggle>
+						<mat-datepicker #pickerupdate1></mat-datepicker>
+						
+					</mat-form-field>
+				</div>
+
+				<div class="half-row">
+                    <mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%;margin-bottom: 4%;width: 32%;">
+						<mat-label>Termijn</mat-label>
+						<mat-select disableOptionCentering ngModel="{{local_data.term}}"
+							formControlName="term" panelClass="my-select-panel-class" placeholder="Termijn">
+							<mat-option *ngFor="let termSingle of termList" [value]="termSingle.id">
+								{{termSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('term', 'required')">Termijn is verplicht</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="focusformfield" appearance="outline" style="width: 32%;">
+						<mat-label>Eerste Billing maand</mat-label>
+						<input matInput formControlName="billingmonth" readonly ngModel="{{local_data.billingmonth}}">
+						<input hidden [matDatepicker]="fromDatePickerUpdate" readonly [min]="minBillingDate">
+						<mat-datepicker-toggle matSuffix [for]="fromDatePickerUpdate"></mat-datepicker-toggle>
+						<mat-datepicker startView="multi-year"  (monthSelected)="closeDatePickerUpdate(fromDatePickerUpdate, $event)" #fromDatePickerUpdate></mat-datepicker>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('billingmonth', 'required')">Billing maand is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div class="half-row" style="margin-bottom: 4%;">
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%">
+						<mat-label>Aantal</mat-label>
+						<input matInput ngModel="{{local_data.quantity}}" formControlName="quantity"
+							placeholder="Aantal" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('quantity', 'required')">Aantal is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('quantity','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%">
+						<mat-label>Prijs</mat-label>
+						<input matInput ngModel="{{local_data.price}}" formControlName="price" placeholder="Prijs"
+							autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('price', 'required')">Prijs is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('price','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline">
+						<mat-label>Bedrag</mat-label>
+						<input matInput ngModel="{{local_data.amount}}" formControlName="amount" autocomplete="off"
+							readonly>
+					</mat-form-field>
+				</div>
+				<div class="full-column" style="margin-bottom: 2%">
+					<mat-form-field appearance="outline" style="margin-bottom: 3%;">
+						<mat-label>Omschrijving</mat-label>
+						<input matInput ngModel="{{local_data.description}}" formControlName="description"
+							placeholder="Omschrijving" autocomplete="off" maxlength="150">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('description', 'required')">Omschrijving is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('description', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+
+					
+                </div>
+                <div class="full-column">
+					<mat-form-field appearance="outline" style=display:none >
+						<mat-label>Factuur referentie</mat-label>
+						<input matInput ngModel="{{local_data.invoicereference}}" formControlName="invoicereference" placeholder="Factuur referentie" autocomplete="off"
+							maxlength="150">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('invoicereference', 'required')">Factuur referentie is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('invoicereference', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+                </div>
+                <div class="full-column">
+					<mat-form-field appearance="outline" >
+						<mat-label>Regelreferentie</mat-label>
+						<input matInput ngModel="{{local_data.regelreference}}" formControlName="regelreference" placeholder="Regelreferentie" autocomplete="off"
+							maxlength="150">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('regelreference', 'required')">Regelreferentie is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('regelreference', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+                </div>
+                <div class="half-row">
+					
+					<mat-form-field appearance="outline" style="margin-right: 2%;">
+						<mat-label>PO-nummer</mat-label>
+						<input matInput ngModel="{{local_data.ponumber}}" formControlName="ponumber" placeholder="PO-nummer" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('ponumber','pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" style="margin-right: 2%;display:none">
+						<mat-label>Rekenregel</mat-label>
+						<input matInput ngModel="{{local_data.calculationrule}}" formControlName="calculationrule" placeholder="Rekenregel" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('calculationrule','pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" style=display:none>
+						<mat-label>Verrekening</mat-label>
+						<input matInput ngModel="{{local_data.settlement}}" formControlName="settlement" placeholder="Verrekening" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasErrorUpdate('settlement','pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+	<ng-template #elseDelete>
+		<ng-container *ngIf="action === 'Delete'; else elseAdd">
+			<h1 mat-dialog-title class="dialog-box-header">Verwijderen - Terugkerende factuurregel - {{this.local_data.location_name}}</h1>
+			Wil je Terugkerende factuurregel <b>{{local_data.hstorderid}}</b> verwijderen?
+			<div mat-dialog-actions align="center">
+				<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+					class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+				<button [disabled]="buttondisabled" mat-raised-button (click)="onDelete()"
+					class="redir-main-loc can-crt-mid">Verwijderen</button>
+			</div>
+		</ng-container>
+	</ng-template>
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Aanmaken - Terugkerende factuurregel - {{this.local_data.location_name}}</h1>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="billingsettingcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 3%;">
+				
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%;width: 32%;">
+						<mat-label>Hoofdproduct</mat-label>
+						<mat-select disableOptionCentering formControlName="productmain" (selectionChange)="selectmainproduct()"
+							panelClass="my-select-panel-class" placeholder="Hoofdproduct">
+							<mat-option *ngFor="let productmainSingle of productmainList"
+								[value]="productmainSingle.id">
+								{{productmainSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('productmain', 'required')">Hoofdproduct is verplicht</mat-error>
+					</mat-form-field>
+				
+				
+					<mat-form-field class="focusformfield" appearance="outline" style="width: 32%;">
+						<mat-label>Memoline</mat-label>
+						<mat-select disableOptionCentering formControlName="productname"
+							panelClass="my-select-panel-class" placeholder="Memoline">
+							<mat-option *ngFor="let productnameSingle of selectedproductnameList"
+								[value]="productnameSingle.id">
+								{{productnameSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('productname', 'required')">Memoline is verplicht</mat-error>
+					</mat-form-field>
+				
+				
+				</div>
+				<div class="half-row">
+
+
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%;width: 32%;" >
+						<mat-label>Startdatum</mat-label>
+						<input matInput [matDatepicker]="picker" formControlName="startdate" [min]="minBillingDate" (dateChange)="dateValidation()">
+						<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+						<mat-datepicker #picker></mat-datepicker>
+						<mat-error  style="margin-top: 2%;" *ngIf="hasError('startdate', 'required')">Startdatum is verplicht</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" style="width: 32%;">
+						<mat-label>Einddatum</mat-label>
+						<input matInput [matDatepicker]="picker1" formControlName="enddate" [min]="minBillingDate" (dateChange)="dateValidationEnd()">
+						<mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+						<mat-datepicker #picker1></mat-datepicker>
+					</mat-form-field>
+				</div>
+
+				<div class="half-row">
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%;margin-bottom: 4%;width: 32%;">
+						<mat-label>Termijn</mat-label>
+						<mat-select disableOptionCentering formControlName="term"
+							panelClass="my-select-panel-class" placeholder="Termijn">
+							<mat-option *ngFor="let termSingle of termList" [value]="termSingle.id">
+								{{termSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('term', 'required')">Termijn is verplicht</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="focusformfield" appearance="outline" style="width: 32%;">
+						<mat-label>Eerste Billing maand</mat-label>
+						<input matInput formControlName="billingmonth" readonly>
+						<input hidden [matDatepicker]="fromDatePicker" readonly [min]="minBillingDate">
+						<mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+						<mat-datepicker startView="multi-year"  (monthSelected)="closeDatePicker(fromDatePicker, $event)" #fromDatePicker></mat-datepicker>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('billingmonth', 'required')">Billing maand is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row" style="margin-bottom: 4%;">
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%">
+						<mat-label>Aantal</mat-label>
+						<input matInput formControlName="quantity" placeholder="Aantal" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('quantity', 'required')">Aantal is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('quantity','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%">
+						<mat-label>Prijs</mat-label>
+						<input matInput formControlName="price" placeholder="Prijs" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('price', 'required')">Prijs is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('price','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline">
+						<mat-label>Bedrag</mat-label>
+						<input matInput formControlName="amount" placeholder="0,00" autocomplete="off" readonly>
+					</mat-form-field>
+                </div>
+                <div class="full-column" style="margin-bottom: 2%">
+					<mat-form-field appearance="outline" style="margin-bottom: 3%;">
+						<mat-label>Omschrijving</mat-label>
+						<input matInput formControlName="description" placeholder="Omschrijving" autocomplete="off"
+							maxlength="150">
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('description', 'required')">Omschrijving is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('description', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+                </div>
+                <div class="full-column" style=display:none>
+					<mat-form-field appearance="outline" >
+						<mat-label>Factuur referentie</mat-label>
+						<input matInput formControlName="invoicereference" placeholder="Factuur referentie" autocomplete="off"
+							maxlength="150">
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('invoicereference', 'required')">Factuur referentie is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('invoicereference', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+                </div>
+                <div class="full-column">
+					<mat-form-field appearance="outline" >
+						<mat-label>Regelreferentie</mat-label>
+						<input matInput formControlName="regelreference" placeholder="Regelreferentie" autocomplete="off"
+							maxlength="150">
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('regelreference', 'required')">Regelreferentie is verplicht</mat-error>
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('regelreference', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+					
+					<mat-form-field appearance="outline" style="margin-right: 2%;">
+						<mat-label>PO-nummer</mat-label>
+						<input matInput formControlName="ponumber" placeholder="PO-nummer" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('ponumber','pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" style="margin-right: 2%;display: none;">
+						<mat-label>Rekenregel</mat-label>
+						<input matInput formControlName="calculationrule" placeholder="Rekenregel" autocomplete="off">
+						<mat-error style="margin-top: 2%;" style="margin-top: 2%;" *ngIf="hasError('calculationrule','pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" style=display:none>
+						<mat-label>Verrekening</mat-label>
+						<input matInput formControlName="settlement" placeholder="Verrekening" autocomplete="off">
+						<mat-error style="margin-top: 2%;" *ngIf="hasError('settlement','pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+
+
+</div>

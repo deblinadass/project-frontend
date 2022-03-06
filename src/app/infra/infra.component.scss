@@ -1,0 +1,179 @@
+@import "../../styles/form.scss";
+@import "../../styles/table.scss";
+
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import '~@circlon/angular-tree-component/css/angular-tree-component.css';
+
+
+::ng-deep .mat-tree-node{
+
+  font-size: 12px;
+}
+
+mat-tree {
+  margin-left: 40px;
+ 
+}
+.mat-tree-node {
+  top: -24px;
+  margin:-14px 0 -10px 0
+}
+.mattreenode{
+  padding: 0;
+  background-color: white;
+}
+
+li.example-tree-container {
+  border-bottom: 0;
+}
+.example-tree-nested-node {
+  padding-left: 30px;
+}
+li{
+  list-style:none;
+  display:block;
+  float:left;
+  margin:-2px 0px -12px 0;
+}
+
+.type-icon,.mat-icon-rtl-mirror {
+  font-size: 15px;
+  //width: 20px;
+}
+mat-icon-button-focus-overlay { 
+  background-color: transparent!important; 
+  }
+  ul { font-size: 0; }
+  
+  
+  .mat-tree-node:last-child ul {
+    border-left: 1px solid white;
+    margin-left: -41px;
+  }
+  a:hover {
+    color: #fff;
+    //text-decoration: underline;
+  }
+  .mat-icon {
+    font-size: 18px;
+  }
+  .mat-icon-button {
+    z-index: 100;
+  }
+  //Monitoring tab css
+  .mat-raised-button.mat-ok
+ {
+  color: #f0fff3;
+  background-color:#5cb85c;
+}
+.mat-raised-button.mat-warn
+ {
+  color: #f0fff3;
+  background-color: #f0ad4e;
+}
+.mat-raised-button.mat-critical
+ {
+  color: #f0fff3;
+  background-color: #d9534f;
+}
+.mat-raised-button.mat-down
+ {
+  color: #f0fff3;
+  background-color: #9c9a9a;
+}
+.mat-raised-button.mat-users
+ {
+  color: #f0fff3;
+  background-color: #9c9a9a;
+}
+.btnclass{
+  //width: 19%;
+  height: 74%;
+  line-height: 25px;
+  min-height: 10px;
+  min-width: 40px;
+  vertical-align: top;
+  font-size: 100%;
+  padding: 0 0;
+  margin: 3px 3px 0px 0px;
+}
+/*.paddingbtn{
+  padding-top: 2%;
+
+}*/
+.comment{
+  width: 45%;
+  height: 61%;
+  line-height: 10px;
+  min-height: 10px;
+  min-width: 80px;
+  vertical-align: top;
+  font-size: 10px;
+ padding: 0 0;
+  margin: 3px 2px 0px 0px;
+}
+::ng-deep tr .mat-row{
+  height:80px 
+}
+.sessionbtn{
+  width: 20px;
+  height: 15px;
+}
+
+/********* Nested Table *********/
+table {
+  width: 100%;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: #777;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  //font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}
+
+.inner-table {
+  width: 100%;
+}
+
+.inner-table mat-form-field {
+  margin-top: 15px;
+  width: 100%;
+}

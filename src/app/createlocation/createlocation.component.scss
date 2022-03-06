@@ -1,0 +1,14 @@
+@import "../../styles/form.scss";
+
+form{
+    margin-top: 50px;
+}
+
+
+mat-form-field{
+    width:100%;
+}
+
+::ng-deep .mat-form-field-prefix{
+    top:-1em !important;
+}

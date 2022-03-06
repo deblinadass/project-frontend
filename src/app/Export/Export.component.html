@@ -1,0 +1,46 @@
+<div [@routerTransition]>
+  <div class="col-xl-12">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i> Rapportage </li>
+    </ol>
+  </div>
+</div>
+
+
+<form [formGroup]="exportForm" #f="ngForm" (ngSubmit)="onSubmit()" novalidate>
+  <div class="design-process-content-form">
+
+    <div class="full-column" fxLayoutGap="20px">
+      <mat-form-field appearance="outline">
+        <mat-label>Selecteer rapport</mat-label>
+        <mat-select disableOptionCentering formControlName="export">
+          <mat-option *ngFor="let export of exportList" [value]="export.id">
+            {{export.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!--<div class="full-column" fxLayoutGap="20px" id="billingfiletype" style="display:none;">
+      <mat-form-field appearance="outline">
+        <mat-label>Selecteer Factureringsbestand</mat-label>
+        <mat-select disableOptionCentering formControlName="billingtype" (selectionChange)="selectOldBillinfile()">
+          <mat-option *ngFor="let Filetype of Billingtype" [value]="Filetype.id">
+            {{Filetype.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>-->
+    
+    <div class="mst-button-container">
+      <button [disabled]="buttondisabled" type="submit" class="btn mst-button-primary">Export</button>
+    </div>
+
+    <div class="progress-spinner" *ngIf="buttondisabled">
+      <div></div>
+    </div>
+  </div>
+</form>
+
+
+
+<app-statistics></app-statistics>

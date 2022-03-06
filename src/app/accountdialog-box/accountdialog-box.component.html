@@ -1,0 +1,158 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elseDelete">
+		<h1 mat-dialog-title class="dialog-box-header">Wijzigen Account</h1>
+
+		<form [formGroup]="accountupdateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate
+			*ngIf="action === 'Update'; else elseAdd">
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Achternaam</mat-label>
+						<input matInput ngModel="{{local_data.accountlastname}}"
+							formControlName="accountlastname" placeholder="Achternaam" autocomplete="off">
+						<mat-error *ngIf="hasErrorUpdate('accountlastname', 'required')">Achternaam is verplicht
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Voornaam</mat-label>
+						<input matInput ngModel="{{local_data.accountfirstname}}"
+							formControlName="accountfirstname" placeholder="Voornaam" autocomplete="off">
+						<mat-error *ngIf="hasErrorUpdate('accountfirstname', 'required')">Voornaam is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%;">
+						<mat-label>E-mail</mat-label>
+						<input matInput ngModel="{{local_data.accountemail}}" formControlName="accountemail"
+							placeholder="E-mail" autocomplete="off" pattern="\s*[-+.'\w]+@[-.\w]+\.[-.\w]+\s*">
+						<mat-error *ngIf="hasErrorUpdate('accountemail', 'required')">E-mail is verplicht
+						</mat-error>
+						<mat-error *ngIf="hasErrorUpdate('accountemail', 'pattern')">E-mail is niet correct</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Telefoonnummer</mat-label>
+						<input matInput ngModel="{{local_data.accounttelephone}}"
+							formControlName="accounttelephone" placeholder="Telefoonnummer" autocomplete="off">
+						<mat-error *ngIf="hasErrorUpdate('accounttelephone', 'required')">Telefoonnummer is
+							verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%;">
+						<mat-label>Functie</mat-label>
+						<input matInput ngModel="{{local_data.accountfunction}}"
+							formControlName="accountfunction" placeholder="Functie" autocomplete="off">
+						<mat-error *ngIf="hasErrorUpdate('accountfunction', 'required')">Functie is verplicht
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Opmerking</mat-label>
+						<input matInput ngModel="{{local_data.accountdescription}}"
+							formControlName="accountdescription" placeholder="Opmerking" autocomplete="off">
+					</mat-form-field>
+				</div>
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+	<ng-template #elseDelete>
+		<ng-container *ngIf="action === 'Delete'; else elseRelocate">
+			<h1 mat-dialog-title class="dialog-box-header">Verwijderen Account</h1>
+			Wil je account <b>{{local_data.accountname}}</b> verwijderen?
+			<div mat-dialog-actions align="center">
+				<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+					class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+				<button [disabled]="buttondisabled" mat-raised-button (click)="onDelete()"
+					class="redir-main-loc can-crt-mid">Verwijderen</button>
+			</div>
+		</ng-container>
+	</ng-template>
+
+	<ng-template #elseRelocate>
+		<ng-container *ngIf="action === 'Relocate'; else elseAdd">
+			<h1 mat-dialog-title class="dialog-box-header">
+				{{local_data.productattributevaluesi[2].productattributevalue}}::
+				<strong>Verhuizen</strong></h1>
+			<div mat-dialog-content>
+
+			</div>
+		</ng-container>
+	</ng-template>
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Toevoegen Account</h1>
+		<form [formGroup]="accountcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Achternaam</mat-label>
+						<input matInput formControlName="accountlastname" placeholder="Achternaam"
+							autocomplete="off">
+						<mat-error *ngIf="hasError('accountlastname', 'required')">Achternaam is verplicht
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Voornaam</mat-label>
+						<input matInput formControlName="accountfirstname" placeholder="Voornaam"
+							autocomplete="off">
+						<mat-error *ngIf="hasError('accountfirstname', 'required')">Voornaam is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%;">
+						<mat-label>E-mail</mat-label>
+						<input matInput formControlName="accountemail" placeholder="E-mail" autocomplete="off" pattern="\s*[-+.'\w]+@[-.\w]+\.[-.\w]+\s*">
+						<mat-error *ngIf="hasError('accountemail', 'required')">E-mail is verplicht</mat-error>
+						<mat-error *ngIf="hasError('accountemail', 'pattern')">E-mail is niet correct</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Telefoonnummer</mat-label>
+						<input matInput formControlName="accounttelephone" placeholder="Telefoonnummer"
+							autocomplete="off">
+						<mat-error *ngIf="hasError('accounttelephone', 'required')">Telefoonnummer is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%;">
+						<mat-label>Functie</mat-label>
+						<input matInput formControlName="accountfunction" placeholder="Functie"
+							autocomplete="off">
+						<mat-error *ngIf="hasError('accountfunction', 'required')">Functie is verplicht
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Opmerking</mat-label>
+						<input matInput formControlName="accountdescription" placeholder="Opmerking"
+							autocomplete="off">
+					</mat-form-field>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+</div>

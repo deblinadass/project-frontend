@@ -1,0 +1,637 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elsetransfer">
+		<h1 mat-dialog-title class="dialog-box-header" innerText='Aanvraag - Wijzigen MAC - {{local_data.location_name}}'></h1>
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="WLANcreateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top: 23px;">Gegevens Technisch
+					contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceMacContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceMacContactid', 'required')">Contactpersoon is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonTelephone', 'required')">Telefoonnummer is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonEmail"
+								placeholder="E-mailadres" autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonEmail','required')">E-mailadres is
+								verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerMultiserviceWlanWishdate"
+								formControlName="MultiserviceMacWishdate" [min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerMultiserviceWlanWishdate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerMultiserviceWlanWishdate></mat-datepicker>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('MultiserviceMacWishdate', 'required')">
+								Wensdatum is verplicht
+							</mat-error>
+
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemar </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceMacContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemar">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceMacContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4" *ngIf="hasnextstateid!=0">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Opdracht status</mat-label>
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="Opdracht status">
+
+								<mat-option *ngIf="issuenextstateList" [value]="issuenextstateList[0].currentstate_id" innerText={{issuenextstateList[0].currentstatename}}>
+									
+								</mat-option>
+								<mat-option *ngFor="let state of issuenextstateList" [value]="state.nextstate_id">
+									{{state.nextstatename}}
+								</mat-option>
+
+
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('orderstate', 'required')">Opdracht
+								status is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opdracht </mat-label>
+							<textarea matInput formControlName="description" placeholder="Opdracht" autocomplete="off"
+								maxlength="250"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Type of request</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceMacRequestType"
+								panelClass="my-select-panel-class" placeholder="Type of request">
+								<mat-option *ngFor="let requesttype of requesttypelist" [value]="requesttype.id">
+									{{requesttype.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceMacRequestType', 'required')">Request type verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+				<!-- Add Row-->
+				<div class="form-row">
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+							fxFlex="nogrow" (click)="addUnitUpdate()" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+				<div class="col-md-12" style="padding: 0px;">
+					<div formArrayName="MacOrderAddon">
+						<div class="" *ngFor="let unit of WLANcreateform.controls.MacOrderAddon.controls; let i=index">
+							<div [formGroupName]="i">
+								<div class="form-row">
+									<div class="col-md-3">
+										<mat-form-field class="focusformfield" appearance="outline"
+											style="margin-bottom: 0.6%;width:100%;">
+											<mat-label>Mac adres</mat-label>
+											<input matInput formControlName="macaddress" placeholder="Mac adres"
+												autocomplete="off" maxlength="17" (input)="reformat($event)">
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('macaddress').hasError('required')">Mac adres is
+												verplicht</mat-error>
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('macaddress').hasError('pattern')">Een MAC-adres bevat
+												alleen cijfers (0-9) en letters (A-F)</mat-error>
+
+										</mat-form-field>
+									</div>
+
+									<div class="col-md-1">
+										<button type="button" [disableRipple]="true" [disabled]="isdisabled"
+											mat-icon-button fxFlex="nogrow" class="addonField" (click)="removeUnit(i)"
+											style="margin-bottom: 3%;width:100%;" title="Verwijderen">
+											<mat-icon>delete</mat-icon>
+										</button>
+									</div>
+
+									<div class="col-md-2">
+										<mat-form-field class="focusformfield" appearance="outline"
+											style="width: 100%;">
+
+											<mat-label>Download</mat-label>
+											<mat-select disableOptionCentering formControlName="ubprofiledownload"
+												panelClass="my-select-panel-class" placeholder="Download">
+												<mat-option *ngFor="let macUBDownload of macUBDownloadList"
+													[value]="macUBDownload.id">
+													{{macUBDownload.name}}
+												</mat-option>
+											</mat-select>
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('ubprofiledownload').hasError('required')">Download is
+												verplichtverplicht
+											</mat-error>
+										</mat-form-field>
+									</div>
+
+									<div class="col-md-2" style="margin-left: 4%;">
+										<mat-form-field class="focusformfield" appearance="outline"
+											style="width: 100%;">
+
+											<mat-label>Upload</mat-label>
+											<mat-select disableOptionCentering formControlName="ubprofileupload"
+												panelClass="my-select-panel-class" placeholder="Upload">
+												<mat-option *ngFor="let macUBUpload of macUBUploadList"
+													[value]="macUBUpload.id">
+													{{macUBUpload.name}}
+												</mat-option>
+											</mat-select>
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('ubprofileupload').hasError('required')">Upload is
+												verplichtverplicht
+											</mat-error>
+										</mat-form-field>
+									</div>
+
+									<div class="col-md-3" style="margin-left: 4%;">
+										<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+											<mat-label>Einddatum</mat-label>
+											<input matInput [matDatepicker]="pickerenddate" formControlName="enddate"
+												[min]="minDate">
+											<mat-datepicker-toggle matSuffix [for]="pickerenddate">
+											</mat-datepicker-toggle>
+											<mat-datepicker #pickerenddate></mat-datepicker>
+
+										</mat-form-field>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+	<ng-template #elsetransfer>
+		<ng-container *ngIf="action === 'UpdateStatus'; else elseAdd" [formGroup]="hotspotscreateform">
+			<h1 mat-dialog-title class="dialog-box-header">Wijzigen Orderstatus - Kraskaart -
+				{{local_data.location_name}}</h1>
+			<form [formGroup]="hotspotscreateform" #f="ngForm" (ngSubmit)="onUpdateStatus(f)" novalidate>
+				<div class="full-column">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Orderstatus</mat-label>
+
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="State"
+								ngModel="{{local_data.orderstatus}}">
+								<mat-option *ngFor="let state of SCardOrderStatus" [value]="state.id">
+									{{state.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top:10px;" *ngIf="hasError('orderstate', 'required')">Orderstatus
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div mat-dialog-actions align="center">
+					<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+						class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+					<button [disabled]="buttondisabled" mat-raised-button
+						class="redir-main-loc can-crt-mid">Opslaan</button>
+				</div>
+			</form>
+		</ng-container>
+	</ng-template>
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Aanvraag - MAC - {{local_data.location_name}}</h1>
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : {{local_data.locationdata.customerid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : {{local_data.locationdata.fulladdress}}
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : {{local_data.locationdata.locationchain}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : {{local_data.locationdata.locationtypeid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : {{local_data.locationdata.accountmanagerid}}
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="WLANcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top: 23px;">Gegevens Technisch
+					contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceMacContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceMacContactid', 'required')">Contactpersoon is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonTelephone', 'required')">Telefoonnummer is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonEmail"
+								placeholder="E-mailadres" autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceWlanContactPersonEmail','required')">E-mailadres is
+								verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MultiserviceWlanContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerMultiserviceWlanWishdate"
+								formControlName="MultiserviceMacWishdate" [min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerMultiserviceWlanWishdate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerMultiserviceWlanWishdate></mat-datepicker>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('MultiserviceMacWishdate', 'required')">
+								Wensdatum is verplicht
+							</mat-error>
+
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemar </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceMacContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemar">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceMacContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opdracht </mat-label>
+							<textarea matInput formControlName="description" placeholder="Opdracht" autocomplete="off"
+								maxlength="250"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-3">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Type of request</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceMacRequestType"
+								panelClass="my-select-panel-class" placeholder="MER Switch aanwezig">
+								<mat-option *ngFor="let requesttype of requesttypelist" [value]="requesttype.id">
+									{{requesttype.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceMacRequestType', 'required')">Request type verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<!-- Add Row-->
+				<div class="form-row">
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+							fxFlex="nogrow" (click)="addUnit()" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="col-md-12" style="padding: 0px;">
+					<div formArrayName="MacOrderAddon">
+						<div class="" *ngFor="let unit of WLANcreateform.controls.MacOrderAddon.controls; let i=index">
+							<div [formGroupName]="i">
+								<div class="form-row">
+									<div class="col-md-3">
+										<mat-form-field class="focusformfield" appearance="outline"
+											style="margin-bottom: 0.6%;width:100%;">
+											<mat-label>Mac adres</mat-label>
+											<input matInput formControlName="macaddress" placeholder="Mac adres"
+												autocomplete="off" maxlength="17" (input)="reformat($event)">
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('macaddress').hasError('required')">Mac adres is
+												verplicht</mat-error>
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('macaddress').hasError('pattern')">Een MAC-adres bevat
+												alleen cijfers (0-9) en letters (A-F)</mat-error>
+
+										</mat-form-field>
+									</div>
+
+									<div class="col-md-1">
+										<button type="button" [disableRipple]="true" [disabled]="isdisabled"
+											mat-icon-button fxFlex="nogrow" class="addonField" (click)="removeUnit(i)"
+											style="margin-bottom: 3%;width:100%;" title="Verwijderen">
+											<mat-icon>delete</mat-icon>
+										</button>
+									</div>
+
+									<div class="col-md-2">
+										<mat-form-field class="focusformfield" appearance="outline"
+											style="width: 100%;">
+
+											<mat-label>Download</mat-label>
+											<mat-select disableOptionCentering formControlName="ubprofiledownload"
+												panelClass="my-select-panel-class" placeholder="Download">
+												<mat-option *ngFor="let macUBDownload of macUBDownloadList"
+													[value]="macUBDownload.id">
+													{{macUBDownload.name}}
+												</mat-option>
+											</mat-select>
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('ubprofiledownload').hasError('required')">Download is
+												verplichtverplicht
+											</mat-error>
+										</mat-form-field>
+									</div>
+
+									<div class="col-md-2" style="margin-left: 4%;">
+										<mat-form-field class="focusformfield" appearance="outline"
+											style="width: 100%;">
+
+											<mat-label>Upload</mat-label>
+											<mat-select disableOptionCentering formControlName="ubprofileupload"
+												panelClass="my-select-panel-class" placeholder="Upload">
+												<mat-option *ngFor="let macUBUpload of macUBUploadList"
+													[value]="macUBUpload.id">
+													{{macUBUpload.name}}
+												</mat-option>
+											</mat-select>
+											<mat-error style="margin-top: 9px;"
+												*ngIf="unit.get('ubprofileupload').hasError('required')">Upload is
+												verplichtverplicht
+											</mat-error>
+										</mat-form-field>
+									</div>
+
+									<div class="col-md-3" style="margin-left: 4%;">
+										<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+											<mat-label>Einddatum</mat-label>
+											<input matInput [matDatepicker]="pickerenddate" formControlName="enddate"
+												[min]="minDate">
+											<mat-datepicker-toggle matSuffix [for]="pickerenddate">
+											</mat-datepicker-toggle>
+											<mat-datepicker #pickerenddate></mat-datepicker>
+
+										</mat-form-field>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+
+
+
+
+
+
+</div>

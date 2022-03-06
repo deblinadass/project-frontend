@@ -1,0 +1,176 @@
+<div [@routerTransition]>
+        <div class="col-xl-12">
+                <ol class="breadcrumb">
+                        <li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i> Sublocatie </li>
+                </ol>
+        </div>
+</div>
+
+
+<div *ngIf="loading else loaded" class="main_div_loader">
+        <div class="sub_div_loader">
+                <div class="progress-spinner">
+                        <div></div>
+                </div>
+        </div>
+</div>
+
+<ng-template #loaded>
+        <div class="design-process-content-form">
+                <div class="four-row" fxLayoutGap="60px">
+                        <div>
+                                <a routerLink="/locationview" [state]="{id : location_details.parentcustomerid}"
+                                        class="btn redir-main-loc submit-btn" title="Naar hoofdlocatie">
+                                        <mat-icon>arrow_back</mat-icon>
+                                        <mat-icon>location_on</mat-icon>
+                                </a>
+                        </div>
+                        <div>
+                                <a routerLink="/edit-satellite-location" [state]="{id: location_details.customerid}"
+                                        class="btn redir-main-loc submit-btn" title="Wijzigen Sublocatie"
+                                        *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'SatelliteLocationView','EditSateliteLocation','disabled')">
+                                        <mat-icon>edit</mat-icon>
+                                </a>
+                        </div>
+
+                        <div>
+                                <a *ngIf="superuser" (click)="openDialog('Relocate',location_details.parentcustomerid)"
+                                        class="btn redir-main-loc submit-btn" title="Verhuizen sublocatie">
+                                        <mat-icon> screen_share</mat-icon>
+                                </a>
+                        </div>
+
+                </div>
+        </div>
+
+        <div class="design-process-content-form mt-4 col-md-12">
+                <div class="full-column">
+                        <mat-card-title>
+                                <mat-icon>location_city</mat-icon>{{location_details.customername}}
+                        </mat-card-title>
+                </div>
+        </div>
+        <div class="form-row">
+                <div class="design-process-content-form col-md-6">
+                        <div class="full-column" fxLayoutGap="40px">
+                                <mat-label>
+                                    <mat-icon>location_on</mat-icon>Locatie id : {{location_details.customerid}}
+                                </mat-label>
+                        </div>
+
+                        <div class="full-column" fxLayoutGap="60px">
+                                <mat-card-subtitle>
+                                        <mat-icon> location_on</mat-icon>Adres : {{location_details.fulladdress}}
+                                </mat-card-subtitle>
+
+                        </div>
+                        <div class="full-column" fxLayoutGap="40px">
+                                <mat-label>
+                                    <mat-icon> loop</mat-icon> Keten : {{locationchain}}
+                                </mat-label>
+                        </div>
+                        <div class="full-column" fxLayoutGap="40px">
+                                <mat-label>
+                                    <mat-icon> location_on</mat-icon> Type : {{location_details.locationtypeid}}
+                                </mat-label>
+                        </div>
+                        <div class="full-column" fxLayoutGap="40px">
+                                <mat-label>
+                                    <mat-icon> contacts</mat-icon>Accountmanager : {{location_details.accountmanagerid}}
+                                </mat-label>
+                            </div>
+                        <div class="full-column" fxLayoutGap="40px">
+                        <mat-label>
+                                <mat-icon> send</mat-icon> Inlogpagina : <a href="https://login.wifi.kpn.com/preview?locHash=1c012c67275e84dd15459c37470cc192&locId=3397'" class="login" target="_blank"> {{location_details.customername}}</a> 
+                        </mat-label>
+                        </div>
+                           
+      
+                </div>
+
+                <div class="design-process-content-form col-md-6">
+      
+                                <div class="full-column" fxLayoutGap="40px">
+                                    <mat-label>
+                                        <mat-icon> location_on</mat-icon>status : {{location_details.status}}
+                                    </mat-label>
+                                </div>
+                                <div class="full-column" fxLayoutGap="40px">
+                                    <mat-label>
+                                        <mat-icon> watch_later</mat-icon>Monitoring : {{location_details.monitoring}}
+                                    </mat-label>
+                                </div>
+                                <div class="full-column" fxLayoutGap="40px">
+                                    <mat-label>
+                                        <mat-icon> location_on</mat-icon> Locatie open? : {{location_details.locationopen}}
+                                    </mat-label>
+                                </div>
+                                <div class="full-column" fxLayoutGap="40px">
+                                    <mat-label>
+                                        <mat-icon> notifications</mat-icon> Service afspraak / SLA : {{location_details.sla}}
+                                    </mat-label>
+                                </div>
+                               
+                               
+                                <div class="half-row half-row-display" fxLayoutGap="" [ngClass]="{'half-row-display-role': superuser && isCustomerDeactivable}" >
+                                    <div class="full-column" fxLayoutGap="40px" >
+                                        <mat-label>
+                                            <mat-icon> location_on</mat-icon>Test/demo locatie : {{location_details.istestlocation}}
+                                        </mat-label>
+                                    </div>
+                                </div>
+                            </div>
+
+                
+
+        </div>
+        <div class="form-row">
+                <div class="design-process-content-form col-md-12">
+                        <form [formGroup]="locationNoteForm" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+                                <div class="overlayNotes" style="display:none;">
+                                        <div class="progress-spinner">
+                                                <div></div>
+                                        </div>
+                                </div>
+                                <div class="form-row">
+                                        <div class="col-md-10">
+                                                <mat-form-field class="hsttextarea" style="width:120%;"  appearance="outline">
+                                                        <mat-label>Interne aantekening</mat-label>
+                                                        <textarea class="focusformfieldtextarea hsttextarea" matInput placeholder="Interne aantekening"
+                                                                formControlName="locationnote" 
+                                                                (focus)="noteicon = true" maxlength="150"></textarea>
+
+                                                </mat-form-field>
+                                                <input type="hidden" formControlName="customertypeid"
+                                                        value="{{customertypeid}}">
+                                        </div>
+                                        <div *ngIf="noteicon" class="col-sm-1 notes-icon">
+                                                <mat-icon (click)="saveNotes(f)" title="Toevoegen"> done</mat-icon>
+                                        </div>
+                                        <div *ngIf="noteicon" class="col-sm-1 notes-icon">
+                                                <mat-icon (click)="cancelNotes()" title="Annuleren"> cancel</mat-icon>
+                                        </div>
+                                </div>
+                                <!--
+                        <div *ngIf="noteicon" class="form-row notes-icon" id="notes-icon">
+                                <div class="col-md-10"></div>
+                                <div class="col-md-2">
+                                        <mat-icon (click)="saveNotes(f)"> edit</mat-icon>&nbsp;&nbsp;&nbsp;
+                                        <mat-icon (click)="cancelNotes()"> cancel</mat-icon>
+                                </div>
+                        </div>-->
+                        </form>
+                        </div>
+                </div>
+</ng-template>
+<div class="mt-4">
+        <nav mat-tab-nav-bar>
+                <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive
+                        #rla="routerLinkActive" [active]="rla.isActive" id="{{'tab'+link.indexno}}"
+                        [ngClass]="{'highlight': currentUrl == link.link }" [state]="{id : id}"
+                        class="rounded shadow-5g p-2 mb-1 bg-green rounded">{{link.label}}
+                </a>
+        </nav>
+</div>
+<router-outlet></router-outlet>
+<app-auditlog></app-auditlog>

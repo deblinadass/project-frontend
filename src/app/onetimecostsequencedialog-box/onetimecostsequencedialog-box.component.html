@@ -1,0 +1,169 @@
+<div style="position: relative;">
+
+	<!--<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>-->
+	
+	<ng-container>
+		<h1 mat-dialog-title class="dialog-box-header" innerText='Toevoegen - Eenmalige Kosten - {{this.local_data.location_name}}'></h1>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="onetimecostcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content>
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Hoofdproduct</mat-label>
+						<mat-select disableOptionCentering formControlName="productmain" (selectionChange)="selectmainproduct()"
+							panelClass="my-select-panel-class" placeholder="Hoofdproduct">
+							<mat-option *ngFor="let productmainSingle of productmainList"
+								[value]="productmainSingle.id">
+								{{productmainSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="hasError('productmain', 'required')">Hoofdproduct is verplicht</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Memoline</mat-label>
+						<mat-select disableOptionCentering formControlName="productname"
+							panelClass="my-select-panel-class" placeholder="Productnaam">
+							<mat-option *ngFor="let productnameSingle of selectedproductnameList"
+								[value]="productnameSingle.id">
+								{{productnameSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="hasError('productname', 'required')">Memoline is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+
+					<mat-form-field appearance="outline" style="margin-right:2%;margin-bottom: 3%;">
+						<mat-label>Order type</mat-label>
+						<mat-select disableOptionCentering formControlName="ordertype"
+							panelClass="my-select-panel-class" placeholder="Order type">
+							<mat-option *ngFor="let ordertypeSingle of ordertypeList" [value]="ordertypeSingle.id">
+								{{ordertypeSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="hasError('ordertype', 'required')">Order type is verplicht</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+						<mat-label>PO-nummer</mat-label>
+						<input matInput formControlName="ponumber" placeholder="PO-nummer" autocomplete="off">
+						<mat-error *ngIf="hasError('ponumber','pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+                    </mat-form-field>
+                </div>
+                
+				<div class="full-column">
+					<mat-form-field appearance="outline" style="margin-bottom: 3%;">
+						<mat-label>Omschrijving</mat-label>
+						<input matInput formControlName="description" placeholder="Omschrijving" autocomplete="off"
+							maxlength="150">
+						<mat-error *ngIf="hasError('description', 'required')">Omschrijving is verplicht</mat-error>
+						<mat-error *ngIf="hasError('description', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Aantal</mat-label>
+						<input matInput formControlName="quantity" placeholder="Aantal" autocomplete="off">
+						<mat-error *ngIf="hasError('quantity', 'required')">Aantal is verplicht</mat-error>
+						<mat-error *ngIf="hasError('quantity','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Prijs</mat-label>
+						<input matInput formControlName="price" placeholder="Prijs" autocomplete="off">
+						<mat-error *ngIf="hasError('price', 'required')">Prijs is verplicht</mat-error>
+						<mat-error *ngIf="hasError('price','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Bedrag</mat-label>
+						<input matInput formControlName="amount" placeholder="0,00" autocomplete="off" readonly>
+					</mat-form-field>
+                </div>
+                <div class="half-row">
+                    <mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Eerste Billing maand</mat-label>
+						<input matInput formControlName="frombillingmonth" readonly>
+						<input hidden [matDatepicker]="fromDatePickerUpdate" readonly [min]="minDate">
+						<mat-datepicker-toggle matSuffix [for]="fromDatePickerUpdate"></mat-datepicker-toggle>
+						<mat-datepicker startView="multi-year" [min]="minBillingDate" (monthSelected)="closeDatePickerFromUpdate(fromDatePickerUpdate, $event)" #fromDatePickerUpdate></mat-datepicker>
+                        <mat-error *ngIf="hasError('frombillingmonth', 'required')">Eerste Billing maand is verplicht</mat-error>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Laatste Billing maand</mat-label>
+						<input matInput formControlName="tobillingmonth" readonly>
+						<input hidden [matDatepicker]="toDatePickerUpdate" readonly [min]="minDate">
+						<mat-datepicker-toggle matSuffix [for]="toDatePickerUpdate"></mat-datepicker-toggle>
+						<mat-datepicker startView="multi-year" [min]="minBillingDate" (monthSelected)="closeDatePickerToUpdate(toDatePickerUpdate, $event)" #toDatePickerUpdate></mat-datepicker>
+                        <mat-error *ngIf="hasError('tobillingmonth', 'required')">Laatste Billing maand is verplicht</mat-error>
+                    </mat-form-field>
+                </div>
+                
+				<div class="half-row">
+                    <mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Billing termijn</mat-label>
+						<mat-select disableOptionCentering formControlName="periodic" ngModel="{{periodic_default}}"
+							panelClass="my-select-panel-class" placeholder="Billing termijn" (selectionChange)="calculateNumberOfOTC()">
+							<mat-option *ngFor="let periodicSingle of periodic" [value]="periodicSingle.id">
+								{{periodicSingle.name}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="hasError('periodic', 'required')">Billing termijn is verplicht</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Aantal factuurregels</mat-label>
+						<input matInput formControlName="billinglineamount" placeholder="Aantal factuurregels" autocomplete="off">
+						
+					</mat-form-field>
+				</div>
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+</div>

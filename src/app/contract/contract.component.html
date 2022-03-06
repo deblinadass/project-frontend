@@ -1,0 +1,618 @@
+<div   *ngIf="_commonService.getfieldpropertyvalue(tabSectionList,'Contract','ContractDetails','display')">
+<mat-expansion-panel [expanded]="true" style="position: relative;margin-bottom: 25px;">
+    
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-card-title>
+          <mat-icon>apps</mat-icon>Contract Details
+        </mat-card-title>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+	<form   [formGroup]="contractForm"  (ngSubmit)="onSubmitContract(f)"  #f="ngForm"  novalidate>
+		<div class="design-process-content-form" style="position: relative;">
+		 <!-- <div class="overlay" style="display:none;">
+			<div class="progress-spinner-product">
+			  <div></div>
+			</div>
+		  </div>-->
+		  
+	  
+			
+	 <div class="form-row">	
+		<div class="col-md-1"></div>
+		<div class="col-md-2">
+			<label>Tekendatum:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Tekendatum</mat-label>
+			<input matInput [matDatepicker]="Tekendatum"  placeholder="Tekendatum" formControlName="signdate" ngModel
+			  maxlength="60" [min]="minDate">	
+			 
+			<mat-datepicker-toggle matSuffix [for]="Tekendatum"></mat-datepicker-toggle>
+			<mat-datepicker #Tekendatum></mat-datepicker>		
+  
+		  </mat-form-field>
+		</div>
+	
+		<div class="col-md-3">
+			<label>Laatste contactmoment	:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Laatste contactmoment	</mat-label>
+			<input matInput placeholder="Laatste contactmoment" formControlName="lastcontactmoment">
+				
+		  </mat-form-field>
+		</div>
+		</div>
+	  
+	 
+	  <div class="clearfix10"></div>
+	  <div class="form-row">
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Startdatum:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Startdatum</mat-label>
+			<input matInput [matDatepicker]="Startdatum"  placeholder="Startdatum" formControlName="startdate" ngModel
+			  maxlength="60" [min]="minDate">	
+			  <mat-datepicker-toggle matSuffix [for]="Startdatum"></mat-datepicker-toggle>
+			<mat-datepicker #Startdatum></mat-datepicker>		
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3">
+			<label> Locatie onderzoek	:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label> Locatie onderzoek	</mat-label>
+			
+			<mat-select disableOptionCentering formControlName="locationinvestigation">
+				<mat-option *ngFor="let locationinvestigation of locationinvestigation" [value]="locationinvestigation.id">
+				  {{locationinvestigation.name}}
+				</mat-option>
+			  </mat-select>	
+			
+		  </mat-form-field>
+		  </div>
+		</div>
+	 
+
+	  <div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Looptijd:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Looptijd</mat-label>
+			<input matInput  placeholder="Looptijd" formControlName="duration" ngModel
+			  maxlength="60">			
+			  <!--<mat-error *ngIf="hasError('duration', 'pattern')">alleen  cijfer  is toegestaan
+			</mat-error> -->
+		  </mat-form-field>
+		
+		</div>
+		<div class="col-md-3">
+			<label>Afgenomen abonnementen:</label>
+			</div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Afgenomen abonnementen</mat-label>
+			<input matInput  placeholder="Afgenomen abonnementen" formControlName="purchasedsubscriptions" ngModel
+			  maxlength="60">			
+			  <mat-error *ngIf="hasError('purchasedsubscriptions', 'pattern')">alleen  cijfer  is toegestaan
+			</mat-error>	
+		  </mat-form-field>
+
+		</div>
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Initiele einddatum:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Initiele einddatum</mat-label>
+			<input matInput  placeholder="Initiele einddatum"  [matDatepicker]="initialenddate" formControlName="initialenddate" ngModel
+			  maxlength="60" [min]="minDate">	
+			  <mat-datepicker-toggle matSuffix [for]="initialenddate"></mat-datepicker-toggle>
+			<mat-datepicker #initialenddate></mat-datepicker>		
+  
+		  </mat-form-field>
+		  <input type = "hidden" value = {{this.id}} formControlName = "customerid">
+		</div>
+		<div class="col-md-3">
+			<label>PO Nummer verplicht bij online bestellen:</label></div>
+			<div class="col-md-3"> <mat-form-field appearance="outline">
+			
+			<mat-label>PO Nummer verplicht bij online bestellen</mat-label>
+			
+			  <mat-select disableOptionCentering formControlName="ponumberrequired">
+				<mat-option *ngFor="let ponumberrequired of ponumberrequired" [value]="ponumberrequired.id">
+				  {{ponumberrequired.name}}
+				</mat-option>
+			  </mat-select>			
+  
+		  </mat-form-field>
+		</div>
+	</div>
+	  	 
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Stilzwijgende verlengings periode	:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Stilzwijgende verlengings periode	</mat-label>
+			<input matInput  placeholder="Stilzwijgende verlengings periode" formControlName="extensionperiod" ngModel
+			  maxlength="60">	
+			  <mat-error *ngIf="hasError('extensionperiod', 'pattern')">alleen  cijfer  is toegestaan
+			</mat-error>		
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3">
+			<label>Klantbediening I:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Klantbediening I</mat-label>
+				
+			  <mat-select disableOptionCentering  formControlName="customerservicei">
+				<mat-option *ngFor="let customerservicei of customerservicei" [value]="customerservicei.id">
+				  {{customerservicei.name}}
+				</mat-option>
+			  </mat-select>			
+  
+		  </mat-form-field>
+		</div>
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Einddatum inclusief eventuele verlengingen:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Einddatum inclusief eventuele verlengingen	</mat-label>
+			<input matInput  [matDatepicker]="enddateextensions" placeholder="Einddatum inclusief eventuele verlengingen" formControlName="enddateextensions" ngModel
+			  maxlength="60" [min]="minDate">	
+			  <mat-datepicker-toggle matSuffix [for]="enddateextensions"></mat-datepicker-toggle>
+			<mat-datepicker #enddateextensions></mat-datepicker>			
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3">
+			<label>Klantbediening II	 :</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Klantbediening II	 </mat-label>
+			
+			  <mat-select disableOptionCentering formControlName="customerserviceii">
+				<mat-option *ngFor="let customerserviceii of customerserviceii" [value]="customerserviceii.id">
+				  {{customerserviceii.name}}
+				</mat-option>
+			  </mat-select>			
+  
+		  </mat-form-field>
+		</div>
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Opzegtermijn:</label></div>
+			<div class="col-md-3">	
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Opzegtermijn	</mat-label>
+			<input matInput  placeholder="Opzegtermijn" formControlName="noticeperiod" ngModel
+			  maxlength="60">	
+			  <mat-error *ngIf="hasError('noticeperiod', 'pattern')">alleen  cijfer  is toegestaan
+			</mat-error>			
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3">
+			<label>Segmentatie op basis van omzet:</label></div>
+			<div class="col-md-3">	
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Segmentatie op basis van omzet</mat-label>
+			
+			  <mat-select disableOptionCentering formControlName="segmentationbasedrevenue">
+				<mat-option *ngFor="let segmentationbasedrevenue of segmentationbasedrevenue" [value]="segmentationbasedrevenue.id">
+				  {{segmentationbasedrevenue.name}}
+				</mat-option>
+			  </mat-select>	
+		  </mat-form-field>
+		</div>
+	</div>
+
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Opzeggen voor:</label></div>
+			<div class="col-md-3">	
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Opzeggen voor</mat-label>
+			<input matInput [matDatepicker]="cancelbefore" placeholder="Opzeggen voor" formControlName="cancelbefore" ngModel
+			  maxlength="60" [min]="minDate">	
+			  <mat-datepicker-toggle matSuffix [for]="cancelbefore"></mat-datepicker-toggle>
+			<mat-datepicker #cancelbefore></mat-datepicker>			
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3">
+			<label>Ebitda:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Ebitda</mat-label>
+			
+			  <mat-select disableOptionCentering  formControlName="ebitda">
+				<mat-option *ngFor="let ebitda of ebitda" [value]="ebitda.id">
+				  {{ebitda.name}}
+				</mat-option>
+			  </mat-select>			
+  
+		  </mat-form-field>
+		</div>
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Einddatum fixed:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Einddatum fixed	</mat-label>
+			
+			  <mat-select disableOptionCentering formControlName="enddatefixed">
+			  <mat-option *ngFor="let enddatefixed of enddatefixed" [value]="enddatefixed.id">
+				{{enddatefixed.name}}
+			  </mat-option>
+			</mat-select>		
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3">
+			<label>Strategische waarde HS:</label></div>
+			<div class="col-md-3">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Strategische waarde HS</mat-label>
+			
+			  <mat-select disableOptionCentering  formControlName="strategicvaluehs">
+				<mat-option *ngFor="let strategicvaluehs of strategicvaluehs" [value]="strategicvaluehs.id">
+				  {{strategicvaluehs.name}}
+				</mat-option>
+			  </mat-select>				
+  
+		  </mat-form-field>
+		</div>
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Opmerkingen contract:</label></div>
+			<div class="col-md-6">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Opmerkingen contract	</mat-label>
+			<input matInput  placeholder="Opmerkingen contract" formControlName="notescontract" ngModel
+			  maxlength="60">			
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3"></div>
+		
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Opmerkingen betalingsgedrag:</label></div>
+			<div class="col-md-6">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Opmerkingen betalingsgedrag	</mat-label>
+			<input matInput  placeholder="Opmerkingen betalingsgedrag" formControlName="paymentbehaviornotes" ngModel
+			  maxlength="60">			
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3"></div>
+		
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Opmerkingen overig:</label></div>
+			<div class="col-md-6">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Opmerkingen overig	</mat-label>
+			<input matInput  placeholder="Opmerkingen overig" formControlName="othercomments" ngModel
+			  maxlength="60">			
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3"></div>
+		
+	</div>
+	<div class="form-row">	
+		<div class="col-md-1"></div>	
+		<div class="col-md-2">
+			<label>Conclusie Klantwaarde:</label></div>
+			<div class="col-md-6">
+		  <mat-form-field appearance="outline">
+			
+			<mat-label>Conclusie Klantwaarde	</mat-label>
+			
+			  <mat-select disableOptionCentering  formControlName="conclusioncustomer">
+				<mat-option *ngFor="let conclusioncustomer of conclusioncustomer" [value]="conclusioncustomer.id">
+				  {{conclusioncustomer.name}}
+				</mat-option>
+			  </mat-select>			
+  
+		  </mat-form-field>
+		</div>
+		<div class="col-md-3">
+			<button type="submit" class="btn redir-main-loc" [disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'Contract','save','disabled')">Opslaan</button>
+		</div>
+		
+	</div>
+
+	</div>
+	</form>
+		
+</mat-expansion-panel>
+</div>
+
+<div class="outer" style="width:100%;">
+<div style="width:50%;" *ngIf="_commonService.getfieldpropertyvalue(tabSectionList,'Contract','RevenueshareSettings','display')">
+<mat-expansion-panel>
+	<mat-expansion-panel-header>
+		<mat-panel-title>
+		  <mat-card-title>
+			<mat-icon>apps</mat-icon>Revenueshare settings
+		  </mat-card-title>
+		</mat-panel-title>
+	  </mat-expansion-panel-header>
+	  <form [formGroup]="revenueForm"  #f1="ngForm" (ngSubmit)="onSubmitRevenue(f1)"  novalidate>
+		  <div class="design-process-content-form" style="position: relative;">		   
+		
+			  
+			<div class ="half-row">
+		   
+				<div class="col-md-2"></div>
+				<div class="col-md-3">
+				<label>Kraskaarten:</label></div>
+				<div class="col-md-9">
+					<mat-form-field appearance="outline">
+					
+					<mat-label>Kraskaarten</mat-label>
+					<input matInput  placeholder="Kraskaarten" formControlName="scratchcard" ngModel
+						maxlength="60">			
+			
+					</mat-form-field>			
+				</div>
+				
+		   
+			</div>
+			<input type = "hidden" value = {{this.id}} formControlName = "customerid">
+
+			<div class ="half-row">
+		   
+				<div class="col-md-2"></div>
+				<div class="col-md-3">
+					<label>Online kaarten:</label></div>
+					<div class="col-md-9">
+				  <mat-form-field appearance="outline">
+					
+					<mat-label>Online kaarten	</mat-label>
+					<input matInput  placeholder="Online kaarten" formControlName="onlinemaps" ngModel
+					  maxlength="60">	
+		  
+				  </mat-form-field>	
+			   
+					</div>
+			</div>
+			<div class ="half-row">
+		   
+				<div class="col-md-2"></div>
+				<div class="col-md-3">
+					<label>Creditcard:</label></div>
+					<div class="col-md-9">
+				  <mat-form-field appearance="outline">
+					
+					<mat-label>Creditcard	</mat-label>
+					<input matInput  placeholder="Creditcard" formControlName="creditcard" ngModel
+					  maxlength="60">	
+		  
+				  </mat-form-field>	
+			   
+					</div>
+			</div>
+			<div class ="half-row">
+		   
+				<div class="col-md-2"></div>
+				<div class="col-md-3">
+					<label>Uitbetalingsfrequentie:</label></div>
+					<div class="col-md-9">
+				  <mat-form-field appearance="outline">
+					
+					<mat-label>Uitbetalingsfrequentie	</mat-label>
+					<input matInput  placeholder="Uitbetalingsfrequentie" formControlName="payout" ngModel
+					  maxlength="60">	
+		  
+				  </mat-form-field>	
+			   
+					</div>
+					
+			</div>
+			
+			<div class ="half-row">
+			<div class="col-md-6" style="text-align:right;">
+				<button type="submit" class="btn redir-main-loc" [disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'Contract','save','disabled')">Opslaan</button>
+			</div>
+		</div>
+		 
+		</div>
+		  </form>
+</mat-expansion-panel>
+</div>
+<div style="width:50%;float:right" *ngIf="_commonService.getfieldpropertyvalue(tabSectionList,'Contract','Waarde','display')">
+<mat-expansion-panel>
+	<mat-expansion-panel-header>
+		<mat-panel-title>
+		  <mat-card-title>
+			<mat-icon>apps</mat-icon>waarde
+		  </mat-card-title>
+		</mat-panel-title>
+	  </mat-expansion-panel-header>
+	  <form [formGroup]="valuationForm"  #f2="ngForm"  (ngSubmit)="onSubmitValuation(f2)"  novalidate>
+		<div class="design-process-content-form" style="position: relative;">		   
+			
+			
+		  <div class ="half-row">
+		 
+			  <div class="col-md-2"></div>
+			  <div class="col-md-3">
+			  <label>Totaal:</label></div>
+			  <div class="col-md-9">
+				  <mat-form-field appearance="outline">
+				  
+				  <mat-label>Totaal</mat-label>
+				  <input matInput  placeholder="Totaal" formControlName="total" ngModel
+					  maxlength="60">			
+		  
+				  </mat-form-field>			
+			  </div>
+			  
+		 
+		  </div>
+		  <input type = "hidden" value = {{this.id}} formControlName = "customerid">
+
+		  <div class ="half-row">
+		 
+			  <div class="col-md-2"></div>
+			  <div class="col-md-3">
+				  <label>Omzet:</label></div>
+				  <div class="col-md-9">
+				<mat-form-field appearance="outline">
+				  
+				  <mat-label>Omzet	</mat-label>
+				  <input matInput  placeholder="Omzet" formControlName="revenue" ngModel
+					maxlength="60">	
+		
+				</mat-form-field>	
+			 
+				  </div>
+		  </div>
+		  <div class ="half-row">
+		 
+			  <div class="col-md-2"></div>
+			  <div class="col-md-3">
+				  <label>Gebruik:</label></div>
+				  <div class="col-md-9">
+				<mat-form-field appearance="outline">
+				  
+				  <mat-label>Gebruik	</mat-label>
+				  <input matInput  placeholder="Gebruik" formControlName="usage" ngModel
+					maxlength="60">	
+		
+				</mat-form-field>	
+			 
+				  </div>
+		  </div>
+		  <div class ="half-row">
+		 
+			  <div class="col-md-2"></div>
+			  <div class="col-md-3">
+				  <label>POS:</label></div>
+				  <div class="col-md-9">
+				<mat-form-field appearance="outline">
+				  
+				  <mat-label>POS	</mat-label>
+				  <input matInput  placeholder="POS" formControlName="pos" ngModel
+					maxlength="60">	
+		
+				</mat-form-field>	
+			 
+				  </div>
+				  
+		  </div>
+		  <div class ="half-row">
+		 
+			<div class="col-md-2"></div>
+			<div class="col-md-3">
+				<label>Positie op website:</label></div>
+				<div class="col-md-9">
+			  <mat-form-field appearance="outline">
+				
+				<mat-label>Positie op website	</mat-label>
+				<input matInput  placeholder="Positie op website" formControlName="positionwebsite" ngModel
+				  maxlength="60">	
+	  
+			  </mat-form-field>	
+		   
+				</div>
+				
+		</div>
+		<div class ="half-row">
+		 
+			<div class="col-md-2"></div>
+			<div class="col-md-3">
+				<label>Positie in folder:</label></div>
+				<div class="col-md-9">
+			  <mat-form-field appearance="outline">
+				
+				<mat-label>Positie in folder	</mat-label>
+				<input matInput  placeholder="Positie in folder" formControlName="positionfolder" ngModel
+				  maxlength="60">	
+	  
+			  </mat-form-field>	
+		   
+				</div>
+				
+		</div>
+		<div class ="half-row">
+		 
+			<div class="col-md-2"></div>
+			<div class="col-md-3">
+				<label>Positie in mailing:</label></div>
+				<div class="col-md-9">
+			  <mat-form-field appearance="outline">
+				
+				<mat-label>Positie in mailing	</mat-label>
+				<input matInput  placeholder="Positie in mailing" formControlName="positionmailing" ngModel
+				  maxlength="60">	
+	  
+			  </mat-form-field>	
+		   
+				</div>
+				
+		</div>
+		  
+		  <div class ="half-row">
+		  <div class="col-md-6" style="text-align:right;">
+			  <button type="submit" class="btn redir-main-loc" [disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'Contract','save','disabled')">Opslaan</button>
+		  </div>
+	  </div>
+	   
+	  </div>
+		</form>
+</mat-expansion-panel>
+</div>
+</div>
+<mat-divider></mat-divider>

@@ -1,0 +1,34 @@
+export class Location {
+    _id: string;
+    customername: string;
+    housenumber: number;
+    housenumberaddition: number;
+    streetname: string;
+    postcode: number;
+    city: string;
+    country: string;
+    kvknumber: number;
+    kvkname: string;
+    btwnumber: string;
+    //businessname: string;
+    salescloudreferencenumber: number;
+    netcode: number;
+    onboardingcompleted: string;
+    newsitenumber: number;
+    clientaccountnumber: number;
+    parentcustomerid: number;
+    status: string;
+    istestlocation: string;
+    sla: string;
+    monitoring: string;
+    locationopen: string;
+    customertypeid: number;
+    contactpersonname: string;
+    contactpersontelephone: string;
+    contactpersonfunction: string;
+    contactpersonemail: string;
+    billingmodel: string;
+    ponumber: string;
+    regelreferentie: string;
+    billingid:number;
+  }

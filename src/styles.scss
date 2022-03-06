@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+// Specific theme variables
+@import '~@kpn-style/business-market/business-market';
+
+// Minimal import with only base functions, mixins etc.
+@import '~@kpn-style/bundle/base.abstract';
+
+// Load font files
+@include font-face('kpn-metric', normal, 700, '~@kpn-style/bundle/base/typography', 'kpn-metric-bold');
+@include font-face('kpn-ui-icons', normal, 400, '~@kpn-style/bundle/base/ui-icon', 'kpn-ui-icons');
+
+// Import only the styles you need
+@import '~@kpn-style/bundle/base/typography/typography';
+@import '~@kpn-style/bundle/component/button/button';

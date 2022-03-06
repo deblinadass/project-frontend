@@ -1,0 +1,110 @@
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+		<div [ngClass]="loading ? 'overlay-product' : ''">
+			<div *ngIf="loading" class="progress-spinner-product">
+				<div></div>
+			</div>
+		</div>
+		<div class="half-row" style="width: 35%;">
+				<mat-form-field>
+					<input matInput (keyup)="applyFilterDevice($event.target.value)" placeholder="Filter">
+				</mat-form-field>
+		
+				
+		</div>
+		<div class="half-row" style="margin-left:0%;padding-top: 2%;"><b><h4>Monitored</h4></b></div>
+		<table mat-table #deviceSort="matSort" [dataSource]="dataSourceDevice" multiTemplateDataRows
+			class="mat-elevation-z8" matSort style="width:50%;">
+	
+			<ng-container matColumnDef="devicename">
+				<th  *matHeaderCellDef mat-sort-header ></th>
+				<td title="Monitoring details voor:&#13;ihw{{element.id}}&#13;Status:&#13;{{element.status}}&#13;Type:&#13;{{element.type1}} {{element.type3}}({{element.type4}})&#13;Linegroup:&#13;{{element.linegroup}}&#13;Plaatsing:&#13;{{element.placement}}" *matCellDef="let element"> 
+						<mat-icon class="type-icon" style="color:red;">folder
+							</mat-icon>
+					{{element.devicename}}</td>
+			</ng-container>
+	
+			<ng-container matColumnDef="action">
+				<th  *matHeaderCellDef> </th>
+				<td  *matCellDef="let element" style="width:2%;float:right;padding-top: 20%;">
+						Ticket	
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="overlayrow">
+				<th  *matHeaderCellDef style="min-width: 0.1%;width: 0.1%;padding: 0px;"></th>
+				<td *matCellDef="let element" id="{{'rowoverlay'+element.id}}" class="overlaytr" style="display: none;">
+					<div class="progress-spinner-product">
+						<div></div>
+					</div>
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="expandedDetail">
+				<td  *matCellDef="let element" [attr.colspan]="displayedDeviceColumns.length">
+					<div class="example-element-detail" *ngIf="element.additionalDeviceInfo?.length" style="display:none;"
+						id="{{'expand_id_device'+element.id}}">
+						<div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
+							<table class="shadow-sm p-3 mb-5 text-dark rounded shadow-css"
+								style="padding-top:10px;width:88%;">
+								<tr>
+									<td></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</td>
+			</ng-container>
+			<tr  *matHeaderRowDef="displayedDeviceColumns"></tr>
+			<tr mat-row *matRowDef="let element; columns: displayedDeviceColumns;"></tr>
+			<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+		</table>
+		<div class="half-row" style="margin-left:0%;padding-top: 2%;"><b><h4>Unmonitored</h4></b></div>
+		<table mat-table #deviceSort="matSort" [dataSource]="dataSourceDevice_u" multiTemplateDataRows
+			class="mat-elevation-z8" matSort style="width:50%;">
+	
+			<ng-container matColumnDef="devicename">
+				<th  *matHeaderCellDef mat-sort-header ></th>
+				<td title="Monitoring details voor:&#13;ihw{{element.id}}&#13;Status:&#13;{{element.status}}&#13;Type:&#13;{{element.type1}} {{element.type3}}({{element.type4}})&#13;Linegroup:&#13;{{element.linegroup}}&#13;Plaatsing:&#13;{{element.placement}}" *matCellDef="let element"> 
+						<mat-icon class="type-icon" style="color:red;">folder
+							</mat-icon>
+					{{element.devicename}}</td>
+			</ng-container>
+	
+			<ng-container matColumnDef="action">
+				<th  *matHeaderCellDef> </th>
+				<td  *matCellDef="let element" style="width:2%;float:right;padding-top: 20%;">
+					Ticket	
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="overlayrow">
+				<th  *matHeaderCellDef style="min-width: 0.1%;width: 0.1%;padding: 0px;"></th>
+				<td *matCellDef="let element" id="{{'rowoverlay'+element.id}}" class="overlaytr" style="display: none;">
+					<div class="progress-spinner-product">
+						<div></div>
+					</div>
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="expandedDetail">
+				<td  *matCellDef="let element" [attr.colspan]="displayedDeviceColumns.length">
+					<div class="example-element-detail" *ngIf="element.additionalDeviceInfo?.length" style="display:none;"
+						id="{{'expand_id_device'+element.id}}">
+						<div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
+							<table class="shadow-sm p-3 mb-5 text-dark rounded shadow-css"
+								style="padding-top:10px;width:88%;">
+								<tr>
+									<td></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</td>
+			</ng-container>
+			<tr  *matHeaderRowDef="displayedDeviceColumns"></tr>
+			<tr mat-row *matRowDef="let element; columns: displayedDeviceColumns;"></tr>
+			<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+		</table>
+		<mat-paginator #paginatorDevice [pageSize]="20" [pageSizeOptions]="[20, 50, 100]" showFirstLastButtons>
+		</mat-paginator>
+	</mat-expansion-panel>
+	<mat-divider></mat-divider>
+	
+	
+	

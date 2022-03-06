@@ -1,0 +1,565 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elsetransfer">
+		<h1 mat-dialog-title class="dialog-box-header" innerText='Aanvraag - Wijzigen Routed - {{local_data.location_name}}'></h1>
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}>
+					</span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}>
+					</span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span
+						innerText={{local_data.locationdata.accountmanagerid}}>
+					</span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="routedcreateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Gegevens Technisch contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContactid', 'required')">
+								contactpersoon
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled') && _commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MultiserviceRoutedContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContactPersonTelephone', 'required')">Aantal is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MultiserviceRoutedContactPersonEmail"
+								placeholder="E-mailadres" autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContactPersonEmail','required')">Prijs is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MultiserviceRoutedContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerMultiserviceRoutedWishdate"
+								(dateChange)="dateValidation()" formControlName="MultiserviceRoutedWishdate"
+								[min]="minDate"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+							<mat-datepicker-toggle matSuffix [for]="pickerMultiserviceRoutedWishdate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerMultiserviceRoutedWishdate></mat-datepicker>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedWishdate', 'required')">
+								Wensdatum is verplicht
+							</mat-error>
+
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemar </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemar"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContractor', 'required')">
+								Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-4" *ngIf="hasnextstateid!=0">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Opdracht status</mat-label>
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="Opdracht status"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+
+								<mat-option *ngIf="issuenextstateList" [value]="issuenextstateList[0].currentstate_id"
+									innerText={{issuenextstateList[0].currentstatename}}>
+
+								</mat-option>
+								<mat-option *ngFor="let state of issuenextstateList" [value]="state.nextstate_id">
+									{{state.nextstatename}}
+								</mat-option>
+
+
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('orderstate', 'required')">Opdracht
+								status is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opdracht </mat-label>
+							<textarea matInput formControlName="description" placeholder="Opdracht" autocomplete="off"
+								maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>MER Switch aanwezig </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedSwitchPresent"
+								panelClass="my-select-panel-class" placeholder="MER Switch aanwezig"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+								<mat-option *ngFor="let routedSwitch of Routedswitch" [value]="routedSwitch.id">
+									{{routedSwitch.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedSwitchPresent', 'required')">
+								Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemer plaatsen MER Switch </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedInstallContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemer plaatsen MER Switch"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+								<mat-option *ngFor="let communication of communicationgroupInstallContractorList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedInstallContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Beschrijving </mat-label>
+							<input matInput formControlName="MultiserviceRoutedDescription" placeholder="Beschrijving"
+								autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>IP-adres </mat-label>
+							<input matInput formControlName="MultiserviceRoutedIPaddress" placeholder="IP-adres"
+								autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Subnetmask </mat-label>
+							<input matInput formControlName="MultiserviceRoutedSubnetMask" placeholder="Subnetmask"
+								autocomplete="off"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditView','disabled')">
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Order Update - voortgangsmelding </mat-label>
+							<textarea rows="5" matInput formControlName="MultiserviceRoutedProgressNotification"
+								placeholder="Opdracht" autocomplete="off"
+								ngModel="{{local_data.MultiserviceRoutedProgressNotification}}" maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedEditRemark','disabled')"></textarea>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedProgressNotification', 'required')">Order Update -
+								voortgangsmelding is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+	<ng-template #elsetransfer>
+		<ng-container *ngIf="action === 'UpdateStatus'; else elseAdd" [formGroup]="hotspotscreateform">
+			<h1 mat-dialog-title class="dialog-box-header">Wijzigen Orderstatus - Kraskaart -
+				{{local_data.location_name}}</h1>
+			<form [formGroup]="hotspotscreateform" #f="ngForm" (ngSubmit)="onUpdateStatus(f)" novalidate>
+				<div class="full-column">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Orderstatus</mat-label>
+
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="State"
+								ngModel="{{local_data.orderstatus}}">
+								<mat-option *ngFor="let state of SCardOrderStatus" [value]="state.id">
+									{{state.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top:10px;" *ngIf="hasError('orderstate', 'required')">Orderstatus
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div mat-dialog-actions align="center">
+					<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+						class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+					<button [disabled]="buttondisabled" mat-raised-button
+						class="redir-main-loc can-crt-mid">Opslaan</button>
+				</div>
+			</form>
+		</ng-container>
+	</ng-template>
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Aanvraag - Routed - {{local_data.location_name}}</h1>
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : {{local_data.locationdata.customerid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : {{local_data.locationdata.fulladdress}}
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : {{local_data.locationdata.locationchain}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : {{local_data.locationdata.locationtypeid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : {{local_data.locationdata.accountmanagerid}}
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="routedcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Gegevens Technisch contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id">
+									{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContactid', 'required')">
+								Type Kraskaart is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="MultiserviceRoutedContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContactPersonTelephone', 'required')">Aantal is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="MultiserviceRoutedContactPersonEmail"
+								placeholder="E-mailadres" autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContactPersonEmail','required')">Prijs is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="MultiserviceRoutedContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerMultiserviceRoutedWishdate"
+								(dateChange)="dateValidation()" formControlName="MultiserviceRoutedWishdate"
+								[min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerMultiserviceRoutedWishdate">
+							</mat-datepicker-toggle>
+							<mat-datepicker #pickerMultiserviceRoutedWishdate></mat-datepicker>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedWishdate', 'required')">
+								Wensdatum is verplicht
+							</mat-error>
+
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemar </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemar">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opdracht </mat-label>
+							<textarea matInput formControlName="description" placeholder="Opdracht" autocomplete="off"
+								maxlength="250"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>MER Switch aanwezig </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedSwitchPresent"
+								panelClass="my-select-panel-class" placeholder="MER Switch aanwezig">
+								<mat-option *ngFor="let routedSwitch of Routedswitch" [value]="routedSwitch.id">
+									{{routedSwitch.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedSwitchPresent', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemer plaatsen MER Switch </mat-label>
+							<mat-select disableOptionCentering formControlName="MultiserviceRoutedInstallContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemer plaatsen MER Switch">
+								<mat-option *ngFor="let communication of communicationgroupInstallContractorList"
+									[value]="communication.communicationvalue">
+									{{communication.communicationname}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('MultiserviceRoutedInstallContractor', 'required')">Aannemar verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Beschrijving </mat-label>
+							<input matInput formControlName="MultiserviceRoutedDescription" placeholder="Beschrijving"
+								autocomplete="off">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>IP-adres </mat-label>
+							<input matInput formControlName="MultiserviceRoutedIPaddress" placeholder="IP-adres"
+								autocomplete="off">
+						</mat-form-field>
+					</div>
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Subnetmask </mat-label>
+							<input matInput formControlName="MultiserviceRoutedSubnetMask" placeholder="Subnetmask"
+								autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+
+
+
+
+
+
+</div>

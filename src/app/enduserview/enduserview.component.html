@@ -1,0 +1,72 @@
+<div [@routerTransition]>
+        <div class="col-xl-12">
+                <ol class="breadcrumb">
+                        <li class="breadcrumb-item active">
+                                <i>
+                                        <mat-icon>account_circle</mat-icon>
+                                </i><span style="padding-top:3px;">Eindgebruiker</span> </li>
+
+                </ol>
+        </div>
+</div>
+
+<div *ngIf="loading" class="main_div_loader">
+        <div class="sub_div_loader">
+                <div class="progress-spinner">
+                        <div></div>
+                </div>
+        </div>
+</div>
+
+
+
+<!--<div class="design-process-content-form mt-4 col-md-12">
+                <div class="full-column">
+                        <mat-card-title>
+                                <mat-icon>account_circle</mat-icon>{{account_details['result'][0]['firstName']}}
+                        </mat-card-title>
+                </div>
+        </div>-->
+
+<div class="design-process-content-form mt-4 col-md-12">
+        <div class="full-column" fxLayoutGap="40px">
+                <mat-label>
+                        <mat-icon>location_on</mat-icon>ID : {{account_details['result'][0]['id']}}
+                </mat-label>
+        </div>
+
+        <div class="full-column" fxLayoutGap="60px">
+                <mat-label>
+                        <mat-icon> location_on</mat-icon>Accountnaam : {{account_details['result'][0]['username']}}
+                </mat-label>
+
+        </div>
+        <div class="full-column" fxLayoutGap="60px">
+                <mat-label>
+                        <mat-icon> location_on</mat-icon>Klantnaam : {{account_details['result'][0]['lastname']}}({{account_details['result'][0]['firstname']}})
+                </mat-label>
+
+        </div>
+        <div class="full-column" fxLayoutGap="40px">
+                <mat-label>
+                        <mat-icon> location_on</mat-icon>Adres : {{account_details['result'][0]['accountAddress']}}
+                </mat-label>
+        </div>
+
+
+</div>
+
+
+
+<div class="mt-4">
+        <nav mat-tab-nav-bar>
+                <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive
+                        #rla="routerLinkActive" [active]="rla.isActive" id="{{'tab'+link.indexno}}"
+                        [ngClass]="{'highlight': currentUrl == link.link }" [state]="{id : id}"
+                        class="rounded shadow-5g p-2 mb-1 bg-green rounded">
+                        <mat-icon>{{link.icon}}</mat-icon>{{link.label}}
+                </a>
+        </nav>
+</div>
+<router-outlet></router-outlet>
+<app-auditlog></app-auditlog>

@@ -1,0 +1,60 @@
+<mat-expansion-panel [expanded]="true" style="position: relative;margin-bottom: 25px;">
+    <div [ngClass]="loading ? 'overlay-product' : ''">
+      <div *ngIf="loading" class="progress-spinner-product">
+        <div></div>
+      </div>
+    </div>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-card-title>
+          <mat-icon>apps</mat-icon>Brieven
+        </mat-card-title>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <form [formGroup]="docselectform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+    <div class="form-row">
+        
+      <div class="col-md-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Dynamic Document</mat-label>
+        <mat-select disableOptionCentering formControlName="documentname"
+            panelClass="my-select-panel-class" placeholder="docnaam">
+            <mat-option *ngFor="let docname of dynamicdocList"
+                [value]="docname.id">
+                {{docname.templatename}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="hasError('documentname', 'required')">docnaam is verplicht</mat-error>
+    </mat-form-field>
+</div>
+    <div class="col-md-1" style="margin:8px 0 0 0;">
+            <button [disabled]="buttondisabled" mat-raised-button
+                class="redir-main-loc can-crt-mid">Doorgan</button>
+      </div>
+      <div class="col-md-8"></div>
+      
+      </div>
+    </form>
+    <form [formGroup]="staticdocselectform" #f="ngForm" (ngSubmit)="downloadStaticDoc(f)" novalidate>
+      <div class="form-row">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline">
+            <mat-label>Static Document</mat-label>
+            <mat-select disableOptionCentering formControlName="staticdocumentname"
+                panelClass="my-select-panel-class" placeholder="docnaam">
+                <mat-option *ngFor="let docname of staticdocList"
+                    [value]="docname.id">
+                    {{docname.templatename}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-1" style="margin:8px 0 0 0;">
+        <button [disabled]="buttondisabled" mat-raised-button
+            class="redir-main-loc can-crt-mid">Doorgan</button>
+  </div>
+      <div class="col-md-8"></div>
+    </div>
+    </form>
+    
+    </mat-expansion-panel>

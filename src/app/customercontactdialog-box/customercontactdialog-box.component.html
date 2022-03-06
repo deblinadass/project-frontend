@@ -1,0 +1,230 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elseDelete">
+		<h1 mat-dialog-title class="dialog-box-header">Wijzigen Contact</h1>
+
+		<form [formGroup]="customercontactupdateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate
+			*ngIf="action === 'Update'; else elseAdd">
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%">
+						<mat-label>Achternaam</mat-label>
+						<input matInput ngModel="{{local_data.contactpersonlastname}}"
+							formControlName="contactpersonlastname" placeholder="Achternaam" autocomplete="off" readonly='{{inheritanceFlag}}'>
+							<mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('contactpersonlastname', 'required')">Achternaam is verplicht
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline">
+						<mat-label>Voornaam</mat-label>
+						<input matInput ngModel="{{local_data.contactpersonfirstname}}"
+							formControlName="contactpersonfirstname" placeholder="Voornaam" autocomplete="off" readonly='{{inheritanceFlag}}'>
+							<mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('contactpersonfirstname', 'required')">Voornaam is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row"  style="padding-top: 15px;">
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%;">
+						<mat-label>E-mail</mat-label>
+						<input matInput ngModel="{{local_data.contactpersonemail}}" formControlName="contactpersonemail"
+							placeholder="E-mail" autocomplete="off" pattern="\s*[-+.'\w]+@[-.\w]+\.[-.\w]+\s*" readonly='{{inheritanceFlag}}'>
+							<mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('contactpersonemail', 'required')">E-mail is verplicht
+						</mat-error>
+						<mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('contactpersonemail', 'pattern')">E-mail is niet correct</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline">
+						<mat-label>Telefoonnummer</mat-label>
+						<input matInput ngModel="{{local_data.contactpersontelephone}}"
+							formControlName="contactpersontelephone" placeholder="Telefoonnummer" autocomplete="off" readonly='{{inheritanceFlag}}'>
+							<mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('contactpersontelephone', 'required')">Telefoonnummer is
+							verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<input type="hidden" formControlName="type" value="satlocation">
+				<input  type="hidden"  formControlName="satlocationid" ngModel="{{local_data.satlocationid}}">
+				<div class="half-row"  style="padding-top: 15px;">
+					<div style="padding-top:21px;">
+					<mat-label style= "width:75px;">Geslacht:</mat-label>
+					<mat-radio-group class="focusformfield" ngModel="{{local_data.gender}}" formControlName = "gender" aria-label="Select an option">
+						<mat-radio-button style="padding-right:7px;"  [checked] = "gender1"  value="1"  disabled='{{inheritanceFlag}}'>Man</mat-radio-button>
+						<mat-radio-button [checked] = "gender2"  value="2"  disabled='{{inheritanceFlag}}'>vrouw</mat-radio-button>
+					  </mat-radio-group>
+					  <!--<mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('gender', 'required')">Geslacht is
+						verplicht
+					</mat-error>-->
+					</div>	
+					 	
+				<mat-form-field class="focusformfield" appearance="outline" style="width:50%;padding-left:7px;">
+					<mat-label>Functie</mat-label>
+					<input matInput ngModel="{{local_data.contactpersonfunction}}" formControlName="contactpersonfunction" placeholder="Functie"
+						autocomplete="off" readonly='{{inheritanceFlag}}'>
+						<mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('contactpersonfunction', 'required')">Functie is verplicht
+					</mat-error>
+				</mat-form-field>
+				
+				</div>
+				<div class="full-column"  style="padding-top: 15px;">
+						
+					<mat-form-field appearance="outline">
+						<mat-label>Opmerking</mat-label>
+						<input matInput  ngModel="{{local_data.contactpersondescription}}" formControlName="contactpersondescription" placeholder="Opmerking"
+							autocomplete="off" readonly='{{inheritanceFlag}}'>
+					</mat-form-field>
+				
+				</div>
+				<div class = "form-row" style="padding-top: 15px;">				
+					<div class="col-6">
+				  <div class = "col-2" ><input type="checkbox" style="background-color: #d3d3d3;" formControlName="newsletter" id="newsletter"   [checked] ="local_data.newsletter" [attr.disabled]="local_data.inheritance? true : null"><span class="checkmark">Nieuwsbrief</span></div>
+				  <div class = "col-2" style="padding-top:5px;"><input type="checkbox"  formControlName="nps" id="nps"  [checked] ="local_data.nps" [attr.disabled]="local_data.inheritance? true : null"><span class="checkmark">NPS</span></div>
+				  <div class = "col-2" style="padding-top:5px;padding-bottom:7px;">	<input type="checkbox"  formControlName="report" id="report"  [checked] ="local_data.report" [attr.disabled]="local_data.inheritance? true : null"><span class="checkmark">Rapportage</span></div>					
+				  
+				  <div class="col-2 " style="padding-top:30x;"> 												
+					  <input  type ="checkbox" id = "mijn" formControlName="mijn"   [(checked)]="local_data.mijn" (change)="checkValue()" ><span class="checkmark">Mijn</span>
+				  
+				  </div>
+				  </div>
+				  
+				  <div class="col-6"  *ngIf = "show">
+					<div style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;" [checked] ="local_data.mijn1" formControlName="mijn1" id="mijn1_1" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 1</span></div>
+					<div style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;" [checked] ="local_data.mijn2" formControlName="mijn2" id="mijn_2" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 2</span></div>
+					<div  style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;"  [checked] ="local_data.mijn3" formControlName="mijn3" id="mijn_3" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 3</span></div>
+					<div style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;" [checked] ="local_data.mijn4" formControlName="mijn4" id="mijn_4" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 4</span></div>
+					<div style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;"  [checked] ="local_data.mijn5" formControlName="mijn5" id="mijn_5" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 5</span></div>
+
+				  </div>
+			  </div>
+				<div class="full-column" fxLayoutGap="20px" style="padding-top: 15px;">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+			
+		</form>
+	</ng-container>
+
+	<ng-template #elseDelete>
+		<ng-container *ngIf="action === 'Delete'; else elseAdd">
+			<h1 mat-dialog-title class="dialog-box-header">Verwijderen Contact</h1>
+			Wil je contact <b>{{local_data.contactpersonname}}</b> verwijderen?
+			<div mat-dialog-actions align="center">
+				<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+					class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+				<button [disabled]="buttondisabled" mat-raised-button (click)="onDelete()"
+					class="redir-main-loc can-crt-mid">Verwijderen</button>
+			</div>
+		</ng-container>
+	</ng-template>
+
+	
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Toevoegen Contact</h1>
+		<form [formGroup]="customercontactcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field class="focusformfield" appearance="outline" style="margin-right:2%">
+						<mat-label>Achternaam</mat-label>
+						<input matInput formControlName="contactpersonlastname" placeholder="Achternaam"
+							autocomplete="off">
+							<mat-error style="padding-top:11px;" *ngIf="hasError('contactpersonlastname', 'required')">Achternaam is verplicht
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline">
+						<mat-label>Voornaam</mat-label>
+						<input matInput formControlName="contactpersonfirstname" placeholder="Voornaam"
+							autocomplete="off">
+							<mat-error style="padding-top:11px;" *ngIf="hasError('contactpersonfirstname', 'required')">Voornaam is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="half-row" style="padding-top: 15px;">
+					<mat-form-field  class="focusformfield" appearance="outline" style="margin-right:2%;">
+						<mat-label>E-mail</mat-label>
+						<input matInput formControlName="contactpersonemail" placeholder="E-mail" autocomplete="off" pattern="\s*[-+.'\w]+@[-.\w]+\.[-.\w]+\s*">
+						<mat-error style="padding-top:11px;" *ngIf="hasError('contactpersonemail', 'required')">E-mail is verplicht</mat-error>
+						<mat-error style="padding-top:11px;" *ngIf="hasError('contactpersonemail', 'pattern')">E-mail is niet correct</mat-error>
+					</mat-form-field>
+					<mat-form-field class="focusformfield" appearance="outline">
+						<mat-label>Telefoonnummer</mat-label>
+						<input matInput formControlName="contactpersontelephone" placeholder="Telefoonnummer"
+							autocomplete="off">
+							<mat-error style="padding-top:11px;" *ngIf="hasError('contactpersontelephone', 'required')">Telefoonnummer is verplicht
+						</mat-error>
+					</mat-form-field>
+				</div>
+				
+				<input type="hidden" formControlName="type" value="satlocation">
+				<input type="hidden" formControlName="satlocationid" value="local_data.locationid">
+				<div class="half-row"  style="padding-top: 15px;">
+					<div style="padding-top:21px;">
+					<mat-label style= "width:75px;">Geslacht:</mat-label>
+					<mat-radio-group class="focusformfield" formControlName = "gender" aria-label="Select an option">
+						<mat-radio-button style="padding-right:7px;" value="1">Man</mat-radio-button>
+						<mat-radio-button value="2">vrouw</mat-radio-button>
+					  </mat-radio-group>
+					 <!-- <mat-error style="padding-top:11px;" *ngIf="hasErrorUpdate('gender', 'required')">Geslacht is
+						verplicht
+					</mat-error>-->
+					  
+					</div>	
+					 	
+				<mat-form-field class="focusformfield" appearance="outline" style="width:50%;padding-left:7px;">
+					<mat-label>Functie</mat-label>
+					<input matInput formControlName="contactpersonfunction" placeholder="Functie"
+						autocomplete="off">
+						<mat-error style="padding-top:11px;" *ngIf="hasError('contactpersonfunction', 'required')">Functie is verplicht
+					</mat-error>
+				</mat-form-field>
+				
+				</div>
+				<div class="full-column">
+						
+					<mat-form-field appearance="outline">
+						<mat-label>Opmerking</mat-label>
+						<input matInput formControlName="contactpersondescription" placeholder="Opmerking"
+							autocomplete="off">
+					</mat-form-field>
+				
+				</div>
+				<div class = "form-row" >					
+					<div class="col-6">
+				  <div class = "col-2" ><input type="checkbox" style="background-color: #d3d3d3;" formControlName="newsletter" id="newsletter"  [(ngModel)]="isChecked1" ><span class="checkmark">Nieuwsbrief</span></div>
+				  <div class = "col-2" style="padding-top:5px;"><input type="checkbox"  formControlName="nps" id="nps" [(ngModel)]="isChecked2" (change)="checkValue(isChecked2?'1':'0')"><span class="checkmark">NPS</span></div>
+				  <div class = "col-2" style="padding-top:5px;padding-bottom:7px;">	<input type="checkbox"  formControlName="report" id="report" [(ngModel)]="isChecked3" (change)="checkValue(isChecked3?'1':'0')"><span class="checkmark">Rapportage</span></div>					
+				  
+				  <div class="col-2 " style="padding-top:30x;"> 												
+					  <input  type ="checkbox" id = "mijn" formControlName="mijn" [(ngModel)]="isChecked4" (change)="checkValue()"><span class="checkmark">Mijn</span>
+				  
+				  </div>
+				  </div>
+				  
+				  <div class="col-6"  *ngIf = "show">
+					<div style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;" formControlName="mijn1" id="mijn1_1" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 1</span></div>
+					<div style="padding-bottom:5px;"  ><input type="checkbox" style="background-color: #d3d3d3;" formControlName="mijn2" id="mijn_2" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 2</span></div>
+					<div  style="padding-bottom:5px;"  ><input type="checkbox" style="background-color: #d3d3d3;" formControlName="mijn3" id="mijn_3" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 3</span></div>
+					<div  style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;" formControlName="mijn4" id="mijn_4" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 4</span></div>
+					<div  style="padding-bottom:5px;" ><input type="checkbox" style="background-color: #d3d3d3;" formControlName="mijn5" id="mijn_5" ><span style = "padding-left: 14px;width: 67%;">Mijn Role 5</span></div>
+
+				  </div>
+			  </div>
+
+				<div class="full-column" fxLayoutGap="20px"  style="padding-top:5px;">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+</div>

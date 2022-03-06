@@ -1,0 +1,275 @@
+<!--<div [@routerTransition]>
+    <div class="col-xl-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i> Zoek Klant </li>
+        </ol>
+    </div>
+</div>-->
+
+
+<!--<div class="design-process-content-form">  -->
+<form (ngSubmit)="search(scardSearchInput.value)">
+    <div class="design-process-content-form">
+        <div class="half-row" fxLayoutGap="20px">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Zoeken</mat-label>
+                <input autofocus matInput #scardSearchInput name="customer" placeholder="Voer zoeksleutel in">
+                <span style="position: absolute;bottom: 0px;right: -5px;"> <button mat-button type="submit">
+                        <mat-icon class="mat-icon-cs">search</mat-icon>
+                    </button></span>
+            </mat-form-field>
+
+        </div>
+        <div class="progress-spinner">
+            <div></div>
+        </div>
+
+        <div class="containercls" *ngIf="inputcheck">
+            <div class="col-12 text-center">
+
+                <h4>Voer een trefwoord in... </h4>
+
+            </div>
+        </div>
+
+        
+
+    </div>
+</form>
+
+
+<div class="form-row" style="margin-left: 0px;margin-top: 23px;"  *ngIf="productCheck && scard_details.product.id > 0">
+   <table class="product-details">
+        
+        <tr>
+          <td class="product-details-row"><b>Kraskaart nummer : </b></td>
+          <td class="product-details-row"> {{scard_details.product.username}}</td>
+          
+        </tr>
+        <tr>
+          <td class="product-details-row"><b>Kraskaart code : </b></td>
+          <td class="product-details-row">{{scard_details.product.password}}</td>
+          
+        </tr>
+        <tr>
+          <td class="product-details-row"><b>Type : </b> </td>
+          <td class="product-details-row">{{scard_details.product.ProductTypeDescription}}</td>
+         
+        </tr>
+        <tr>
+          <td class="product-details-row"><b>Geldigheid :</b></td>
+          <td class="product-details-row">{{scard_details.product.validity}}</td>
+          
+        </tr>
+        <tr>
+          <td class="product-details-row"><b>Waarde : </b></td>
+          <td class="product-details-row">{{ waarde.toLocaleString('de-DE') }}</td>
+          
+        </tr>
+        <tr>
+            <td class="product-details-row"><b>Gebruikt? : </b></td>
+            <td class="product-details-row">{{ (scard_details.product.used == '1') ? 'Ja' : 'Nee' }}</td>
+            
+          </tr>
+          <tr>
+            <td class="product-details-row"><b>Startdatum (voor het eerst gebruikt) : </b></td>
+            <td class="product-details-row">{{scard_details.startdate}}</td>
+            
+          </tr>
+          <tr>
+            <td class="product-details-row"><b> Einddatum :  </b></td>
+            <td class="product-details-row">{{scard_details.expdate}}</td>
+            
+          </tr>
+          <tr>
+            <td class="product-details-row"><b>Tijd over :</b></td>
+            <td class="product-details-row">{{scard_details.timeLeft}}</td>
+            
+          </tr>
+          <tr>
+            <td class="product-details-row"><b>Onderdeel van order: </b></td>
+            <td class="product-details-row"></td>
+            
+          </tr>
+
+          <tr>
+            <td class="product-details-row"><b>Deze kraskaart is alleen geldig op deze locatie(s): </b></td>
+            <td class="product-details-row">{{scard_details.validaAtList}}</td>
+            
+          </tr>
+      </table>
+
+</div>
+
+    <div class="demo-tab-content" style="margin-top:20px" *ngIf="dataSource.data.length > 0">
+        
+
+
+        <table mat-table [dataSource]="dataSource">
+
+            <ng-container matColumnDef="start">
+                <th mat-header-cell *matHeaderCellDef   style="width: 7.92%;"> Start </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.start}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="stop">
+                <th mat-header-cell *matHeaderCellDef   style="width: 7.92%;"> Stop </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.stop}}
+                </td>
+              </ng-container>
+
+             
+
+              <ng-container matColumnDef="location">
+                <th mat-header-cell *matHeaderCellDef   style="width: 16.92%;"> Location </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.location}}
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="stopreason">
+                <th mat-header-cell *matHeaderCellDef   style="width: 6.92%;"> Stopreason </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.stopreason}}
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="macaddress">
+                <th mat-header-cell *matHeaderCellDef   style="width: 7.92%;"> macaddress </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.macaddress}}
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="useragentdetails">
+                <th mat-header-cell *matHeaderCellDef   style="width: 8.92%;"> Device / browser </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.useragentdetails}}
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="download">
+                <th mat-header-cell *matHeaderCellDef style="width:5%"  > Download </th>
+                <td mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.download }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="upload">
+                <th mat-header-cell *matHeaderCellDef style="width:5%"  > Upload </th>
+                <td mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.upload }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lengthoftime">
+                <th mat-header-cell *matHeaderCellDef style="width:6%"  > Length of time	 </th>
+                <td mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.lengthoftime }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="resume">
+                <th mat-header-cell *matHeaderCellDef style="width:5%"  > Hervat? </th>
+                <td mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.resume }} </td>
+            </ng-container>
+            <!--<ng-container matColumnDef="start">
+                <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important"  >
+                    Start</mat-header-cell>
+                <mat-cell *matCellDef="let scard_details_table"  
+                    style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+
+                     {{scard_details_table.start}}
+                    
+                </mat-cell>
+            </ng-container>
+            
+            <ng-container matColumnDef="stop">
+                <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important"  >
+                    Stop</mat-header-cell>
+                <mat-cell *matCellDef="let scard_details_table"  
+                    style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+
+                   {{scard_details_table.stop}}
+                   
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="location">
+                <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important"  >
+                    Location</mat-header-cell>
+                <mat-cell *matCellDef="let scard_details_table"  
+                    style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+
+                    {{scard_details_table.location}}
+                   
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="stopreason">
+                <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important"  >
+                    stopreason </mat-header-cell>
+                <mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+                    {{ element.stopreason }}
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="macaddress">
+                <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 10% !important"  >
+                    macaddress </mat-header-cell>
+                <mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.macaddress }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="useragentdetails">
+                <mat-header-cell *matHeaderCellDef style="flex: 0 0 10% !important"  > Device / browser </mat-header-cell>
+                <mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.useragentdetails }} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="download">
+                <mat-header-cell *matHeaderCellDef style="flex: 0 0 10% !important"  > Download </mat-header-cell>
+                <mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.download }} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="upload">
+                <mat-header-cell *matHeaderCellDef style="flex: 0 0 10% !important"  > Upload </mat-header-cell>
+                <mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.upload }} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="lengthoftime">
+                <mat-header-cell *matHeaderCellDef style="flex: 0 0 10% !important"  > Length of time	 </mat-header-cell>
+                <mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.lengthoftime }} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="resume">
+                <mat-header-cell *matHeaderCellDef style="flex: 0 0 10% !important"  > Hervat? </mat-header-cell>
+                <mat-cell *matCellDef="let element"   style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                    {{ element.resume }} </mat-cell>
+            </ng-container>-->
+
+            <tr mat-header-row *matHeaderRowDef="displayedMultiServiceColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedMultiServiceColumns"></tr>
+        </table>
+
+        <!--  <mat-paginator class="mat-elevation-z8" [pageSizeOptions]="[2, 4, 6]" showFirstLastButtons></mat-paginator>-->
+    </div>
+<!--</div>-->
+
+<div class="demo-tab-content" style="margin-top:10px" *ngIf="exceedThreshold" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Er zijn meer dan 25 resultaten. Voer een gerichtere zoekactie uit...</h5>
+    </div>
+</div>
+<div class="containercls" *ngIf="noRecords" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Geen resultaten gevonden...</h5>
+    </div>
+</div>

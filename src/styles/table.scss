@@ -1,0 +1,91 @@
+//@import "../../styles/common.scss";
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+.demo-tab-content {
+  padding: 16px;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 6px #d3d3d3;
+}
+table {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 500px;
+}
+
+th.mat-header-cell {
+  text-align: left;
+  max-width: 300px;
+}
+
+.table-process-content {
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 6px #d3d3d3;
+}
+
+// Mat Table Css Start
+::ng-deep .mat-header-cell {
+  width: 100px;
+  min-width: 100px;
+  text-align: center;
+  font-weight: bold;
+  background-color: #c5c1c1;
+  //font-style: index($list: '12', $value:'20' );
+}
+mat-header-row {
+  min-height: 42px;
+}
+tr.mat-header-row {
+  height: 42px;
+}
+tr.mat-footer-row,
+tr.mat-row {
+  height: 30px;   //KPN Standard
+}
+mat-footer-row,
+mat-row {
+  min-height: 30px;   //KPN Standard
+}
+td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type, th.mat-header-cell:first-of-type {
+  padding-left: 12px;
+}
+// Mat Table Css End
+::ng-deep .mat-elevation-z8 {
+  box-shadow: none;
+}
+
+// Material Tabs
+
+@media all and (min-width: 768px) {
+  tr {
+    td {
+      vertical-align: middle !important;
+    }
+    span {
+      &:not([class]) {
+        padding: 1rem 1rem;
+      }
+    }
+  }
+}
+
+.shadow-css{
+  background-color: #f3f3f4;
+  height:30px; 
+  width: 80%;
+  float: right;
+  margin: 5px 0 0 0;
+  min-width: 650px !important;
+  border: 1px solid #D3D3D3;
+  }
+  
+  .shadow-css td:nth-child(even) {background-color: #ffffff;}
+  
+  .shadow-css td, .shadow-css th {
+    border-bottom: 1px solid #D3D3D3;
+  }
+  .shadow-css tr:last-child td {
+    border-bottom: 0;
+  }

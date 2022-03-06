@@ -1,0 +1,119 @@
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<mat-expansion-panel-header>
+	</mat-expansion-panel-header>
+	<div class="half-row">
+		<mat-form-field>
+			<input matInput (keyup)="applyFilterTicket($event.target.value)" placeholder="Filter">
+		</mat-form-field>
+
+
+    <div class="col-sm-3 px-0"></div>
+    <div class="col-sm-1 px-0" >
+      <button mat-button (click)="openDialogAdd('Add', 'Administrative')" 
+        class="btn redir-main-loc row-btn" title="Toevoegen Administratief Ticket"
+        *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','AdminTicketTabAdd','disabled')">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>
+    <div class="col-sm-1 px-0" >
+      <button mat-button (click)="openDialogAdd('Add', 'Billing')"
+        class="btn redir-main-loc row-btn" title="Toevoegen Financieel Ticket"
+        *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','BillingTicketTab','disabled')">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>
+    <div class="col-sm-1 px-0" >
+      <button mat-button (click)="openDialogAdd('Add', 'NOC')" class="btn redir-main-loc row-btn" title="Toevoegen Technisch Ticket"
+      *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'TicketTab','TicketTabAdd','disabled')">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>
+	</div>
+
+	<table mat-table #ticketSort="matSort" [dataSource]="dataSourceTicket" multiTemplateDataRows
+    class="mat-elevation-z8" matSort >
+
+    <ng-container matColumnDef="incidentid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12%;">Ticket ID</th>
+      <td mat-cell *matCellDef="let element">{{element.incidentid}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="creationdate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 3%;">Aanmaakdatum</th>
+      <td mat-cell *matCellDef="let element">{{element.creationdate}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="closeddate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 4%;">Closeddatum</th>
+      <td mat-cell *matCellDef="let element">{{element.closeddate}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="currentstatename">
+      <th mat-header-cell *matHeaderCellDef style="width:8%;">Status</th>
+      <td mat-cell *matCellDef="let element">{{element.currentstatename}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="installprovider">
+      <th mat-header-cell *matHeaderCellDef style="width: 8%;">Oplosgroep</th>
+      <td mat-cell *matCellDef="let element"> {{element.installprovider}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="issuetype">
+      <th mat-header-cell *matHeaderCellDef style="width: 8%;">Ticket Type</th>
+      <td mat-cell *matCellDef="let element">{{element.issuetype}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="urgency">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 5%;">Prioriteit</th>
+      <td mat-cell *matCellDef="let element">{{element.urgency}} </td>
+    </ng-container>
+    <ng-container matColumnDef="shortdescription">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 30%;">Korte omschrijving</th>
+      <td mat-cell *matCellDef="let element">{{element.shortdescription}}
+      
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let element"style="text-align: right;">
+        <button *ngIf="element.tickettype === 1" class="icon_btn" title="Wijzigen Ticket" mat-icon-button 
+        (click)="openDialogEditNOC('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button *ngIf="element.tickettype === 2" class="icon_btn" title="Wijzigen Ticket" mat-icon-button 
+        (click)="openDialogEditBilling('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button *ngIf="element.tickettype === 3" class="icon_btn" title="Wijzigen Ticket" mat-icon-button 
+        (click)="openDialogEditAdmin('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+		<button *ngIf="element.tickettype === 4" class="icon_btn" title="Wijzigen Ticket" mat-icon-button (click)="openDialogEditMonitoring('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+       
+        <button title="Transfer Ticket" mat-icon-button
+          (click)="openDialogTT('Transfer',element)">
+          <mat-icon> screen_share</mat-icon>
+        </button>
+
+        
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedticketColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedticketColumns;"></tr>
+    
+	</table>
+  <mat-paginator #paginatorTicket [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>
+
+</mat-expansion-panel>
+<mat-divider></mat-divider>

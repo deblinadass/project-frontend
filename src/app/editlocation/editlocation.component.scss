@@ -1,0 +1,28 @@
+@import "../../styles/form.scss";
+form{
+  margin-top: 50px;
+}
+/*.design-process-content-form{
+  border: 1px solid;
+  padding: 10px;box-shadow: 5px 10px #888888;
+
+  
+    //display: inline-block;
+    //position: fixed;
+    //top: 0;
+    //bottom: 0;
+    left: 100px;
+    //right: 0;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    background-color: #ffffff;
+}*/
+
+mat-form-field{
+  width:100%;
+}
+
+::ng-deep .mat-form-field-prefix{
+  top:-1em !important;
+}

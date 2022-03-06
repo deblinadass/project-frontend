@@ -1,0 +1,119 @@
+<div class="mt-4">
+  <nav mat-tab-nav-bar>
+          <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive
+                  #rla="routerLinkActive" [active]="rla.isActive" id="{{'tab'+link.indexno}}"
+                  [ngClass]="{'highlight': currentUrl == link.link }" [state]="{id : id}"
+                  class="rounded shadow-5g p-2 mb-1 bg-green rounded">{{link.label}}
+          </a>
+  </nav>
+</div>
+<router-outlet>
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<mat-expansion-panel-header>
+	</mat-expansion-panel-header>
+	<div class="half-row">
+		<mat-form-field>
+			<input matInput (keyup)="applyFilterBackofficeTicket($event.target.value)" placeholder="Filter">
+		</mat-form-field>
+
+		
+	</div>
+
+	<table mat-table #ticketSort="matSort" [dataSource]="dataSourceTicket" multiTemplateDataRows
+    class="mat-elevation-z8" matSort>
+
+    <ng-container matColumnDef="incidentid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12%;">Incident ID</th>
+      <td mat-cell *matCellDef="let element" style="width: 12%;">{{element.incidentid}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="creationdate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 4%;">Aanmaakdatum</th>
+      <td mat-cell *matCellDef="let element" style="width: 4%;">{{element.creationdate}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="currentstatename">
+      <th mat-header-cell *matHeaderCellDef style="width:5%;">State</th>
+      <td mat-cell *matCellDef="let element" style="width: 5%;">{{element.currentstatename}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="installprovider">
+      <th mat-header-cell *matHeaderCellDef style="width: 5%;">Oplosgroep</th>
+      <td mat-cell *matCellDef="let element" style="width: 5%;"> {{element.installprovider}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="issuetype">
+      <th mat-header-cell *matHeaderCellDef style="width: 5%;">Type</th>
+      <td mat-cell *matCellDef="let element" style="width: 5%;">{{element.issuetype}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="urgency">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 5%;">Prioriteit</th>
+      <td mat-cell *matCellDef="let element" style="width: 5%;">{{element.urgency}} </td>
+    </ng-container>
+    <ng-container matColumnDef="shortdescription">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 32%;">Korte omschrijving</th>
+      <td mat-cell *matCellDef="let element" style="width: 32%;">{{element.shortdescription}} </td>
+    </ng-container>
+    <!--<ng-container matColumnDef="Hardware">
+      <th mat-header-cell *matHeaderCellDef style="width: 20%;">Hardware</th>
+          
+      <td mat-cell *matCellDef="let element">  
+          <button mat-raised-button class ="btnclass" [disabled]="true" color="critical">{{element.critical}}</button>
+      </td>
+  </ng-container>-->
+    <ng-container  matColumnDef="Hardware">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 32%;">Hardware</th>
+      <td mat-cell *matCellDef="let element" style="width: 32%;" >
+        <button *ngIf="element.critical === 0" mat-raised-button class ="btnclass" [disabled]="true" style="background: green;color:white">0</button>
+        <button *ngIf="element.critical >0" mat-raised-button class ="btnclass" [disabled]="true" style="background: red;color:white">{{element.critical}}</button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef style="width: 5%;"> </th>
+      <td mat-cell *matCellDef="let element" style="width: 5%;padding-left:55px;">
+        <button *ngIf="element.tickettype === 1" class="icon_btn" title="Ticket" mat-icon-button 
+        (click)="openDialogEditNOC('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button *ngIf="element.tickettype === 2" class="icon_btn" title="Ticket" mat-icon-button 
+        (click)="openDialogEditBilling('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button *ngIf="element.tickettype === 3" class="icon_btn" title="Ticket" mat-icon-button 
+        (click)="openDialogEditAdmin('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button *ngIf="element.tickettype === 4" class="icon_btn" title="Ticket" mat-icon-button 
+        (click)="openDialogEditMonitoring('Update',element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+       
+        <!--<button title="Transfer Ticket" mat-icon-button
+          (click)="openDialog('Relocate',element)">
+          <mat-icon> screen_share</mat-icon>
+        </button>-->
+
+        
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedticketColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedticketColumns;"></tr>
+    
+	</table>
+  <mat-paginator #paginatorTicket [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>
+
+</mat-expansion-panel>
+<mat-divider></mat-divider>
+</router-outlet>

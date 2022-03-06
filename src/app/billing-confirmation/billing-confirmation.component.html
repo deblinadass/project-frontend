@@ -1,0 +1,23 @@
+<div [@routerTransition]>
+	<div class="col-xl-12">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i> Valideren eenmalige kosten </li>
+		</ol>
+	</div>
+</div>
+
+
+
+<div class="design-process-content-form" style="margin-top: 10px;">
+
+	<div class="full-column" fxLayoutGap="20px">
+    <mat-card-actions align="center" id="back_btn" style="display: none;">
+			<a routerLink="/billingexport" mat-flat-button class="redir-main-loc can-crt-mid mat-raised-button">Terug</a>
+		</mat-card-actions>
+		<mat-card-actions align="center" id="cnfrm_btn">
+			<a routerLink="/billingexport" mat-flat-button class="redir-main-loc can-crt-mid mat-raised-button" [disabled]="buttondisabled">Weiger Billing file</a>
+			<button *ngIf="showconfirmationbutton" mat-raised-button class="redir-main-loc can-crt-mid" (click)="confirmation()" [disabled]="buttondisabled">
+				Finaliseer Billing file</button>
+		</mat-card-actions>
+	</div>
+</div>

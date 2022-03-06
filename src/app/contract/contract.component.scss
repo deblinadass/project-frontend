@@ -1,0 +1,27 @@
+@import "../../styles/form.scss";
+
+form{
+   // margin-top: 88px;
+}
+
+
+mat-form-field{
+    width:70%;
+    //@at-root: right;
+}
+
+::ng-deep .mat-form-field-prefix{
+    top:-1em !important;
+}
+.outer{
+    
+    display:flex;
+    justify-content: center;
+    
+    
+    
+  }
+  .outer > div {
+   
+    margin:2px;
+  }

@@ -1,0 +1,31 @@
+
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+
+	
+	<ng-container>
+		
+		<div mat-dialog-content>
+			<h5 style="color: #47a217;font-weight: bold; margin-bottom:15px;">Mail View</h5>
+			
+			<div *ngIf="showInView" [innerHTML]="htmlDecode(mailData.template_content)"></div>
+
+			<div class="full-column" fxLayoutGap="20px">
+				<mat-card-actions align="center">
+					<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+						class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+					
+				</mat-card-actions>
+			</div>
+		</div>
+		
+	</ng-container>
+
+	
+
+	
+</div>

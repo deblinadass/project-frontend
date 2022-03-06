@@ -1,0 +1,35 @@
+
+@import "../../styles/form.scss";
+@import "../../styles/spinner.scss";
+
+
+.inputElement{
+    border: 0!important;
+    border-bottom: thin solid #CCCCCC!important;
+    box-shadow: none!important;
+    background-image: none!important;
+    background-color: transparent!important;
+    box-shadow: none;
+    width: 64%;    
+}
+  
+
+::ng-deep .mat-input-element{
+    width: 96%!important; 
+    max-width: 100%;    
+  }
+  
+
+    
+
+::ng-deep .mat-form-field-infix{
+    border-top :0!important;
+    
+
+}
+::ng-deep .design-process-content{
+    border:0px!important;
+}
+
+
+

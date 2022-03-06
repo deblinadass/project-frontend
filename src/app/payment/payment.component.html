@@ -1,0 +1,65 @@
+<mat-expansion-panel [expanded]="true" style="position: relative;margin-bottom: 25px;">
+  <div [ngClass]="loading ? 'overlay-product' : ''">
+    <div *ngIf="loading" class="progress-spinner-product">
+      <div></div>
+    </div>
+  </div>
+
+  <div class="half-row">
+    <mat-form-field>
+      <input matInput  placeholder="Filter">
+    </mat-form-field>
+    <div class="col-sm-3"></div>
+    <div class="col-sm-1"></div>
+  </div>
+
+  <table mat-table #onetimecostSort="matSort" [dataSource]="dataSourcePayment" multiTemplateDataRows
+    class="mat-elevation-z8" matSort>
+    displayedPayment: string[] = ['Datum', 'Omschrijving', 'Betaalwijze', 'Betaalin informatie', 'OrderID', 'Status', 'Factuur','Refund'];  
+    <ng-container matColumnDef="Datum">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 15%;">Datum</th>
+      <td mat-cell *matCellDef="let element" style="width: 15%;">{{element.date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Omschrijving">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 15%;">Omschrijving</th>
+      <td mat-cell *matCellDef="let element" style="width: 15%;">{{element.description}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Betaalwijze">
+      <th mat-header-cell *matHeaderCellDef style="width: 10%;">Betaalwijze</th>
+      <td mat-cell *matCellDef="let element" style="width: 10%;">{{element.paymentprovider}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Betaalin informatie">
+      <th mat-header-cell *matHeaderCellDef style="width: 15%;">Betaalinformatie</th>
+      <td mat-cell *matCellDef="let element" style="width: 15%;">{{element.paymentmethod}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="OrderID">
+      <th mat-header-cell *matHeaderCellDef style="width: 15%;">OrderID</th>
+      <td mat-cell *matCellDef="let element" style="width: 15%;">{{element.orderid}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">Status</th>
+      <td mat-cell *matCellDef="let element" style="width: 10%;">{{element.status}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Factuur">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">Factuur</th>
+      <td mat-cell *matCellDef="let element" style="width: 10%;"><a href="{{factuur_link}}{{element.invoiceid}}">Factuur</a> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Refund">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10;">Refund</th>
+      <td mat-cell *matCellDef="let element" style="width: 10%;"> <a href="{{refund_link}}{{element.orderid}}">Refund</a></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedPayment"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedPayment;"></tr>
+  </table>
+  <!--<mat-paginator #paginatorOneTimeCost [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>-->
+
+</mat-expansion-panel>
+
+<mat-divider></mat-divider>

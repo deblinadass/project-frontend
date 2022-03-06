@@ -1,0 +1,23 @@
+<div [@routerTransition]>
+    <div class="col-xl-12">
+            <ol class="breadcrumb">
+                    <li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i> Catalogus </li>
+            </ol>
+    </div>
+</div>
+
+<div class="mt-4">
+    <nav mat-tab-nav-bar>
+        <ng-container *ngFor="let link of navLinks">
+              
+            <a mat-tab-link *ngIf="_commonService.getfieldpropertyvalue(cataloguetabSectionList,'CatalogueTab',link.type,'display')"  [routerLink]="link.link" routerLinkActive
+                    #rla="routerLinkActive" [active]="rla.isActive" id="{{'tab'+link.indexno}}"
+                    [ngClass]="{'highlight': currentUrl == link.link }" [state]="{id : id}"
+                    class="rounded shadow-5g p-2 mb-1 bg-green rounded">
+                    <mat-icon>{{link.icon}}</mat-icon>
+                    &nbsp;{{link.label}}
+            </a>
+        </ng-container>
+    </nav>
+</div>
+<router-outlet></router-outlet>

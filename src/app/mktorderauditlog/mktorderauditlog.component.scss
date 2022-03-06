@@ -1,0 +1,126 @@
+@import "../../styles/form.scss";
+@import "../../styles/table.scss";
+
+
+ 
+th.mat-header-cell {
+    text-align: left;
+    max-width: 300px;
+	width: 20%;
+}
+// Material Tabs
+/*.demo-tab-group {
+    border: 1px solid #e8e8e8;
+  }*/
+
+
+.table-process-content{
+
+ /* border: 1px solid;
+  padding: 10px;
+  box-shadow: 5px 10px #888888;*/
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 6px #d3d3d3;
+
+}
+ 
+
+// Mat Table Css Start
+::ng-deep .mat-header-cell{
+  width: 100px;
+  min-width: 100px;
+  text-align:center;
+  font-weight: bold;
+  background-color: #c5c1c1;
+  //font-style: index($list: '12', $value:'20' );
+}
+
+
+
+
+
+
+
+
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: #777;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+  cursor: pointer;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}
+
+.inner-table {
+  width: 100%;
+}
+.addon-table{
+  width: 100%;
+}
+.addon-header{
+  background: #ffffff;
+  font-size: large;
+  font-weight: 500;
+  height: 50px;
+  border-top-style:groove;
+}
+
+.inner-table mat-form-field {
+  margin-top: 15px;
+  width: 100%;
+}
+
+::ng-deep .tooltip-inner {
+     width: 800px;
+     //background-color: #FFFFFF;
+}
+
+::ng-deep .tooltip {
+  width: 800px;
+  //background-color: #FFFFFF;
+}
+
+::ng-deep .audit-header{
+  width: 16% !important;
+}
+::ng-deep .audit-header-comment{
+  width: 36% !important;
+}

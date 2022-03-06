@@ -1,0 +1,584 @@
+<form [formGroup]="createlocForm" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+  <div class="design-process-content-form" style="position: relative;">
+    <div class="overlay" style="display:none;">
+      <div class="progress-spinner-product">
+        <div></div>
+      </div>
+    </div>
+    <h3 style="text-align: center;font-weight: 900;">Hoofdlocatie toevoegen</h3>
+
+    <div class="form-row" fxLayoutGap="20px">
+      <div class="col-md-1"></div>
+      <div class="col-md-10"><br>
+        <h4>Bedrijfsgegevens</h4><br>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="form-row" fxLayoutGap="20px">
+      <div class="col-md-1"></div>
+      <div class="col-md-5">
+        <mat-form-field appearance="outline">
+          <mat-label>Bedrijfsnaam</mat-label>
+          <input matInput (keyup)="change()" placeholder="Bedrijfsnaam" formControlName="customername" ngModel
+            maxlength="60">
+
+          <mat-error *ngIf="hasError('customername', 'required')">Bedrijfsnaam is verplicht</mat-error>
+          <mat-error *ngIf="hasError('customername', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan
+          </mat-error>
+
+        </mat-form-field>
+      </div>
+      <div class="col-md-5">
+        <mat-form-field appearance="outline">
+          <mat-label>BTW nummer</mat-label>
+          <input matInput placeholder="btw nummer" formControlName="btwnumber">
+          <mat-error *ngIf="hasError('btwnumber', 'required')">BTW nummer is verplicht</mat-error>
+          <mat-error *ngIf="hasError('btwnumber', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="full-column" fxLayoutGap="20px">
+
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+      <div class="col-md-1"></div>
+      <div class="col-md-5">
+        <mat-form-field appearance="outline">
+          <mat-label>KvK naam</mat-label>
+          <input matInput placeholder="KvK Naam" formControlName="kvkname">
+          <mat-error *ngIf="hasError('kvkname', 'required')">KvK naam is verplicht</mat-error>
+          <mat-error *ngIf="hasError('kvkname', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5">
+        <mat-form-field appearance="outline">
+          <mat-label>KvK nummer</mat-label>
+          <input matInput placeholder="KvK nummer" formControlName="kvknumber">
+          <mat-error *ngIf="hasError('kvknumber', 'required')">KvK nummer is verplicht</mat-error>
+          <mat-error *ngIf="hasError('kvknumber', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="full-column" fxLayoutGap="20px">
+    </div>
+
+    <!-- from here-->
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+      <div class="col-md-1"></div>
+      <div class="col-md-5">
+        <mat-form-field appearance="outline">
+          <mat-label>Filiaal Nummer</mat-label>
+          <input matInput placeholder="Filiaal nummer" formControlName="filiaalnummer">
+          <!--<mat-error *ngIf="hasError('filiaalnummer', 'required')">Filiaal nummer is verplicht</mat-error>
+          <mat-error *ngIf="hasError('filiaalnummer', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan
+          </mat-error>-->
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5">        
+      </div>
+
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="full-column" fxLayoutGap="20px">
+    </div>
+
+    <!-- upto her-->
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+
+      <div class="col-md-5">
+        <!--<mat-form-field appearance="outline">
+          <mat-label>Salescloud nummer</mat-label>
+          <input matInput placeholder="Salescloud nummer" formControlName="salescloudreferencenumber">
+          <mat-error *ngIf="hasError('salescloudreferencenumber', 'required')">Salescloud nummer is verplicht
+          </mat-error>
+          <mat-error *ngIf="hasError('salescloudreferencenumber', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan
+          </mat-error>
+        </mat-form-field>-->
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+      <div class="col-md-1"></div>
+      <div class="col-md-10"><br>
+        <h4>Vestigingsadres</h4><br>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Straatnaam</mat-label>
+          <input matInput placeholder="Straatnaam" formControlName="streetname">
+          <mat-error *ngIf="hasError('streetname', 'required')">Straatnaam is verplicht</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Huisnummer</mat-label>
+          <input matInput placeholder="Huisnummer" formControlName="housenumber">
+          <mat-error *ngIf="hasError('housenumber', 'required')">Huisnummer is verplicht</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Huisnummertoevoeging</mat-label>
+          <input matInput placeholder="Huisnummertoevoeging" formControlName="housenumberaddition">
+          <mat-error *ngIf="hasError('housenumberaddition', 'required')">Huisnummertoevoeging is verplicht</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="full-column" fxLayoutGap="20px"></div>
+
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Postcode</mat-label>
+          <input matInput placeholder="Postcode" formControlName="postcode">
+          <mat-error *ngIf="hasError('postcode', 'required')">Postcode is verplicht</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Woonplaats</mat-label>
+          <input matInput placeholder="Plaats" formControlName="city">
+          <mat-error *ngIf="hasError('city', 'required')">Plaats is verplicht</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-select disableOptionCentering disableOptionCentering formControlName="country"
+            placeholder="Zoek country">
+            <mat-option>
+              <ngx-mat-select-search disableOptionCentering [formControl]="countryFilteringCtrl"
+                placeholderLabel="Zoek country..." i18n-placeholderLabel>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngIf="noRecordFound == 0">{{ 'Geen country gevonden' }}</mat-option>
+
+            <mat-option *ngFor="let country of filteredServerSideCountry | async" [value]="country.countryid">
+              {{country.countryname}}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="hasError('country', 'required')">Land is verplicht</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="full-column" fxLayoutGap="20px">
+      <input type="hidden" formControlName="customertypeid" value="{{customertypeid}}">
+      <input type="hidden" formControlName="parentcustomerid" value="{{parentcustomerid}}">
+      <!--<input type="hidden" formControlName="status" value="{{status}}">-->
+    </div>
+
+    <div class="form-row" fxLayoutGap="20px">
+      <div class="col-md-1"></div>
+      <div class="col-md-10"><br>
+        <h4>Overige gegevens</h4><br>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-select disableOptionCentering disableOptionCentering formControlName="chainid" placeholder="Zoek chain">
+            <mat-option>
+              <ngx-mat-select-search disableOptionCentering [formControl]="chainFilteringCtrl"
+                placeholderLabel="Zoek chain..." i18n-placeholderLabel>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngIf="noRecordFound == 0">{{ 'Geen chains gevonden' }}</mat-option>
+
+            <mat-option *ngFor="let chain of filteredServerSideChains | async" [value]="chain.chainid">
+              {{chain.chainname}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('chainid', 'required')">
+            <strong>Chain is verplicht</strong>
+          </mat-error>
+        </mat-form-field>
+
+      </div>
+
+
+
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+
+        <mat-form-field appearance="outline">
+          <mat-select disableOptionCentering disableOptionCentering formControlName="accountmanagerid"
+            placeholder="Zoek accountmanager">
+            <mat-option>
+              <ngx-mat-select-search disableOptionCentering [formControl]="accountmanagerFilteringCtrl"
+                placeholderLabel="Zoek accountmanager..." i18n-placeholderLabel>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngIf="noRecordFound == 0">{{ 'Geen accountmanager gevonden' }}</mat-option>
+
+            <mat-option *ngFor="let accountmanager of filteredServerSideAccountmanagers | async"
+              [value]="accountmanager.id"> {{accountmanager.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('accountmanagerid', 'required')">
+            <strong>Accountmanager is verplicht</strong>
+          </mat-error>
+
+        </mat-form-field>
+
+      </div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+
+        <mat-form-field appearance="outline">
+          <mat-select disableOptionCentering disableOptionCentering formControlName="locationtypeid"
+            placeholder="Zoek locationtype">
+            <mat-option>
+              <ngx-mat-select-search disableOptionCentering [formControl]="locationtypeFilteringCtrl"
+                placeholderLabel="Zoek locationtype..." i18n-placeholderLabel>
+              </ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngIf="noRecordFound == 0">{{ 'Geen locationtype gevonden' }}</mat-option>
+
+            <mat-option *ngFor="let locationtype of filteredServerSideLocationtypes | async" [value]="locationtype.id">
+              {{locationtype.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('locationtypeid', 'required')">
+            <strong>Locatietype is verplicht</strong>
+          </mat-error>
+
+        </mat-form-field>
+
+      </div>
+
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select disableOptionCentering [(value)]="status" formControlName="status"
+            >
+            <mat-option *ngFor="let status of locationstatusList" [value]="status.id">
+              {{status.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('status', 'required')">
+            <strong>Status is verplicht</strong>
+          </mat-error>
+
+          
+        </mat-form-field>
+      </div>
+
+
+
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Monitoring</mat-label>
+          <mat-select disableOptionCentering [(value)]="monitoring" formControlName="monitoring"
+            >
+            <mat-option *ngFor="let monitoring of monitoringList" [value]="monitoring.id">
+              {{monitoring.name}}
+            </mat-option>
+          </mat-select>
+
+          
+        </mat-form-field>
+      </div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Locatie open?</mat-label>
+          <mat-select disableOptionCentering [(value)]="locationopen" formControlName="locationopen"
+            >
+            <mat-option *ngFor="let locationopen of locationopenList" [value]="locationopen.id">
+              {{locationopen.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('locationopen', 'required')">
+            <strong>Locatie open is verplicht</strong>
+          </mat-error>
+
+          
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-1"></div>
+    </div>
+
+    
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Test/demo locatie</mat-label>
+          <mat-select disableOptionCentering [(value)]="istestlocation" formControlName="istestlocation"
+            >
+            <mat-option *ngFor="let istestlocation of istestlocationList" [value]="istestlocation.id">
+              {{istestlocation.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('istestlocation', 'required')">
+            <strong>Test/demo locatie is verplicht</strong>
+          </mat-error>
+
+          
+        </mat-form-field>
+      </div>
+
+
+
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Service afspraak / SLA</mat-label>
+          <mat-select disableOptionCentering [(value)]="sla" formControlName="sla"
+            >
+            <mat-option *ngFor="let sla of slaList" [value]="sla.id">
+              {{sla.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('sla', 'required')">
+            <strong>Service afspraak / SLA is verplicht</strong>
+          </mat-error>
+
+          
+        </mat-form-field>
+      </div>
+      
+      <div class="col-md-1"></div>
+    </div>
+
+
+
+    <div class="clearfix10"></div>
+    <div class="full-column" fxLayoutGap="20px">
+    </div>
+    <div class="clearfix10"></div>
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+
+
+      <div class="col-md-5">
+
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+    <div class="clearfix10"></div>
+
+    <div class="form-row" fxLayoutGap="20px">
+      <div class="col-md-1"></div>
+      <div class="col-md-10"><br>
+        <h4>Billing Model</h4><br>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="clearfix10"></div>
+
+    <div class="form-row" fxLayoutGap="20px">
+
+      <div class="col-md-1"></div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Billing Model</mat-label>
+          <mat-select disableOptionCentering [(value)]="billingmodels" formControlName="billingmodel"
+            (selectionChange)="selectbillingmodel()">
+            <mat-option *ngFor="let billingmodel of billingmodelList" [value]="billingmodel.id">
+              {{billingmodel.name}}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="hasError('billingmodel', 'required')">
+            <strong>Billing Model is verplicht</strong>
+          </mat-error>
+
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline" id="onboarding1" style="display: none;" >
+          <mat-label>Onboarding afgerond</mat-label>
+          <mat-select disableOptionCentering [(value)]="onboardingcomplete" formControlName="onboardingcompleted">
+            <mat-option *ngFor="let onboardingcompleted of onboardingcompleted" [value]="onboardingcompleted.id">
+              {{onboardingcompleted.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('onboardingcompleted', 'required')">
+            <strong>Onboarding afgerond is verplicht</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" id="onboarding" style="display: none;">
+          <mat-label>Onboarding afgerond</mat-label>
+          <mat-select disableOptionCentering [(value)]="onboardingcomplete" formControlName="onboardingcompleted">
+            <mat-option *ngFor="let onboardingcompleted of onboardingcompleted" [value]="onboardingcompleted.id">
+              {{onboardingcompleted.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('onboardingcompleted', 'required')">
+            <strong>Onboarding afgerond is verplicht</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline" id="retailbilling_ponumber" style="display: none;">
+          <mat-label>PO-nummer</mat-label>
+          <input matInput placeholder="PO-nummer" formControlName="ponumber" [readonly]="ponumberstatus"
+            [maxLength]="30">
+          <mat-error *ngIf="hasError('ponumber', 'pattern')">alleen letter, cijfer, spatie, en . - is toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-row" fxLayoutGap="20px" id="retailbilling" style="display: none;">
+      <div class="col-md-1"></div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Comarch Klantnummer</mat-label>
+          <input matInput placeholder="Comarch Klantnummer" formControlName="comarchcustomerid" maxlength="20">
+        </mat-form-field>
+      </div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Comarch Factuur account</mat-label>
+          <input matInput placeholder="Comarch Factuur account" formControlName="comarchinvoiceaccountid"
+            maxlength="20">
+        </mat-form-field>
+      </div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Comarch Contract</mat-label>
+          <input matInput placeholder="Comarch Contract" formControlName="comarchcontract" maxlength="20">
+        </mat-form-field>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Comarch KRN</mat-label>
+          <input matInput placeholder="Comarch KRN" formControlName="comarchkrn" maxlength="20">
+        </mat-form-field>
+      </div>
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Oracle Klantdebiteurnummer</mat-label>
+          <input matInput placeholder="Oracle Klantdebiteurnummer" formControlName="clientaccountnumber">
+          <mat-error *ngIf="hasError('clientaccountnumber', 'required')">Klantdebiteurnummer is verplicht</mat-error>
+          <mat-error *ngIf="hasError('clientaccountnumber', 'pattern')">alleen letter, cijfer, spatie, en . - is
+            toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3" style="flex: 0 0 27%;max-width: 10000px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Oracle Nieuw site nummer</mat-label>
+          <input matInput placeholder="Oracle Nieuwe site nummer" formControlName="newsitenumber">
+          <mat-error *ngIf="hasError('newsitenumber', 'required')">Nieuw site nummer is verplicht</mat-error>
+          <mat-error *ngIf="hasError('newsitenumber', 'pattern')">alleen letter, cijfer, spatie, en . - _ is toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-row" style="display: none;">
+      <input type="hidden" formControlName="regelreferentie" value="">
+    </div>
+    <div class="form-row" fxLayoutGap="20px" id="intern" style="display: none;">
+      <div class="col-md-1"></div>
+
+
+      <div class="col-md-5">
+        <mat-form-field appearance="outline">
+          <mat-label>Billing ID</mat-label>
+          <input matInput placeholder="Billing ID" formControlName="billingid">
+          <mat-error *ngIf="hasError('billingid', 'required')">Billing ID is verplicht</mat-error>
+          <mat-error *ngIf="hasError('billingid', 'pattern')">alleen letter, cijfer, spatie, en . - _ is toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5">
+        <mat-form-field appearance="outline">
+          <mat-label>Nieuw site nummer</mat-label>
+          <input matInput placeholder="Nieuwe site nummer" formControlName="newsitenumber">
+          <mat-error *ngIf="hasError('newsitenumber', 'required')">Nieuw site nummer is verplicht</mat-error>
+          <mat-error *ngIf="hasError('newsitenumber', 'pattern')">alleen letter, cijfer, spatie, en . - _ is toegestaan
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-10"></div>
+
+    </div>
+  </div>
+
+  <div class="design-process-content mt-4 col-md-12" style="padding: 34px 34% 30px 30px;">
+    <div class="form-group row">
+      <div class="col-sm-8" style="margin-left: 4%;"></div>
+      <div class="col-sm-2" style="margin-left: -8%;">
+        <button type="button" class="btn redir-main-loc" (click)="cancel()">Annuleren</button>
+      </div>
+      <div class="col-sm-1" style="margin-left: -1%;">
+        <button type="submit" class="btn redir-main-loc">Opslaan</button>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+  </div>
+</form>

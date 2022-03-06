@@ -1,0 +1,522 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elsetransfer">
+		<h1 mat-dialog-title class="dialog-box-header" innerText="Wijzigen - Site Survey - {{local_data.location_name}}"></h1>
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : <span innerText={{local_data.locationdata.customerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : <span innerText={{local_data.locationdata.fulladdress}}></span>
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : <span innerText={{local_data.locationdata.locationchain}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : <span innerText={{local_data.locationdata.locationtypeid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : <span innerText={{local_data.locationdata.accountmanagerid}}></span>
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="sitesurveycreateform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="BOUWOrderContactid"
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon" 
+								(selectionChange)="selectCustomerContact($event.value)"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id" innerText="{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}">
+									
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('BOUWOrderContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled') && _commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input readonly matInput formControlName="BOUWOrderContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('BOUWOrderContactPersonTelephone', 'required')">Aantal is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input readonly matInput formControlName="BOUWOrderContactPersonEmail"
+								placeholder="E-mailadres" autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('BOUWOrderContactPersonEmail','required')">Prijs is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input readonly matInput formControlName="BOUWOrderContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+
+
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerBOUWOrderWishdate" (dateChange)="dateValidation()"
+								formControlName="BOUWOrderWishdate" ngModel="{{local_data.BOUWOrderWishdateEdit}}"
+								[min]="minDate"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')">
+							<mat-datepicker-toggle matSuffix [for]="pickerBOUWOrderWishdate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerBOUWOrderWishdate></mat-datepicker>
+
+							<mat-error style=" margin-top: 9px;" *ngIf="hasError('BOUWOrderWishdate', 'required')">Wensdatum is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%"
+							*ngIf="isplandateedit">
+							<mat-label>Geplande datum</mat-label>
+							<input matInput [matDatepicker]="pickerBOUWOrderPlanneddate"
+								formControlName="BOUWOrderPlanneddate" ngModel="{{local_data.BOUWOrderPlanneddateEdit}}"
+								[min]="minDate"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')">
+							<mat-datepicker-toggle matSuffix [for]="pickerBOUWOrderPlanneddate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerBOUWOrderPlanneddate></mat-datepicker>
+						</mat-form-field>
+
+						<mat-form-field  *ngIf="!isplandateedit" appearance="outline"
+							style="width: 100%;">
+							<mat-label>Geplande datum</mat-label>
+							<input matInput [matDatepicker]="pickerBOUWOrderPlanneddate"
+								formControlName="BOUWOrderPlanneddate" ngModel="{{local_data.BOUWOrderPlanneddateEdit"
+									[min]="minDate" [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')">
+							<mat-datepicker-toggle style="display: none;"  matSuffix [for]="pickerBOUWOrderPlanneddate"></mat-datepicker-toggle>
+							<mat-datepicker style="display: none;" #pickerBOUWOrderPlanneddate></mat-datepicker>
+						</mat-form-field>
+					</div>
+
+					
+				</div>
+
+
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							
+							<mat-label>Aannemer </mat-label>
+							<mat-select disableOptionCentering formControlName="BOUWOrderContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemer">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue"
+									[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')" innerText={{communication.communicationname}}>
+									
+								</mat-option>
+							</mat-select>
+							<mat-error style=" margin-top: 9px;" *ngIf="hasError('BOUWOrderContractor', 'required')">Aannemer verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Opdracht status</mat-label>
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="Opdracht status"
+								[disabled]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')">
+
+								<mat-option *ngIf="issuenextstateList" [value]="issuenextstateList[0].currentstate_id" innerText={{issuenextstateList[0].currentstatename}}></mat-option>
+								<mat-option *ngFor="let state of issuenextstateList" [value]="state.nextstate_id" innerText={{state.nextstatename}}></mat-option>
+
+
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('orderstate', 'required')">Opdracht
+								status is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field appearance="outline" class="focusformfieldtextarea" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Dekking </mat-label>
+							<textarea rows="5" matInput formControlName="BOUWOrderCoverage" placeholder="Dekking"
+								autocomplete="off" ngModel="{{local_data.BOUWOrderCoverage}}" maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('BOUWOrderCoverage', 'required')">
+								Dekking is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field  appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;" class="hsttextarea">
+							<mat-label>Opdracht </mat-label>
+							<textarea rows="5" matInput formControlName="description" placeholder="Opdracht"
+								autocomplete="off" ngModel="{{local_data.opmerking}}" maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditView','disabled')"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Opdracht is
+								verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Order Update - voortgangsmelding</h5>
+
+				<div class="col-md-3" style="display:none">
+					<mat-form-field class="hsttextarea" appearance="outline" style="width: 100%;">
+
+						<input matInput formControlName="facturatie_status" placeholder="Facturatiestatus"
+							autocomplete="off" readonly>
+
+					</mat-form-field>
+				</div>
+
+				<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field  appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;" class="focusformfieldtextarea">
+							<mat-label>Order Update - voortgangsmelding </mat-label>
+							<textarea rows="5" matInput formControlName="BOUWProgressNotification"
+								placeholder="Opdracht" autocomplete="off"
+								ngModel="{{local_data.BOUWProgressNotification}}" maxlength="250"
+								[readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'HotspotTab','SiteSurveyEditRemark','disabled')"></textarea>
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('BOUWProgressNotification', 'required')">Order Update -
+								voortgangsmelding is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+
+				<div style="margin:15px;"></div>
+				<app-bouwauditlog [orderid]="orderid"></app-bouwauditlog>
+			</div>
+		</form>
+
+
+	</ng-container>
+
+	<ng-template #elsetransfer>
+		<ng-container *ngIf="action === 'UpdateStatus'; else elseAdd" [formGroup]="hotspotscreateform">
+			<h1 mat-dialog-title class="dialog-box-header">Wijzigen Orderstatus - Kraskaart -
+				{{local_data.location_name}}</h1>
+			<form [formGroup]="hotspotscreateform" #f="ngForm" (ngSubmit)="onUpdateStatus(f)" novalidate>
+				<div class="full-column">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Orderstatus</mat-label>
+
+
+							<mat-select disableOptionCentering formControlName="orderstate"
+								panelClass="my-select-panel-class" placeholder="State"
+								ngModel="{{local_data.orderstatus}}">
+								<mat-option *ngFor="let state of SCardOrderStatus" [value]="state.id" innerText={{state.name}}>
+									
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top:10px;" *ngIf="hasError('orderstate', 'required')">Orderstatus
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div mat-dialog-actions align="center">
+					<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+						class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+					<button [disabled]="buttondisabled" mat-raised-button
+						class="redir-main-loc can-crt-mid">Opslaan</button>
+				</div>
+			</form>
+		</ng-container>
+	</ng-template>
+
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Aanvraag - Site Survey - {{local_data.location_name}}</h1>
+
+
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon>location_on</mat-icon>Locatie id : {{local_data.locationdata.customerid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="60px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon>Adres : {{local_data.locationdata.fulladdress}}
+				</mat-label>
+
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> loop</mat-icon> Keten : {{local_data.locationdata.locationchain}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> location_on</mat-icon> Type : {{local_data.locationdata.locationtypeid}}
+				</mat-label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="full-column" fxLayoutGap="40px">
+				<mat-label>
+					<mat-icon> contacts</mat-icon>Accountmanager : {{local_data.locationdata.accountmanagerid}}
+				</mat-label>
+			</div>
+		</div>
+		<form [formGroup]="sitesurveycreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;margin-top:3%;">Gegevens Technisch
+					contactpersoon</h5>
+
+				<div class="form-row">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Selecteer contactpersoon</mat-label>
+							<mat-select disableOptionCentering formControlName="BOUWOrderContactid" 
+								panelClass="my-select-panel-class" placeholder="Selecteer contactpersoon"
+								(selectionChange)="selectCustomerContact($event.value)">
+								<mat-option *ngFor="let customercontact of customercontactList"
+									[value]="customercontact.id" innerText="{{customercontact.contactpersonlastname +'(' + customercontact.contactpersonfirstname +')' }}">
+									
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('BOUWOrderContactid', 'required')">
+								Contactpersoon is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+					
+					<div class="col-md-1">
+						<button [disableRipple]="true" class="mat-addon-plus" type="button" mat-icon-button
+						[disabled]="_commonService.getfieldpropertyvalue(tabSectionListContact,'ContactButton','add','disabled')"
+							fxFlex="nogrow" (click)="openContactDialogAdd('Add')" title="Toevoegen">
+							<mat-icon>add_box</mat-icon>
+						</button>
+					</div>
+					
+
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="BOUWOrderContactPersonTelephone"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('BOUWOrderContactPersonTelephone', 'required')">Aantal is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>E-mailadres </mat-label>
+							<input matInput formControlName="BOUWOrderContactPersonEmail" placeholder="E-mailadres"
+								autocomplete="off" [readonly]="!isBillingUser">
+							<mat-error style="margin-top: 9px;"
+								*ngIf="hasError('BOUWOrderContactPersonEmail','required')">Prijs is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Functie </mat-label>
+							<input matInput formControlName="BOUWOrderContactPersonFunction" readonly
+								placeholder="Functie" autocomplete="off">
+						</mat-form-field>
+					</div>
+				</div>
+
+
+
+				<!--<div class="quat-row">-->
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Uitvoering</h5>
+				<div class="form-row">
+
+
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%">
+
+							<mat-label>Wensdatum</mat-label>
+							<input matInput [matDatepicker]="pickerBOUWOrderWishdate" (dateChange)="dateValidation()"
+								formControlName="BOUWOrderWishdate" [min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerBOUWOrderWishdate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerBOUWOrderWishdate></mat-datepicker>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('BOUWOrderWishdate', 'required')">
+								Wensdatum is verplicht</mat-error>
+
+						</mat-form-field>
+					</div>
+
+
+				</div>
+
+
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Aannemer </mat-label>
+							<mat-select disableOptionCentering formControlName="BOUWOrderContractor"
+								panelClass="my-select-panel-class" placeholder="Aannemer">
+								<mat-option *ngFor="let communication of communicationgroupList"
+									[value]="communication.communicationvalue" innerText={{communication.communicationname}}>
+									
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('BOUWOrderContractor', 'required')">
+								Aannemer verplicht</mat-error>
+						</mat-form-field>
+					</div>
+
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Omschrijving opdracht</h5>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;" class="focusformfieldtextarea">
+							<mat-label>Dekking </mat-label>
+							<textarea rows="5" matInput formControlName="BOUWOrderCoverage" placeholder="Dekking"
+								autocomplete="off" maxlength="250"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('BOUWOrderCoverage', 'required')">
+								Dekking is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-12">
+						<mat-form-field appearance="outline" style="margin-bottom: 0.6%;width:100%;" class="hsttextarea">
+							<mat-label>Opdracht </mat-label>
+							<textarea rows="5" matInput formControlName="description" placeholder="Opdracht"
+								autocomplete="off" maxlength="250"></textarea>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('description', 'required')">Omschrijving
+								is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<!--<div class="form-row" style="margin-bottom:4%;" *ngIf="isConn==2">
+					<div class="col-md-12">
+						<mat-form-field class="focusformfield" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opdracht omschrijving glasaansluiting</mat-label>
+							<textarea rows="5" matInput formControlName="BOUWSODescription" placeholder="Opdracht omschrijving glasaansluiting" autocomplete="off"
+								maxlength="250"></textarea>
+						</mat-form-field>
+					</div>
+				</div>-->
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+
+
+
+
+
+
+</div>

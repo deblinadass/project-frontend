@@ -1,0 +1,39 @@
+<ng-container *ngIf="action === 'Relocate'">
+		<h1 mat-dialog-title style="color:rgb(0, 153, 255);">Verhuizen Sublocatie</h1>
+		<div mat-dialog-content>
+			<form [formGroup]="satelliteRelocateForm" #f="ngForm" (ngSubmit)="onSatelliteRelocate(f)" novalidate>
+				<div class="full-column">
+					<mat-form-field appearance="outline">
+						<mat-select disableOptionCentering disableOptionCentering formControlName="parentcustomerid"
+                                                placeholder="Zoek hoofdlocatie">
+                                                <mat-option>
+                                                        
+														<ngx-mat-select-search disableOptionCentering [formControl]="locationServerSideSatelliteFilteringCtrl" 
+                       placeholderLabel="Zoek hoofdlocatie..." 
+                       i18n-placeholderLabel></ngx-mat-select-search>
+                                                </mat-option>
+                          						<mat-option *ngIf="noRecordFound == 0">{{ 'Geen locaties gevonden' }}</mat-option>
+                                                
+                                                <mat-option
+                                                        *ngFor="let satelliteLocation of filteredServerSideSatelliteLocations | async"
+                                                        [value]="satelliteLocation.customerid">
+                                                        {{satelliteLocation.customername}}
+                                                </mat-option>
+                                        </mat-select>
+						<mat-error *ngIf="hasErrorSatelliteRelocate('parentcustomerid', 'required')">
+							Sublocatie is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button type="submit" class="redir-main-loc can-crt-mid">Verhuizen</button>
+					</mat-card-actions>
+				</div>
+			</form>
+		</div>
+
+</ng-container>
+
+

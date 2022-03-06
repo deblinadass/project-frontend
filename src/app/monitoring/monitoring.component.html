@@ -1,0 +1,113 @@
+<div class="mt-4">
+    <nav mat-tab-nav-bar>
+            <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive
+                    #rla="routerLinkActive" [active]="rla.isActive" id="{{'tab'+link.indexno}}"
+                    [ngClass]="{'highlight': currentUrl == link.link }" [state]="{id : id}"
+                    class="rounded shadow-5g p-2 mb-1 bg-green rounded">{{link.label}}
+            </a>
+    </nav>
+  </div>
+  <div class="design-process-content-form" *ngIf="bigErrorMessageValid">
+      <mat-error>
+        Er is een afwijking geconstateerd in de sessie grafiek. Controleer de sessie grafieken of sessie grafieken (mon2) om vast te stellen of er sprake is van een storing.
+      </mat-error>
+  </div>
+<div class="design-process-content-form">
+	<div class="" >	
+		<div class="col-md-6">
+					<button title="Ok" mat-raised-button class ="btnclass" [disabled]="true" color="ok">&nbsp;{{totalalarm_ok}}&nbsp;</button>
+					<button title="Warn" mat-raised-button class ="btnclass" [disabled]="true" color="warn">&nbsp;{{totalalarm_warn}}&nbsp;</button>
+					<button title="Critical" mat-raised-button class ="btnclass" [disabled]="true" color="critical">&nbsp;{{totalalarm_crit}}&nbsp;</button>
+					<button title="Down" mat-raised-button class ="btnclass btn-default" [disabled]="true" color="down"> {{totalalarm_perc}}%&nbsp;</button>
+                    <button title="Users" mat-raised-button class ="btnclass" [disabled]="true" color="users">&nbsp;{{locationCount}} locaties&nbsp;</button>
+                    <button title="Users" mat-raised-button class ="btnclass" [disabled]="true" color="totalusers">&nbsp;Totaal {{totaluserloogged}} users ingelogd&nbsp;</button>
+					<!--<button title="Comment" mat-raised-button  class ="comment" [disabled]="true" color="warn">{{alarmData[0].comment}}</button>-->
+        </div>
+        <div class="col-md-6"></div>
+	</div>
+	
+    </div>
+    <div class="overlay" *ngIf="loading">
+        <div class="progress-spinner-product">
+          <div></div>
+        </div>
+      </div>
+        
+        <div class="design-process-content-form" id="monitoring">
+            <div class="half-row">
+                <mat-form-field>
+                  <input matInput (keyup)="applyFilterMonitoring($event.target.value)" placeholder="Filter">
+                </mat-form-field>
+                </div>
+            <table #monitoringsort="matSort" mat-table [dataSource]="dataSourceMonitoring" multiTemplateDataRows
+                class="mat-elevation-z8" matSort>
+
+                <ng-container matColumnDef="customerid">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">ID</th>
+                    <td mat-cell *matCellDef="let element" class="col-padding"
+                    style="justify-content: flex-start;flex: 0 0 37% !important;font-size: 13px;"> 
+                        <a routerLink="{{linkPath}}" [state]="{id : element.customerid}">
+                            {{element.customerid}}
+                        </a>
+                        </td>
+                </ng-container>
+                <ng-container matColumnDef="customername">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">Locatie</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.customername}}</td>
+                </ng-container>
+                <ng-container matColumnDef="city">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">Plaats</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.city}}</td>
+                </ng-container>
+        
+                <ng-container matColumnDef="button">
+                    <th mat-header-cell *matHeaderCellDef style="width: 20%;">
+                        <button mat-raised-button class ="btnclass" [disabled]="true" color="ok">OK</button>
+                        <button mat-raised-button class ="btnclass" [disabled]="true" mat-raised-button color="warn">Warn</button>
+                        <button mat-raised-button class ="btnclass" [disabled]="true" mat-raised-button color="critical">CRIT</button>					
+                        <button mat-raised-button class ="btnclass" [disabled]="true" color="down">&nbsp;Down%&nbsp;</button>
+                        <button mat-raised-button class ="btnclass users" [disabled]="true" color="users">&nbsp;Users&nbsp;</button>
+                    </th>
+                    <td mat-cell *matCellDef="let element">  
+                        <button mat-raised-button class ="btnclass" [disabled]="true" color="ok">{{element.ok}}</button>
+                        <button mat-raised-button class ="btnclass" [disabled]="true" color="warn">{{element.warn}}</button>
+                        <button mat-raised-button class ="btnclass" [disabled]="true" color="critical">{{element.critical}}</button>
+                        <button mat-raised-button class ="btnclass" [disabled]="true" color="down">{{element.down}}</button>
+                        <button mat-raised-button class ="btnclass users" [disabled]="true" color="users">{{element.users}}</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="service">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">SLA</th>
+                    <td mat-cell *matCellDef="let element"> {{ element.service}}</td>
+                </ng-container>
+        
+                <ng-container matColumnDef="incident">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 5%;">Ticket</th>
+                    <td mat-cell *matCellDef="let element"> <a  (click)="openDialogAddMonTicket('Add', element)" class="btn redir-main-loc row-btn"
+                        title="Toevoegen Monitoring Ticket"
+                        *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'InfraTab','InfraTicketAdd','disabled') && element.incident == 'Nee'">{{element.incident}}
+                    </a>
+                    <a  (click)="openDialogEditMonitoring('Update',element)" class="btn redir-main-loc row-btn"
+                        title="Toevoegen Monitoring Ticket"
+                        *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'InfraTab','InfraTicketAdd','disabled') && element.incident == 'Ja'">{{element.incident}}
+                    </a>
+                
+                </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="createddate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 20%;">In alarm sinds</th>
+                    <td mat-cell *matCellDef="let element">{{ element.createddate}} </td>
+                </ng-container>
+                
+                <tr mat-header-row *matHeaderRowDef="displayedMonitoringColumns"></tr>
+                <tr mat-row *matRowDef="let element; columns: displayedMonitoringColumns;"></tr>
+     
+            </table>
+            <mat-paginator #paginatorMonitoring [pageSize]="20" [pageSizeOptions]="[20, 50, 100]" showFirstLastButtons>
+            </mat-paginator>
+            
+        </div>
+       
+    

@@ -1,0 +1,384 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elseDelete">
+		<h1 mat-dialog-title class="dialog-box-header">Wijzigen - MAC-adres - {{local_data.location_name}}</h1>
+		<form [formGroup]="macauthform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<!--<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Kraskaart</h5>-->
+				
+				
+				<div class="form-row" style="margin-bottom: 20px;">
+					<div class="col-md-8">
+						<mat-form-field class="focusformfield" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Mac adres  </mat-label>
+							<input matInput formControlName="macaddress" ngModel="{{local_data.macaddress}}"  placeholder="Mac adres" autocomplete="off"
+								maxlength="17" (input)="reformat($event)" class="font-weight-bold">
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('macaddress', 'required')">Mac adres is verplicht</mat-error>
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('macaddress', 'pattern')">Een MAC-adres bevat alleen cijfers (0-9) en letters (A-F)</mat-error>
+								
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<div class="form-row" style="margin-bottom: 20px;">
+					<div class="col-md-4">
+						<mat-form-field  appearance="outline" style="width: 100%;">
+							<mat-label>Gebruikersprofiel</mat-label>
+							<mat-select disableOptionCentering formControlName="ubprofile" ngModel="{{local_data.ubprofile}}"
+								panelClass="my-select-panel-class" placeholder="Gebruikersprofiel"
+								(selectionChange)="selectTypePlan($event.value)">
+								<mat-option *ngFor="let productnameSingle of macUBProfileList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field  appearance="outline" style="width: 100%">
+							
+							<mat-label>Einddatum </mat-label>
+							<input matInput [matDatepicker]="pickerenddate" ngModel="{{local_data.enddateEdit}}"
+								(dateChange)="dateValidation()" formControlName="enddate"
+								[min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerenddate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerenddate></mat-datepicker>
+							
+						</mat-form-field>
+					</div>
+
+					</div>
+
+					<div class="form-row" *ngIf="isUbprofileNotDefault" style="margin-bottom: 20px;">
+						
+	
+						<div class="col-md-4" >
+							<mat-form-field  appearance="outline" style="width: 100%;">
+								<mat-label>Download </mat-label>
+								<mat-select disableOptionCentering formControlName="ubprofiledownload" ngModel="{{local_data.ubprofiledownload}}"
+									panelClass="my-select-panel-class" placeholder="Download">
+									<mat-option *ngFor="let productnameSingle of macUBDownloadList"
+										[value]="productnameSingle.id">
+										{{productnameSingle.download}}
+									</mat-option>
+								</mat-select>
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('ubprofiledownload', 'required')">Download is verplicht</mat-error>
+						
+							</mat-form-field>
+						</div>
+	
+	
+						<div class="col-md-4">
+							<mat-form-field appearance="outline" style="width: 100%;">
+								<mat-label>Upload </mat-label>
+								<mat-select disableOptionCentering formControlName="ubprofileupload"
+									panelClass="my-select-panel-class" placeholder="Upload" ngModel="{{local_data.ubprofileupload}}"
+									>
+									<mat-option *ngFor="let productnameSingle of macUBUploadList"
+										[value]="productnameSingle.id">
+										{{productnameSingle.upload}}
+									</mat-option>
+								</mat-select>
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('ubprofileupload', 'required')">Upload is verplicht</mat-error>
+						
+							</mat-form-field>
+						</div>
+
+					<!--<div class="col-md-4" *ngIf="isUbprofileNotDefault">
+						
+						<mat-form-field fxFlex="calc(50%-25px)" appearance="outline"   style="width: 100%;">
+							<mat-select disableOptionCentering formControlName="ubprofiletype"
+								panelClass="my-select-panel-class" placeholder="Gebruikersprofiel Type"
+								(selectionChange)="selectDownloadUpload($event.value)">
+								<mat-option *ngFor="let productnameSingle of macUBProfileTypeList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('remark', 'required')">Gebruikersprofiel Type is verplicht</mat-error>
+						</mat-form-field>
+					</div>-->
+
+
+					<!--<div class="col-md-4" *ngIf="isUbprofileNotDefault">
+						
+						<mat-form-field appearance="outline"   style="width: 100%;">
+							<mat-select disableOptionCentering formControlName="userbandwidth_id" 
+											placeholder="Geldig op Gebruikersprofiel">
+									<mat-option>                            
+										<ngx-mat-select-search disableOptionCentering [formControl]="UBFilteringCtrl" 
+											placeholderLabel="Zoek Gebruikersprofiel..." 
+											i18n-placeholderLabel>
+										</ngx-mat-select-search>
+									</mat-option>
+									<mat-option *ngIf="noRecordFound == 0">{{ 'Geen Gebruikersprofiel gevonden' }}</mat-option>
+												
+									<mat-option  *ngFor="let userbandwidth of filteredServerSideUBs | async"
+											[value]="userbandwidth.id">  {{userbandwidth.description}}
+									</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('userbandwidth_id', 'required')">Gebruikersprofiel is verplicht</mat-error>
+						</mat-form-field>
+					</div>-->
+
+
+
+
+				</div>	
+
+				
+
+				<div class="form-row">
+					<div class="col-md-8">
+						<mat-form-field class="focusformfield" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opmerking </mat-label>
+							<input matInput formControlName="remark"  placeholder="Opmerking" autocomplete="off" ngModel="{{local_data.remark}}"
+								maxlength="250">
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('remark', 'required')">Opmerking is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				
+						
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+
+				
+			</div>
+		</form>
+
+
+		
+	</ng-container>
+
+	<ng-template #elseDelete>
+		<ng-container *ngIf="action === 'Delete'; else elseAdd">
+			<h1 mat-dialog-title style="color:#47a217;">Verwijderen  - MAC-adres - {{local_data.location_name}}</h1>
+			Wil je  MAC-Adres <b>{{local_data.macaddress}}</b> verwijderen?
+			<div mat-dialog-actions align="center">
+				<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+					class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+				<button [disabled]="buttondisabled" mat-raised-button (click)="onDelete()"
+					class="redir-main-loc can-crt-mid">Verwijderen</button>
+			</div>
+		</ng-container>
+	</ng-template>
+
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Toevoegen  - MAC-adres - {{local_data.location_name}}</h1>
+		<form [formGroup]="macauthform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<!--<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Kraskaart</h5>-->
+				
+				
+				<div class="form-row" style="margin-bottom: 20px;">
+					<div class="col-md-8">
+						<mat-form-field class="focusformfield" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Mac adres  </mat-label>
+							<input matInput formControlName="macaddress"  placeholder="Mac adres" autocomplete="off"
+								maxlength="17" (input)="reformat($event)" class="font-weight-bold">
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('macaddress', 'required')">Mac adres is verplicht</mat-error>
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('macaddress', 'pattern')">Een MAC-adres bevat alleen cijfers (0-9) en letters (A-F)</mat-error>
+								
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<div class="form-row" style="margin-bottom: 20px;">
+					<div class="col-md-4">
+						<mat-form-field  appearance="outline" style="width: 100%;">
+							<mat-label>Gebruikersprofiel</mat-label>
+							<mat-select disableOptionCentering formControlName="ubprofile"
+								panelClass="my-select-panel-class" placeholder="Gebruikersprofiel"
+								(selectionChange)="selectTypePlan($event.value)">
+								<mat-option *ngFor="let productnameSingle of macUBProfileList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field  appearance="outline" style="width: 100%">
+							
+							<mat-label>Einddatum </mat-label>
+							<input matInput [matDatepicker]="pickerenddate"
+								(dateChange)="dateValidation()" formControlName="enddate"
+								[min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerenddate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerenddate></mat-datepicker>
+							
+						</mat-form-field>
+					</div>
+
+					</div>
+
+					<div class="form-row" *ngIf="isUbprofileNotDefault" style="margin-bottom: 20px;">
+						
+	
+						<div class="col-md-4" >
+							<mat-form-field  appearance="outline" style="width: 100%;">
+								<mat-label>Download</mat-label>
+								<mat-select disableOptionCentering formControlName="ubprofiledownload"
+									panelClass="my-select-panel-class" placeholder="Download">
+									<mat-option *ngFor="let productnameSingle of macUBDownloadList"
+										[value]="productnameSingle.id">
+										{{productnameSingle.download}}
+									</mat-option>
+								</mat-select>
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('ubprofiledownload', 'required')">Upload is verplicht</mat-error>
+						
+							</mat-form-field>
+						</div>
+	
+	
+						<div class="col-md-4">
+							<mat-form-field appearance="outline" style="width: 100%;">
+								<mat-label>Upload</mat-label>
+								<mat-select disableOptionCentering formControlName="ubprofileupload"
+									panelClass="my-select-panel-class" placeholder="Upload"
+									>
+									<mat-option *ngFor="let productnameSingle of macUBUploadList"
+										[value]="productnameSingle.id">
+										{{productnameSingle.upload}}
+									</mat-option>
+								</mat-select>
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('ubprofileupload', 'required')">Upload is verplicht</mat-error>
+						
+							</mat-form-field>
+						</div>
+
+					<!--<div class="col-md-4" *ngIf="isUbprofileNotDefault">
+						
+						<mat-form-field fxFlex="calc(50%-25px)" appearance="outline"   style="width: 100%;">
+							<mat-select disableOptionCentering formControlName="ubprofiletype"
+								panelClass="my-select-panel-class" placeholder="Gebruikersprofiel Type"
+								(selectionChange)="selectDownloadUpload($event.value)">
+								<mat-option *ngFor="let productnameSingle of macUBProfileTypeList"
+									[value]="productnameSingle.id">
+									{{productnameSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('remark', 'required')">Gebruikersprofiel Type is verplicht</mat-error>
+						</mat-form-field>
+					</div>-->
+
+
+					<!--<div class="col-md-4" *ngIf="isUbprofileNotDefault">
+						
+						<mat-form-field appearance="outline"   style="width: 100%;">
+							<mat-select disableOptionCentering formControlName="userbandwidth_id" 
+											placeholder="Geldig op Gebruikersprofiel">
+									<mat-option>                            
+										<ngx-mat-select-search disableOptionCentering [formControl]="UBFilteringCtrl" 
+											placeholderLabel="Zoek Gebruikersprofiel..." 
+											i18n-placeholderLabel>
+										</ngx-mat-select-search>
+									</mat-option>
+									<mat-option *ngIf="noRecordFound == 0">{{ 'Geen Gebruikersprofiel gevonden' }}</mat-option>
+												
+									<mat-option  *ngFor="let userbandwidth of filteredServerSideUBs | async"
+											[value]="userbandwidth.id">  {{userbandwidth.description}}
+									</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('userbandwidth_id', 'required')">Gebruikersprofiel is verplicht</mat-error>
+						</mat-form-field>
+					</div>-->
+
+
+
+
+				</div>	
+
+				<!--<div class="form-row" style="margin-bottom: 20px;" >-->
+					<!--<div class="col-md-4" *ngIf="isUbprofileNotDefault && isUbprofileTypeNotDefault">
+						
+						<mat-form-field appearance="outline"   style="width: 100%;">
+							<mat-select disableOptionCentering formControlName="userbandwidth_id" 
+											placeholder="Geldig op Gebruikersprofiel">
+									<mat-option>                            
+										<ngx-mat-select-search disableOptionCentering [formControl]="UBFilteringCtrl" 
+											placeholderLabel="Zoek Gebruikersprofiel..." 
+											i18n-placeholderLabel>
+										</ngx-mat-select-search>
+									</mat-option>
+									<mat-option *ngIf="noRecordFound == 0">{{ 'Geen Gebruikersprofiel gevonden' }}</mat-option>
+												
+									<mat-option  *ngFor="let userbandwidth of filteredServerSideUBs | async"
+											[value]="userbandwidth.id">  {{userbandwidth.description}}
+									</mat-option>
+							</mat-select>
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('userbandwidth_id', 'required')">Gebruikersprofiel is verplicht</mat-error>
+						</mat-form-field>
+					</div>-->
+
+					<!--<div class="col-md-4">
+						<mat-form-field  appearance="outline" style="width: 100%">
+							
+							<mat-label>Einddatum </mat-label>
+							<input matInput [matDatepicker]="pickerenddate"
+								(dateChange)="dateValidation()" formControlName="enddate"
+								[min]="minDate">
+							<mat-datepicker-toggle matSuffix [for]="pickerenddate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerenddate></mat-datepicker>
+							
+						</mat-form-field>
+					</div>-->
+				<!--</div>-->
+
+				
+
+
+
+
+				<div class="form-row">
+					<div class="col-md-8">
+						<mat-form-field class="focusformfield" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Opmerking </mat-label>
+							<input matInput formControlName="remark"  placeholder="Opmerking" autocomplete="off"
+								maxlength="250">
+								<mat-error style="margin-top: 9px;" *ngIf="hasError('remark', 'required')">Opmerking is verplicht</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				
+						
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+
+				
+			</div>
+		</form>
+	</ng-template>
+
+
+
+	
+	
+
+</div>
+
+

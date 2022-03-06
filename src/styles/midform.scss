@@ -1,0 +1,145 @@
+@import "../../styles/common.scss";
+.design-process-content-form{
+  border: 1px solid;
+  padding: 10px;box-shadow: 5px 10px #888888;
+
+  
+    //display: inline-block;
+    //position: fixed;
+    //top: 0;
+    //bottom: 0;
+    left: 100px;
+    //right: 0;
+    width: 70%;
+    height: 100%;
+    margin: auto;
+    background-color: #f3f3f3;
+}
+// Sub Location Form Design
+.full-column{
+  display: flex;
+  flex-direction: column;
+}
+
+.full-column > * {
+  width: 100%;
+}
+
+.full-column-chain{
+  display: flex;
+  flex-direction: row;
+  
+}
+.full-column-chain > * {
+  width: 100%;
+}
+
+
+.full-column-chain > .full-column-button {
+  width: 5%;
+  height: 20%!important;
+}
+
+.half-row{
+  display: flex;
+  flex-direction: row;
+}
+
+.half-row > * {
+  width: 50%;
+}
+
+
+.quat-row{
+  display: flex;
+  flex-direction: row;
+}
+
+.quat-row > * {
+  width: 33%;
+}
+
+.four-row{
+  display: flex;
+  flex-direction: row;
+}
+
+.four-row > * {
+  width: 25%;
+}
+
+
+/* default and hover color */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  background-color: white;
+  border-radius: 5px;
+}
+
+
+
+/* button toggle thumb */
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+  background-color: #044902;
+}
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: #0db907
+}
+
+
+::ng-deep .mat-form-field-label{
+  color:#000 !important;
+}
+
+::ng-deep .mat-form-field-readonly{
+  color:#000 !important;
+}
+
+
+
+/* focused color */
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: green;
+}
+
+/* floating label color */
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-label { 
+  color: green; 
+}
+// Sub Location Form Design
+
+/*.wrapper-btn{
+  text-align: center;
+  display: inline-block;
+  position: absolute;
+ 
+  top: 10%;
+  left: 50%;
+}*/
+
+.btn-primary {
+  background-color:darkgreen;
+}
+
+.back-btn{
+  text-align: center;
+  margin-left: 93%;
+  cursor: pointer;
+}
+
+.submit-btn{
+  margin-left: 93%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.reset-btn{
+  margin-left: 95%;
+  text-align: center;
+  cursor: pointer;
+}
+
+/*[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}*/

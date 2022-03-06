@@ -1,0 +1,383 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container *ngIf="action === 'Update'; else elseDelete">
+		<h1 mat-dialog-title class="dialog-box-header">Wijzigen Product Catalogus</h1>
+
+		<form [formGroup]="productcatalogueform" #f="ngForm" (ngSubmit)="onUpdate(f)" novalidate>
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Groep</mat-label>
+						<mat-select ngModel="{{local_data.productgroupid}}" disableOptionCentering
+							formControlName="productgroup" (selectionChange)="selectproductname()"
+							panelClass="my-select-panel-class" placeholder="Groep">
+							<mat-option *ngFor="let productgroup of productgroupList"
+								[value]="productgroup.cataloguepropertyvalue">
+								{{productgroup.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('productgroup', 'required')">Groep is verplicht</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Type</mat-label>
+						<mat-select ngModel="{{local_data.producttypeid}}" disableOptionCentering
+							formControlName="producttype" (selectionChange)="selectproductname()"
+							panelClass="my-select-panel-class" placeholder="Type">
+							<mat-option *ngFor="let producttype of producttypeList"
+								[value]="producttype.cataloguepropertyvalue">
+								{{producttype.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('producttype', 'required')">Type is verplicht</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Product</mat-label>
+						<mat-select ngModel="{{local_data.productnameid}}" disableOptionCentering
+							formControlName="productname" panelClass="my-select-panel-class" placeholder="Product">
+							<mat-option *ngFor="let productnameSingle of productnameList"
+								[value]="productnameSingle.cataloguepropertyvalue">
+								{{productnameSingle.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('productname', 'required')">Product is verplicht</mat-error>
+					</mat-form-field>
+
+				</div>
+
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Prijs</mat-label>
+						<input ngModel="{{local_data.productprice}}" matInput formControlName="productprice"
+							placeholder="Prijs" autocomplete="off">
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('productprice','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline" style="margin-right:2%;margin-bottom: 3%;">
+						<mat-label>Startdatum</mat-label>
+						<input ngModel="{{local_data.startdateEdit}}" matInput [matDatepicker]="startPicker"
+							placeholder="Startdatum" formControlName="startdate" 
+							[max]="maxStartDate" (dateChange)="startdateValidation()">
+						<mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+						<mat-datepicker #startPicker></mat-datepicker>
+						<!--<mat-error *ngIf="productcatalogueform.get('startdate').hasError('matDatepickerMax')">Startdatum
+							is verplicht</mat-error>
+						<mat-error *ngIf="hasError('startdate','required')">Startdatum is verplicht</mat-error>-->
+
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Einddatum</mat-label>
+						<input ngModel="{{local_data.enddateEdit}}" matInput [matDatepicker]="endPicker"
+							placeholder="Einddatum" formControlName="enddate" [min]="minEndDate" [max]="maxEndDate"
+							(dateChange)="enddateValidation()">
+						<mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+						<mat-datepicker #endPicker></mat-datepicker>
+						
+						<!--<mat-error *ngIf="hasError('enddate','required')">Einddatum is verplicht</mat-error>
+						<mat-error *ngIf="productcatalogueform.get('enddate').hasError('matDatepickerMax')">Einddatum is
+							verplicht</mat-error>-->
+
+					</mat-form-field>
+				</div>
+
+				<div class="half-row" style="display: none;">
+					<mat-form-field appearance="outline" style="margin-right:2%;margin-bottom: 3%;">
+						<mat-label>Start staffel</mat-label>
+						<input matInput formControlName="startstaffel" type="number" placeholder="Start staffel"
+							autocomplete="off" min="1">
+						<mat-error style="margin-top: 9px;" *ngIf="productcatalogueform.get('startstaffel').hasError('max')">Start staffel should
+							be less than end</mat-error>
+
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>End staffel</mat-label>
+						<input matInput formControlName="endstaffel" placeholder="Start staffel" autocomplete="off"
+							type="number" min="1">
+						<mat-error *ngIf="productcatalogueform.get('endstaffel').hasError('max')">End staffel should be
+							greater than start</mat-error>
+
+					</mat-form-field>
+				</div>
+
+				<div class="full-column" *ngIf="!isRTLMemoLineForScratchCard">
+					<mat-form-field appearance="outline">
+						<mat-label>RTL Memoline</mat-label>
+						<input ngModel="{{local_data.rtlmemoline}}" matInput formControlName="rtlmemoline"
+							placeholder="RTL Memoline" autocomplete="off">
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('rtlmemoline','required')">RTL Memoline is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+
+
+				<div class="full-column" *ngIf="isRTLMemoLineForScratchCard">
+					<mat-form-field appearance="outline">
+						<mat-label>RTL Memoline</mat-label>
+						
+						<mat-select disableOptionCentering ngModel="{{local_data.rtlmemoline}}"
+							formControlName="rtlmemoline" panelClass="my-select-panel-class" placeholder="Product">
+							<mat-option *ngFor="let productnameSingle of productmemolineList"
+								[value]="productnameSingle.cataloguepropertyvalue">
+								{{productnameSingle.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('rtlmemoline','required')">RTL Memoline is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+
+				
+				<div class="half-row" style="display: none;">
+					<mat-form-field appearance="outline">
+						<mat-label>WS Memoline</mat-label>
+						<input ngModel="{{local_data.wsmemoline}}" matInput formControlName="wsmemoline"
+							placeholder="WS Memoline" autocomplete="off">
+					</mat-form-field>
+				</div>
+
+				<div class="full-column">
+					<mat-form-field appearance="outline">
+						<mat-label>Opmerking</mat-label>
+						<input ngModel="{{local_data.productdescription}}" matInput formControlName="productdescription"
+							placeholder="Opmerking" autocomplete="off">
+					</mat-form-field>
+
+				</div>
+
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%;">
+						<mat-label>Locatie</mat-label>
+						<input matInput ngModel="{{local_data.locationids}}" formControlName="locationids" placeholder="Locatie" autocomplete="off">
+					</mat-form-field>
+				</div>
+
+				<!--<div class="half-row">
+					<mat-form-field appearance="outline">
+						<mat-label>Related VVE</mat-label>
+						<input matInput formControlName="relatedvve" placeholder="Related VVE" autocomplete="off">
+						
+					</mat-form-field>
+				</div>-->
+
+				<!--<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field appearance="outline" style="width: 100%;">
+							<mat-label>Opmerking </mat-label>
+							<input matInput formControlName="description" placeholder="Omschrijving"
+								autocomplete="off" ngModel="{{remarks" maxlength="50">
+						</mat-form-field>
+					</div>
+				</div>-->
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+	<ng-template #elseDelete>
+		<ng-container *ngIf="action === 'Delete'; else elseRelocate">
+			<h1 mat-dialog-title class="dialog-box-header">Verwijderen Product Catalogus</h1>
+			Wil je Product Catalogus <b>{{local_data.catrefid}}</b> verwijderen?
+			<div mat-dialog-actions align="center">
+				<a [disabled]="buttondisabled" mat-button (click)="closeDialog()" mat-flat-button
+					class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+				<button [disabled]="buttondisabled" mat-raised-button (click)="onDelete()"
+					class="redir-main-loc can-crt-mid">Verwijderen</button>
+			</div>
+		</ng-container>
+	</ng-template>
+
+	<ng-template #elseRelocate>
+		<ng-container *ngIf="action === 'Relocate'; else elseAdd">
+			<h1 mat-dialog-title class="dialog-box-header">
+				{{local_data.productattributevaluesi[2].productattributevalue}}::
+				<strong>Verhuizen</strong></h1>
+			<div mat-dialog-content>
+
+			</div>
+		</ng-container>
+	</ng-template>
+
+	<ng-template #elseAdd>
+		<h1 mat-dialog-title class="dialog-box-header">Toevoegen Product Catalogus</h1>
+		<form [formGroup]="productcatalogueform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content>
+				<div class="half-row" style="margin-top: 12px;">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Groep</mat-label>
+						<mat-select disableOptionCentering formControlName="productgroup"
+							(selectionChange)="selectproductname()" panelClass="my-select-panel-class"
+							placeholder="Groep">
+							<mat-option *ngFor="let productgroup of productgroupList"
+								[value]="productgroup.cataloguepropertyvalue">
+								{{productgroup.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="hasError('productgroup', 'required')">Groep is verplicht</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Type</mat-label>
+						<mat-select disableOptionCentering formControlName="producttype"
+							(selectionChange)="selectproductname()" panelClass="my-select-panel-class"
+							placeholder="Type">
+							<mat-option *ngFor="let producttype of producttypeList"
+								[value]="producttype.cataloguepropertyvalue">
+								{{producttype.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('producttype', 'required')">Type is verplicht</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Product</mat-label>
+						<mat-select disableOptionCentering formControlName="productname"
+							panelClass="my-select-panel-class" placeholder="Productnaam">
+							<mat-option *ngFor="let productnameSingle of productnameList"
+								[value]="productnameSingle.cataloguepropertyvalue">
+								{{productnameSingle.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('productname', 'required')">Product is verplicht</mat-error>
+					</mat-form-field>
+
+				</div>
+
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%">
+						<mat-label>Prijs</mat-label>
+						<input matInput formControlName="productprice" placeholder="Prijs" autocomplete="off">
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('productprice','pattern')">Ongeldige waarde</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline" style="margin-right:2%;margin-bottom: 3%;">
+						<mat-label>Startdatum</mat-label>
+						<input matInput [matDatepicker]="startPicker" placeholder="Startdatum"
+							formControlName="startdate"  [max]="maxStartDate"
+							(dateChange)="startdateValidation()">
+						<mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+						<mat-datepicker #startPicker></mat-datepicker>
+						<!--<mat-error *ngIf="productcatalogueform.get('startdate').hasError('matDatepickerMax')">Startdatum
+							is verplicht</mat-error>
+						<mat-error *ngIf="hasError('startdate','required')">Startdatum is verplicht</mat-error>
+						-->
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Einddatum</mat-label>
+						<input matInput [matDatepicker]="endPicker" placeholder="Einddatum" formControlName="enddate"
+							[min]="minEndDate" [max]="maxEndDate" (dateChange)="enddateValidation()">
+						<mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+						<mat-datepicker #endPicker></mat-datepicker>
+						<!--<mat-error *ngIf="hasError('enddate','required')">Einddatum is verplicht</mat-error>
+						<mat-error *ngIf="productcatalogueform.get('enddate').hasError('matDatepickerMax')">Einddatum is
+							verplicht</mat-error>-->
+					</mat-form-field>
+				</div>
+
+				<div class="half-row" style="display: none;">
+					<mat-form-field appearance="outline">
+						<mat-label>Start staffel</mat-label>
+						<input matInput formControlName="startstaffel" type="number" placeholder="Start staffel"
+							autocomplete="off" min="1">
+						<mat-error *ngIf="productcatalogueform.get('startstaffel').hasError('max')">Start staffel should
+							be less than end</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>End staffel</mat-label>
+						<input matInput formControlName="endstaffel" placeholder="Start staffel" autocomplete="off"
+							type="number" min="1">
+						<mat-error *ngIf="productcatalogueform.get('endstaffel').hasError('max')">End staffel should be
+							greater than start</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div class="full-column" *ngIf="!isRTLMemoLineForScratchCard">
+					<mat-form-field appearance="outline">
+						<mat-label>RTL Memoline</mat-label>
+						<input matInput formControlName="rtlmemoline" placeholder="RTL Memoline" autocomplete="off">
+						<mat-error style="margin-top: 9px;" *ngIf="hasError('rtlmemoline','required')">RTL Memoline is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div class="full-column" *ngIf="isRTLMemoLineForScratchCard">
+					<mat-form-field appearance="outline">
+						<mat-label>RTL Memoline</mat-label>
+						
+						<mat-select disableOptionCentering
+							formControlName="rtlmemoline" panelClass="my-select-panel-class" placeholder="Product">
+							<mat-option *ngFor="let productnameSingle of productmemolineList"
+								[value]="productnameSingle.cataloguepropertyvalue">
+								{{productnameSingle.cataloguepropertyname}}
+							</mat-option>
+						</mat-select>
+						
+							<mat-error style="margin-top: 9px;" *ngIf="hasError('rtlmemoline','required')">RTL Memoline is verplicht</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div class="half-row" style="display: none;">
+					<mat-form-field appearance="outline">
+						<mat-label>WS Memoline</mat-label>
+						<input matInput formControlName="wsmemoline" placeholder="WS Memoline" autocomplete="off">
+					</mat-form-field>
+				</div>
+
+				<div class="full-column">
+					<mat-form-field appearance="outline">
+						<mat-label>Opmerking</mat-label>
+						<input ngModel="{{local_data.productdescription}}" matInput formControlName="productdescription"
+							placeholder="Opmerking" autocomplete="off">
+					</mat-form-field>
+
+				</div>
+
+				<div class="half-row">
+					<mat-form-field appearance="outline" style="margin-right:2%;">
+						<mat-label>Locatie</mat-label>
+						<input matInput formControlName="locationids" placeholder="Locatie" autocomplete="off">
+					</mat-form-field>
+				</div>
+
+				<!--<div class="half-row">
+					<mat-form-field appearance="outline">
+						<mat-label>Related VVE</mat-label>
+						<input matInput formControlName="relatedvve" placeholder="Related VVE" autocomplete="off">
+						
+					</mat-form-field>
+				</div>-->
+
+				<!--<div class="form-row">
+					<div class="col-md-12">
+						<mat-form-field appearance="outline" style="width: 100%;">
+							<mat-label>Opmerking </mat-label>
+							<input matInput formControlName="description" placeholder="Omschrijving"
+								autocomplete="off" ngModel="{{remarks}}" maxlength="50">
+						</mat-form-field>
+					</div>
+				</div>-->
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-template>
+</div>

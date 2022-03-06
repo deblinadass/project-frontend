@@ -1,0 +1,47 @@
+<div class="design-process-content-form mt-4 col-md-12">
+  <div class="half-row">
+      <mat-card-title>
+          <mat-icon>location_on</mat-icon>Sublocatie
+      </mat-card-title>
+      <div class="col-sm-6" style="text-align: right;padding-right: 10px;">
+          <a routerLink="/create-satellite-location" [state]="{id : id}" class="btn redir-main-loc submit-btn"
+              title="Sublocatie toevoegen"
+              *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'MainLocationView','AddSateliteLocation','disabled')">
+              <mat-icon>add_box</mat-icon>
+          </a>
+      </div>
+  </div>
+</div>
+<div class="design-process-content-form">
+  <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+  <table mat-table #outerSort2="matSort" [dataSource]="dataSource2" multiTemplateDataRows class="mat-elevation-z8"
+      matSort>
+      <ng-container matColumnDef="customerid">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 7%;">Klantid</th>
+            <td mat-cell *matCellDef="let element">{{element.customerid}}</td>
+      </ng-container>
+      <ng-container matColumnDef="customername">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 37%;">Klantnaam</th>
+          <td mat-cell *matCellDef="let element"> <a routerLink="/satellite/"
+                  [state]="{id: element.customerid }">{{ element.customername }}</a> </td>
+      </ng-container>
+      <ng-container matColumnDef="streetname">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 38%;">Straatnaam</th>
+          <td mat-cell *matCellDef="let element">
+              {{element.streetname}}&nbsp;{{element.housenumber}}&nbsp;{{element.housenumberaddition}}</td>
+      </ng-container>
+      <ng-container matColumnDef="postcode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 7%;">Postcode</th>
+          <td mat-cell *matCellDef="let element">{{element.postcode}}</td>
+      </ng-container>
+      <ng-container matColumnDef="city">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 18%;">Plaats</th>
+          <td mat-cell *matCellDef="let element">{{element.city}}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+  </table>
+  <mat-paginator #paginator2 [pageSize]="20" [pageSizeOptions]="[5, 10, 20, 50, 100]" showFirstLastButtons></mat-paginator>
+</div>

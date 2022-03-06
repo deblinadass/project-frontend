@@ -1,0 +1,206 @@
+
+
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+    <div [ngClass]="loading ? 'overlay-product' : ''">
+      <div *ngIf="loading" class="progress-spinner-product">
+        <div></div>
+      </div>
+    </div>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-card-title>
+          <mat-icon>apps</mat-icon>Service Notes
+        </mat-card-title>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="form-row">
+      <div class="col-md-12">
+        <form [formGroup]="notegeneralform" #form6="ngForm" (ngSubmit)="onUpdateGeneral(form6)" novalidate>
+          <div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+            <div class="form-row">
+              <div class="col-md-12">
+                <mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+                  <mat-label>Service note - General</mat-label>
+                  <textarea rows="10" matInput  ngModel="{{notegeneral}}" formControlName="notegeneral" placeholder="General" autocomplete="off" maxlength="3000"
+                  [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditGeneralServicenote','disabled')"></textarea>
+                    <!--<mat-error style="margin-top: 9px;" *ngIf="hasError('notekpnnoc', 'required')">KPN NOC  is verplicht</mat-error>-->
+                </mat-form-field>
+              </div>
+            </div>
+  
+  
+            <div class="full-column" fxLayoutGap="20px" style="float: right;">
+              <mat-card-actions align="center">
+                <!--<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                  class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>-->
+                <button [disabled]="buttondisabledfifth || _commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditGeneralServicenote','disabled')" mat-raised-button
+                  class="redir-main-loc can-crt-mid">Opslaan</button>
+              </mat-card-actions>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="form-row">
+        <div class="col-md-12">
+          <form [formGroup]="notelocationform" #form1="ngForm" (ngSubmit)="onUpdate(form1)" novalidate>
+            <div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+              <div class="form-row">
+                <div class="col-md-12">
+                  <mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+                    <mat-label>Service note - Location  </mat-label>
+                    <textarea rows="5" matInput ngModel="{{notelocation}}" formControlName="notelocation" placeholder="Service note - Location " autocomplete="off" maxlength="1000"
+                    [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditLocationServicenote','disabled')"></textarea>
+                      <mat-error style="margin-top: 9px;" *ngIf="hasError('notelocation', 'required')">Service note - Location is verplicht</mat-error>
+                      <!--<span class="remaning" style="position:absolute;
+                      bottom: 10px;
+                      right:10px;">{{remainingText}}/1000</span>-->
+                    </mat-form-field>
+                </div>
+              </div>
+
+
+              <div class="full-column" fxLayoutGap="20px" style="float: right;">
+                <mat-card-actions align="center">
+                  <!--<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                    class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>-->
+                  <button [disabled]="buttondisabled || _commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditLocationServicenote','disabled')" mat-raised-button
+                    class="redir-main-loc can-crt-mid">Opslaan</button>
+                </mat-card-actions>
+              </div>
+            </div>
+          </form>
+        </div>
+    </div>
+
+
+    <div class="form-row">
+      <div class="col-md-12">
+        <form [formGroup]="noteslaform" #form5="ngForm" (ngSubmit)="onUpdateSLA(form5)" novalidate>
+          <div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+            <div class="form-row">
+              <div class="col-md-12">
+                <mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+                  <mat-label>Service note - SLA</mat-label>
+                  <textarea rows="5" matInput ngModel="{{notesla}}" formControlName="notesla" placeholder="Service note - SLA" autocomplete="off" maxlength="1000"
+                  [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditSLAServicenote','disabled')"></textarea>
+                    <!--<mat-error style="margin-top: 9px;" *ngIf="hasError('notekpnnoc', 'required')">KPN NOC  is verplicht</mat-error>-->
+                </mat-form-field>
+              </div>
+            </div>
+  
+  
+            <div class="full-column" fxLayoutGap="20px" style="float: right;">
+              <mat-card-actions align="center">
+                <!--<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                  class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>-->
+                <button [disabled]="buttondisabledfourth || _commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditSLAServicenote','disabled')" mat-raised-button
+                  class="redir-main-loc can-crt-mid">Opslaan</button>
+              </mat-card-actions>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    
+
+  <div class="form-row">
+    <div class="col-md-12">
+      <form [formGroup]="noteispform" #form3="ngForm" (ngSubmit)="onUpdateExtSupplier(form3)" novalidate>
+        <div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+          <div class="form-row">
+            <div class="col-md-12">
+              <mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+                <mat-label>Service note - ISP </mat-label>
+                <textarea rows="5" matInput ngModel="{{noteisp}}" formControlName="noteisp" placeholder="Service note - ISP" autocomplete="off" maxlength="1000"
+                [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditISPServicenote','disabled')"></textarea>
+                  <!--<mat-error style="margin-top: 9px;" *ngIf="hasError('notekpnnoc', 'required')">KPN NOC  is verplicht</mat-error>-->
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <div class="full-column" fxLayoutGap="20px" style="float: right;">
+            <mat-card-actions align="center">
+              <!--<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>-->
+              <button [disabled]="buttondisabledtwo || _commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditISPServicenote','disabled')" mat-raised-button
+                class="redir-main-loc can-crt-mid">Opslaan</button>
+            </mat-card-actions>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-md-12">
+      <form [formGroup]="notewanform" #form2="ngForm" (ngSubmit)="onUpdateNOC(form2)" novalidate>
+        <div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+          <div class="form-row">
+            <div class="col-md-12">
+              <mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+                <mat-label>Service note - WAN</mat-label>
+                <textarea rows="5" matInput ngModel="{{notewan}}" formControlName="notewan" placeholder="Service note - WAN" autocomplete="off" maxlength="1000"
+                [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditWANServicenote','disabled')"></textarea>
+                  <!--<mat-error style="margin-top: 9px;" *ngIf="hasError('notekpnnoc', 'required')">KPN NOC  is verplicht</mat-error>-->
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <div class="full-column" fxLayoutGap="20px" style="float: right;">
+            <mat-card-actions align="center">
+              <!--<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>-->
+              <button [disabled]="buttondisabledone || _commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditWANServicenote','disabled')" mat-raised-button
+                class="redir-main-loc can-crt-mid">Opslaan</button>
+            </mat-card-actions>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+
+  <div class="form-row">
+    <div class="col-md-12">
+      <form [formGroup]="notelanform" #form4="ngForm" (ngSubmit)="onUpdateTechService(form4)" novalidate>
+        <div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+          <div class="form-row">
+            <div class="col-md-12">
+              <mat-form-field class="hsttextarea" appearance="outline" style="margin-bottom: 0.6%;width:100%;">
+                <mat-label>Service note - LAN</mat-label>
+                <textarea rows="5" matInput ngModel="{{notelan}}" formControlName="notelan" placeholder="Service note - LAN" autocomplete="off" maxlength="1000"
+                [readonly]="_commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditLANServicenote','disabled')"></textarea>
+                  <!--<mat-error style="margin-top: 9px;" *ngIf="hasError('notekpnnoc', 'required')">KPN NOC  is verplicht</mat-error>-->
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <div class="full-column" fxLayoutGap="20px" style="float: right;">
+            <mat-card-actions align="center">
+              <!--<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+                class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>-->
+              <button [disabled]="buttondisabledthird || _commonService.getfieldpropertyvalue(tabSectionList,'ServicenoteTab','EditLANServicenote','disabled')" mat-raised-button
+                class="redir-main-loc can-crt-mid">Opslaan</button>
+            </mat-card-actions>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+ 
+
+  
+    
+  </mat-expansion-panel>
+  
+  <mat-divider></mat-divider>

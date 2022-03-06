@@ -1,0 +1,63 @@
+<mat-expansion-panel [expanded]="true" style="position: relative;margin-bottom: 25px;">
+  <div [ngClass]="loading ? 'overlay-product' : ''">
+    <div *ngIf="loading" class="progress-spinner-product">
+      <div></div>
+    </div>
+  </div>
+  
+
+  <div class="half-row">
+    <mat-form-field>
+      <input matInput  placeholder="Filter">
+    </mat-form-field>
+    <div class="col-sm-3"></div>
+    
+    <div class="col-sm-1"></div>
+  </div>
+
+  <table mat-table #abonnementsort="matSort" [dataSource]="dataSourceAbonnement" multiTemplateDataRows
+    class="mat-elevation-z8" matSort>
+    
+    <ng-container matColumnDef="Status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%;">Status</th>
+      <td mat-cell *matCellDef="let element" style="width: 10%;">{{element.status}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Abonnement">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 15%;">Abonnement</th>
+      <td mat-cell *matCellDef="let element" style="width: 15%;">{{element.abonnemnent}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Soort">
+      <th mat-header-cell *matHeaderCellDef style="width: 25%;">Soort</th>
+      <td mat-cell *matCellDef="let element" style="width: 25%;">{{element.soort}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Provider">
+      <th mat-header-cell *matHeaderCellDef style="width: 25%;">Provider</th>
+      <td mat-cell *matCellDef="let element" style="width: 25%;"> {{element.provider}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Resterende">
+      <th mat-header-cell *matHeaderCellDef style="width: 25%;">Resterende tijd</th>
+      <td mat-cell *matCellDef="let element" style="width: 25%;">{{element.remaintime}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Vervaldatum">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 25%;">Vervaldatum</th>
+      <td mat-cell *matCellDef="let element" style="width: 25%;">{{element.expdate}} </td>
+    </ng-container>
+    
+
+    <tr mat-header-row *matHeaderRowDef="displayedAbonnement"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedAbonnement;"></tr>
+    
+  </table>
+  <!--<mat-paginator #paginatorOneTimeCost [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>-->
+
+</mat-expansion-panel>
+
+<mat-divider></mat-divider>
+
+
+

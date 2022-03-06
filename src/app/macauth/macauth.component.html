@@ -1,0 +1,393 @@
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-card-title>
+        <mat-icon>apps</mat-icon>MAC adressen
+      </mat-card-title>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+	<!--<div class="half-row">
+		<mat-form-field>
+			<input matInput (keyup)="applyFilterOrder($event.target.value)" placeholder="Filter">
+		</mat-form-field>
+
+
+    <div class="col-sm-6 px-0"></div>
+    
+    <div class="col-sm-1 px-0">
+      <button mat-button (click)="openDialogAdd('Add')" class="btn redir-main-loc row-btn" title="Toevoegen Karskaart">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>
+	</div>-->
+
+  <div class="half-row">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilterOrder($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+    <div class="col-sm-3 px-0"></div>
+    <div class="col-sm-1 px-0">
+      <button mat-button  style="display: none;"
+        class="btn redir-main-loc row-btn" title="Wijzigingsorder">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+    <div class="col-sm-1 px-0">
+      <button mat-button  style="display: none;"
+        class="btn redir-main-loc row-btn" title="Opheforder">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </div>
+    <!--<div style="text-align: right;" class="col-sm-1 px-0">
+      <button mat-button (click)="openDialogAdd('Add')" class="btn redir-main-loc row-btn" title="Toevoegen Mac adres">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>-->
+  </div>
+
+ 
+
+  <table mat-table #orderSort="matSort" [dataSource]="dataSourceMacauth" multiTemplateDataRows class="mat-elevation-z8"
+  matSort>
+
+  <ng-container matColumnDef="macaddress">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 11.24%;"> Mac adres </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.macaddress}}
+
+    </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="startdate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10.02%;"> Startdatum</th>
+    <td mat-cell *matCellDef="let element"> {{ element.startdate}}</td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="enddate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 9.27%;"> Einddatum</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.enddate}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="ubprofilename">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10.49%;"> Gebruikersprofiel </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.ubprofilename}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="ubprofiledownloadname">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10.49%;"> Download </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.ubprofiledownloadname}}
+    </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="ubprofileuploadname">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10.49%;"> Upload </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.ubprofileuploadname}}
+    </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="remark">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 23.52%;"> Opmerking</th>
+    <td mat-cell *matCellDef="let element"> {{ element.remark}}</td>
+  </ng-container>
+
+  
+
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef style="width: 15.37%;"> </th>
+    <td mat-cell *matCellDef="let element" style="text-align: right;">
+      <!--<button class="icon_btn" title="Wijzigen"  mat-icon-button
+        (click)="openDialogOrderEdit('Update',element)" >
+        <mat-icon>edit</mat-icon>
+      </button>-->
+
+    
+
+      <!--<button  class="icon_btn" title="Wijzigen Orderstatus" mat-icon-button
+        (click)="openDialogOrderStatus('UpdateStatus',element)" [disabled]="element.orderstatus > 7">
+        <mat-icon>event_note</mat-icon>
+      </button>
+
+      <button class="icon_btn" title="Informatie" id="{{'info_icon'+element.id}}" mat-icon-button
+        (click)="showExpand(element.id)">
+        <mat-icon> info</mat-icon>
+      </button>
+
+      <button class="icon_btn" title="Informatie" style="display:none;" id="{{'arrow_icon'+element.id}}"
+        mat-icon-button (click)="hideExpand(element.id)">
+        <i class="fa fa-chevron-circle-up" style="font-size: 1.05rem;" aria-hidden="true"></i>
+      </button>-->
+
+     <!---- <button title="Verwijderen" mat-icon-button (click)="openDialog('Delete',element)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>-->
+
+
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="overlayrow">
+    <th mat-header-cell *matHeaderCellDef style="min-width: 0.1%;width: 0.1%;padding: 0px;"></th>
+    <td *matCellDef="let element" id="{{'rowoverlay'+element.id}}" class="overlaytr" style="display: none;">
+      <div class="progress-spinner-product">
+        <div></div>
+      </div>
+    </td>
+  </ng-container>
+ 
+
+  
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedMacauthColumns"></tr>
+  <tr mat-row *matRowDef="let element; columns: displayedMacauthColumns;"></tr>
+  <!--<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>-->
+  <!--<tr mat-row *matRowDef="let row; columns: ['expandedDetailAddon']" class="example-detail-row"></tr>-->
+</table>
+<mat-paginator #paginatorOrder [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>
+
+</mat-expansion-panel>
+<mat-divider style="margin-top: 1%;"></mat-divider>
+
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-card-title>
+        <mat-icon>apps</mat-icon>SSID
+      </mat-card-title>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+	
+
+  <div class="half-row">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilterSSID($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+  </div>
+
+ 
+
+
+  <table mat-table #orderSort="matSort" [dataSource]="dataSourceSSID" multiTemplateDataRows class="mat-elevation-z8"
+  matSort>
+
+  <ng-container matColumnDef="ssid">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 11.24%;"> SSID </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.ssid}}
+
+    </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="linegroupid">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 7.02%;"> Lijngroep</th>
+    <td mat-cell *matCellDef="let element"> {{ element.linegroupid}}</td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="startdate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10.27%;"> Startdatum</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.startdate}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="remark">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 23.52%;"> Opmerking</th>
+    <td mat-cell *matCellDef="let element"> {{ element.remark}}</td>
+  </ng-container>
+
+  
+
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef style="width: 15.37%;"> </th>
+    <td mat-cell *matCellDef="let element" style="text-align: right;">
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="overlayrow">
+    <th mat-header-cell *matHeaderCellDef style="min-width: 0.1%;width: 0.1%;padding: 0px;"></th>
+    <td *matCellDef="let element" id="{{'rowoverlay'+element.id}}" class="overlaytr" style="display: none;">
+      <div class="progress-spinner-product">
+        <div></div>
+      </div>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedSSIDColumns"></tr>
+  <tr mat-row *matRowDef="let element; columns: displayedSSIDColumns;"></tr>
+  
+</table>
+<mat-paginator #paginatorOrder [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>
+
+</mat-expansion-panel>
+<mat-divider style="margin-top: 1%;"></mat-divider>
+
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+  <div [ngClass]="loading ? 'overlay-product' : ''">
+    <div *ngIf="loading" class="progress-spinner-product">
+      <div></div>
+    </div>
+  </div>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-card-title>
+        <mat-icon>apps</mat-icon>Orders
+      </mat-card-title>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <!--<div class="half-row">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilterOrder($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+    <div class="col-sm-3 px-0"></div>
+  <div class="col-sm-1 px-0">
+    <button mat-button  style="display: none;"
+      class="btn redir-main-loc row-btn" title="Wijzigingsorder">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+  <div class="col-sm-1 px-0">
+    <button mat-button (click)="openDialogAddConnection('Add')" class="btn redir-main-loc row-btn" title="Toevoegen DSL/Fiber">
+      <mat-icon>add_box</mat-icon>
+    </button>
+  </div>
+  <div style="text-align: right;" class="col-sm-1 px-0">
+    <button mat-button (click)="openDialogAdd('Add')" class="btn redir-main-loc row-btn" title="Toevoegen Nieuwe Hotspots">
+      <mat-icon>add_box</mat-icon>
+    </button>
+  </div>
+  </div>-->
+  
+  <div class="half-row">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilterMultiservice($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+
+    <div class="col-sm-3 px-0"></div>
+    <div class="col-sm-1 px-0"></div>
+    <div class="col-sm-1 px-0"></div>
+    <div style="text-align: right;" class="col-sm-1 px-0">
+      <button mat-button (click)="openDialogAddSSID('Add')" class="btn redir-main-loc row-btn" title="Toevoegen SSID" *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceSSIDAdd','disabled')">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>
+    <div style="text-align: right;" class="col-sm-1 px-0">
+      <button mat-button (click)="openDialogAddWLAN('Add')" class="btn redir-main-loc row-btn" title="Toevoegen WLAN" *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceWLANAdd','disabled')">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>
+    <div style="text-align: right;" class="col-sm-1 px-0">
+      <button mat-button (click)="openDialogAddRouted('Add')" class="btn redir-main-loc row-btn" title="Toevoegen Routed" *ngIf="!_commonService.getfieldpropertyvalue(tabSectionList,'MultiserviceTab','MultiserviceRoutedAdd','disabled')">
+        <mat-icon>add_box</mat-icon>
+      </button>
+    </div>
+    <div style="text-align: right;" class="col-sm-1 px-0">
+    <button mat-button (click)="openDialogAddMAC('Add')" class="btn redir-main-loc row-btn" title="Toevoegen MAC" >
+      <mat-icon>add_box</mat-icon>
+    </button>
+  </div>
+  </div>
+
+  <table mat-table #orderSort="matSort" [dataSource]="dataSourceOrder" multiTemplateDataRows class="mat-elevation-z8"
+    matSort>
+
+    <ng-container matColumnDef="orderid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12.96%;"> Opdracht ID </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.orderid}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="parentorderid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12.29%;"> Gekoppselde opdracht</th>
+      <td mat-cell *matCellDef="let element"> {{ element.parentorderid}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="MultiServiceOrderPlanneddate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 9.62%;"> Plandatum </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.MultiServiceOrderPlanneddate}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="bouwtype">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12.92%;"> Type </th>
+      <td mat-cell *matCellDef="let element">
+        {{element.bouwtype}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="orderstatusname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 27%;"> Opdrachtstatus</th>
+      <td mat-cell *matCellDef="let element"> {{ element.orderstatusname}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="MultiServiceContractorName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 16%;"> Oplosgroep</th>
+      <td mat-cell *matCellDef="let element">{{ element.MultiServiceContractorName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef style="width: 16.2%;"> </th>
+      <td mat-cell *matCellDef="let element" style="text-align: right;">
+       
+        <button class="icon_btn" title="Wijzigen"  mat-icon-button *ngIf="element.bouwtypeid == 5"
+          (click)="openDialogSISDEdit('Update',element)" >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button class="icon_btn" title="Wijzigen"  mat-icon-button *ngIf="element.bouwtypeid == 6"
+          (click)="openDialogWLANEdit('Update',element)" >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button class="icon_btn" title="Wijzigen"  mat-icon-button *ngIf="element.bouwtypeid == 7"
+          (click)="openDialogRoutedEdit('Update',element)" >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button class="icon_btn" title="Wijzigen"  mat-icon-button *ngIf="element.bouwtypeid == 8"
+          (click)="openDialogMACEdit('Update',element)" >
+          <mat-icon>edit</mat-icon>
+        </button>
+
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="overlayrow">
+      <th mat-header-cell *matHeaderCellDef style="min-width: 0.1%;width: 0.1%;padding: 0px;"></th>
+      <td *matCellDef="let element" id="{{'rowoverlay'+element.id}}" class="overlaytr" style="display: none;">
+        <div class="progress-spinner-product">
+          <div></div>
+        </div>
+      </td>
+    </ng-container>
+
+  
+    <tr mat-header-row *matHeaderRowDef="displayedOrderColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedOrderColumns;"></tr>
+    
+    
+  </table>
+  <mat-paginator #paginatorMultiserviceOrder [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>
+</mat-expansion-panel>

@@ -1,0 +1,92 @@
+<mat-expansion-panel [expanded]="true" style="position: relative;margin-bottom: 25px;">
+  <div [ngClass]="loading ? 'overlay-product' : ''">
+    <div *ngIf="loading" class="progress-spinner-product">
+      <div></div>
+    </div>
+  </div>
+  
+
+  <div class="half-row">
+    <mat-form-field>
+      <input matInput  placeholder="Filter">
+    </mat-form-field>
+    <div class="col-sm-3"></div>
+    
+    <div class="col-sm-1"></div>
+  </div>
+
+  
+  <form [formGroup]="datefiltersessionForm" #f="ngForm" (ngSubmit)="onSubmit(f)">
+	  <div class="col-md-12">
+	<mat-form-field appearance="outline">
+		<mat-label>start datum</mat-label>
+		<input matInput [matDatepicker]="picker" formControlName="startdate">
+		<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+		<mat-datepicker #picker></mat-datepicker>
+	</mat-form-field>
+	<mat-form-field style= "margin-left:10px;" appearance="outline">
+		<mat-label>stop datum</mat-label>
+		<input matInput [matDatepicker]="picker2" formControlName="stopdate">
+		<mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+		<mat-datepicker #picker2></mat-datepicker>
+	  </mat-form-field>
+	  <button class="sessionbtn" style= "margin-left:5px;" mat-raised-button
+							class="redir-main-loc can-crt-mid">Bekijk</button>
+</div>
+</form>
+<div class="design-process-content-form" id="sessiontable" style= "display:none;">
+		<div class="half-row">
+				<mat-form-field>
+				  <input matInput (keyup)="applyFilterSession($event.target.value)" placeholder="Filter">
+				</mat-form-field>
+				
+		</div>
+	<table mat-table #contactSort="matSort" [dataSource]="dataSourceSession" multiTemplateDataRows
+			class="mat-elevation-z8" matSort>	
+			
+			<ng-container matColumnDef="Start">
+				<th mat-header-cell *matHeaderCellDef style="width: 15%;">Start</th>
+				<td mat-cell *matCellDef="let element" innerText={{element.start}}> </td>
+			</ng-container>
+	
+			<ng-container matColumnDef="Stop">
+				<th mat-header-cell *matHeaderCellDef style="width: 15%;">Stop</th>
+				<td mat-cell *matCellDef="let element" innerText={{element.stop}}> </td>
+			</ng-container>
+	
+			<ng-container matColumnDef="Sessieduur">
+				<th mat-header-cell *matHeaderCellDef style="width: 5%;">Sessieduur</th>
+				<td mat-cell *matCellDef="let element" innerText={{element.sessionduration}}> </td>
+			</ng-container>
+			<ng-container matColumnDef="Stopreason">
+				<th mat-header-cell *matHeaderCellDef style="width: 10%;">Stopreason</th>
+				<td mat-cell *matCellDef="let element" innerText={{element.stopreason}}> </td>
+			</ng-container>	
+			<ng-container matColumnDef="Macadres">
+				<th mat-header-cell *matHeaderCellDef style="width: 10%;">Macadres</th>
+				<td mat-cell *matCellDef="let element" innerText={{element.mac}}> </td>
+			</ng-container>
+			<ng-container matColumnDef="Gebruikersnaam">
+				<th mat-header-cell *matHeaderCellDef style="width: 10%;">Gebruikersnaam</th>
+				<td mat-cell *matCellDef="let element" innerText={{element.username}}> </td>
+			</ng-container>	
+			<ng-container matColumnDef="Ip">
+				<th mat-header-cell *matHeaderCellDef style="width: 5%;">Ip</th>
+				<td mat-cell *matCellDef="let element" innerText={{element.userip}}> </td>
+			</ng-container>	
+			
+			<tr mat-header-row *matHeaderRowDef="displayedSessionColumns"></tr>
+			<tr mat-row *matRowDef="let element; columns: displayedSessionColumns;"></tr>
+ 
+		</table>
+		<mat-paginator #paginatorSession [pageSizeOptions]="[20, 40, 60]" showFirstLastButtons></mat-paginator>
+	</div>
+     
+
+
+</mat-expansion-panel>
+
+<mat-divider></mat-divider>
+
+
+

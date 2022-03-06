@@ -1,0 +1,315 @@
+<div style="position: relative;">
+	<div [ngClass]="loading ? 'overlay-product' : ''">
+		<div *ngIf="loading" class="progress-spinner-product">
+			<div></div>
+		</div>
+	</div>
+	<ng-container>
+        <h1 mat-dialog-title class="dialog-box-header">Aanmaken account(s)</h1>
+
+		<form [formGroup]="Accountcreateform" #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+			<div mat-dialog-content style="margin-top: 14px;padding-top:10px;">
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Logingegevens</h5>
+
+				<div class="form-row">
+					<div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Accountnaam </mat-label>
+							<input matInput formControlName="username"
+								placeholder="[Account]@kpn.nl" autocomplete="off">
+                               <!-- <span *ngIf="Accountcreateform.controls.username.errors">-->
+                            <mat-error
+								*ngIf="Accountcreateform.controls.username.invalid">Accounts hebben het volgende format: [accountnaam]@kpn.nl
+                            </mat-error>
+                            
+                            
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Wachtwoord </mat-label>
+							<input type="password" matInput formControlName="password"
+								placeholder="Wachtwoord" autocomplete="off">
+							<mat-error 
+								*ngIf="hasError('password', 'required')">Wachtwoord is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-row" style="margin-bottom: 4%;">
+
+					<div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Wachtwoord nogmaals </mat-label>
+							<input type="password" matInput formControlName="passwordconfirm"
+								placeholder="Wachtwoord nogmaals" autocomplete="off">
+							<mat-error 
+								*ngIf="hasError('passwordconfirm', 'required')">Wachtwoord nogmaals is verplicht
+                            </mat-error>
+                            <mat-error 
+                            *ngIf="Accountcreateform.controls.passwordconfirm.invalid">Wachtwoord nogmaals mismatched
+                            </mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Adresgegevens</h5>
+				<div class="form-row">
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Achternaam  </mat-label>
+							<input matInput formControlName="lastname"
+								placeholder="Achternaam " autocomplete="off">
+							<mat-error
+								*ngIf="hasError('lastname', 'required')">Achternaam  is verplicht
+							</mat-error>
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>voorvoegsel </mat-label>
+							<input matInput formControlName="lastNamePrefix"
+								placeholder="voorvoegsel" autocomplete="off">
+							<mat-error
+								*ngIf="hasError('lastNamePrefix', 'required')">voorvoegsel is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Voornaam  </mat-label>
+							<input matInput formControlName="firstname"
+								placeholder="Voornaam" autocomplete="off">
+							<mat-error
+								*ngIf="hasError('firstname', 'required')">Voornaam is verplicht
+							</mat-error>
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Initialen  </mat-label>
+							<input matInput formControlName="firstNameInitials"
+								placeholder="Initialen" autocomplete="off">
+							<mat-error
+								*ngIf="hasError('firstNameInitials', 'required')">Initialen is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Straatnaam  </mat-label>
+							<input matInput formControlName="streetName"
+								placeholder="Straatnaam" autocomplete="off">
+							<mat-error
+								*ngIf="hasError('streetName', 'required')">Straatnaam is verplicht
+							</mat-error>
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>huisnummer </mat-label>
+							<input matInput formControlName="houseNumber"
+								placeholder="huisnummer" autocomplete="off">
+							<mat-error
+								*ngIf="hasError('houseNumber', 'required')">huisnummer is verplicht
+							</mat-error>
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>toevoeging </mat-label>
+							<input matInput formControlName="houseNumberExtension"
+								placeholder="toevoeging" autocomplete="off">
+							<mat-error
+								*ngIf="hasError('houseNumberExtension', 'required')">toevoeging is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Postcode   </mat-label>
+							<input matInput formControlName="zip"
+								placeholder="Postcode " autocomplete="off">
+							
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>woonplaats  </mat-label>
+							<input matInput formControlName="city"
+								placeholder="woonplaats" autocomplete="off">
+							
+						</mat-form-field>
+					</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+							<mat-label>Land </mat-label>
+							<mat-select disableOptionCentering formControlName="country_id"
+								panelClass="my-select-panel-class" placeholder="Land">
+								<mat-option *ngFor="let country of countrydata"
+									[value]="country.countryid">
+									{{country.countryname}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('country_id', 'required')">
+								Land verplicht</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Telefoonnummer </mat-label>
+							<input matInput formControlName="phonenumber"
+								placeholder="Telefoonnummer" autocomplete="off">
+							<mat-error
+								*ngIf="hasError('phonenumber', 'required')">Telefoonnummer is verplicht
+							</mat-error>
+						</mat-form-field>
+					</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Email </mat-label>
+							<input matInput formControlName="email"
+								placeholder="Email" autocomplete="off">
+							<mat-error
+								*ngIf="Accountcreateform.controls.email.invalid">Email is verplicht
+							</mat-error>
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Geslacht </mat-label>
+							<mat-select disableOptionCentering formControlName="gender"
+								panelClass="my-select-panel-class" placeholder="Geslacht">
+								<mat-option *ngFor="let genderSingle of gender"
+									[value]="genderSingle.id">
+									{{genderSingle.name}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="hasError('gender', 'required')">
+								Geslacht verplicht</mat-error>
+                        </mat-form-field>
+					</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <mat-form-field  appearance="outline" style="width: 100%">
+							
+							<mat-label>Geboortedatum </mat-label>
+							<input matInput [matDatepicker]="pickerbirthdate"
+								(dateChange)="dateValidationbirthdate()" formControlName="birthdate"
+								>
+							<mat-datepicker-toggle matSuffix [for]="pickerbirthdate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerbirthdate></mat-datepicker>
+							
+						</mat-form-field>
+                    </div>
+                </div>
+
+				<h5 style="color: #47a217;font-weight: bold; margin-bottom:20px;">Accountgegevens</h5>
+
+				<div class="form-row">
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Aantal accounts </mat-label>
+							<input matInput formControlName="Numberofaccounts"
+								placeholder="Aantal accounts" autocomplete="off" readonly>
+						</mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+                                <mat-label>Contract datum </mat-label>
+							<input matInput [matDatepicker]="pickercontractDate"
+								(dateChange)="dateValidationcontractDate()" formControlName="contractDate"
+								>
+							<mat-datepicker-toggle matSuffix [for]="pickercontractDate"></mat-datepicker-toggle>
+							<mat-datepicker #pickercontractDate></mat-datepicker>
+						</mat-form-field>
+					</div>
+                </div>
+				<div class="form-row" style="margin-bottom:4%;">
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline" style="width: 100%;">
+
+							<mat-label>Abonnement </mat-label>
+							<mat-select disableOptionCentering formControlName="accountsubscriptiontype"
+								panelClass="my-select-panel-class" placeholder="Abonnement">
+								<mat-option *ngFor="let subscription of subscriptionList"
+									[value]="subscription.id">
+									{{subscription.name}}
+								</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+                        <mat-form-field  appearance="outline" style="width: 100%">
+							
+							<mat-label>Einddatum </mat-label>
+							<input matInput [matDatepicker]="pickerenddate"
+								(dateChange)="dateValidationEnddate()" formControlName="enddate_abo"
+								>
+							<mat-datepicker-toggle matSuffix [for]="pickerenddate"></mat-datepicker-toggle>
+							<mat-datepicker #pickerenddate></mat-datepicker>
+							<mat-error *ngIf="hasError('enddate_abo','required')">Einddatum is verplicht</mat-error>
+							
+						</mat-form-field>
+					</div>
+
+					<div class="col-md-4">
+						<mat-form-field class="focusformfield" appearance="outline"
+							style="margin-bottom: 0.6%;width:100%;">
+							<mat-label>Minuten </mat-label>
+							<input matInput formControlName="secondsleft"
+                                placeholder="Minuten" autocomplete="off">
+                            <mat-error
+                            *ngIf="Accountcreateform.controls.secondsleft.invalid">Minuten is verplicht
+                        </mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="full-column" fxLayoutGap="20px">
+					<mat-card-actions align="center">
+						<a [disabled]="buttondisabled" (click)="closeDialog()" mat-flat-button
+							class="redir-main-loc can-crt-mid mat-raised-button">Annuleren</a>
+						<button [disabled]="buttondisabled" mat-raised-button
+							class="redir-main-loc can-crt-mid">Opslaan</button>
+					</mat-card-actions>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+</div>

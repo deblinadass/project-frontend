@@ -1,0 +1,44 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
+    <div class="list-group">
+        <a *ngIf="_commonService.getfieldpropertyvalue(cstabSectionList,'CustomerSearch','CustomerSearch','display')" routerLink="/customersearch" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-search"></i>
+			<!--<mat-icon>search</mat-icon>-->&nbsp;
+            <span>{{ 'Zoek Klant' }}</span>
+        </a> 
+		 <a *ngIf="_commonService.getfieldpropertyvalue(eutabSectionList,'EnduserSearch','EnduserSearch','display')" routerLink="/endusersearch" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-search"></i>&nbsp;
+            <span>{{ 'Zoek Eindgebruiker' }}</span>
+        </a>
+		<a *ngIf="_commonService.getfieldpropertyvalue(backofficeNavList,'BackofficeNav','BackofficeMonitoring','display')" routerLink="/backoffice/monitoring" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-table"></i>&nbsp;<span>{{ 'Monitoring' }} </span>
+        </a> 
+        <a *ngIf="_commonService.getfieldpropertyvalue(backofficeNavList,'BackofficeNav','BackofficeTicket','display')" routerLink="/backoffice/tickets" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-table"></i>&nbsp;<span>{{ 'BO Ticket' }}  </span>
+        </a> 
+		<a *ngIf="_commonService.getfieldpropertyvalue(backofficeNavList,'BackofficeNav','BackofficeOrder','display')" routerLink="/backoffice/orders" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-table"></i>&nbsp;<span>{{ 'BO Order' }} </span>
+        </a> 
+
+        <a *ngIf="_commonService.getfieldpropertyvalue(catalogueMenuList,'CatalogueMenu','CatalogueMenu','display')" routerLink="/catalogueview" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-list"></i>&nbsp;<span>{{ 'Catalogus' }}</span>
+        </a>
+
+        <a *ngIf="_commonService.getfieldpropertyvalue(exportMenuList,'ExportMenu','ExportMenu','display')" routerLink="/export" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-table"></i>&nbsp;<span>{{ 'Rapportage' }}</span>
+        </a> 
+        <a routerLink="/billingexport" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-table"></i>&nbsp;<span>{{ 'Facturatie' }}</span>
+        </a> 
+
+    </div>
+
+    <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">         
+        <ng-template [ngIf]="!collapsed" [ngIfElse]="sidebarCollapse">
+            <i id="toggleId" class="fa fa-fw fa-angle-double-left"></i>&nbsp;
+        </ng-template>                                  
+        <ng-template #sidebarCollapse>
+                <i id="toggleId" class="fa fa-fw fa-angle-double-right"></i>&nbsp;
+        </ng-template>
+        <span>Collapse</span>
+    </div>
+</nav>

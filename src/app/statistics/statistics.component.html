@@ -1,0 +1,111 @@
+<div [@routerTransition]>
+    <div class="col-xl-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i> Zoek Statistic </li>
+        </ol>
+    </div>
+</div>
+
+
+
+
+<form [formGroup]="datefiltersessionForm" #f="ngForm" (ngSubmit)="onSubmit(f)">
+
+
+    <div class="design-process-content-form">
+            
+        <div class="form-row">
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>Statistic Type</mat-label>
+                    <mat-select disableOptionCentering formControlName="StatsType"
+                        panelClass="my-select-panel-class" placeholder="Statistic Type">
+                        <mat-option *ngFor="let ordership of StatsType" [value]="ordership.id">
+                            {{ordership.name}}
+                        </mat-option>
+                    </mat-select>
+                    
+                </mat-form-field>
+            </div>
+
+             <div class="col-md-4">
+                <mat-form-field  appearance="outline" style="width: 100%;">
+                    <mat-label>Weergave</mat-label>
+                    <mat-select disableOptionCentering formControlName="StatsWeergave"
+                        panelClass="my-select-panel-class" placeholder="Weergave">
+                        <mat-option *ngFor="let ordership of StatsWeergave" [value]="ordership.id">
+                            {{ordership.name}}
+                        </mat-option>
+                    </mat-select>
+                    
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-4">
+                    <mat-form-field  appearance="outline"
+                        style="width: 100%;">
+                        <mat-select disableOptionCentering formControlName="StatValidForLocation"
+                            placeholder="Geldig op locatie">
+                            <mat-option>
+                                <ngx-mat-select-search disableOptionCentering [formControl]="chainFilteringCtrl"
+                                    placeholderLabel="Zoek chain..." i18n-placeholderLabel>
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngIf="noRecordFound == 0">{{ 'Geen chains gevonden' }}</mat-option>
+
+                            <mat-option *ngFor="let chain of filteredServerSideChains | async"
+                                [value]="chain.chainid"> {{chain.chainname}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-6">
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>start datum</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="startdate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>End datum</mat-label>
+                    <input  matInput [matDatepicker]="picker2" formControlName="stopdate">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="col-sm-1" style="padding-top: 5px; padding-left:48%">
+            <button [disabled]="buttondisabled" type="submit" class="btn mst-button-primary">Export</button>
+            
+        </div>
+
+        <div class="progress-spinner" id="progress-spinner-tech" *ngIf="isSpinnerShow">
+            <div></div>
+        </div>
+        
+    </div>
+
+</form>
+
+
+
+
+
+<div class="demo-tab-content" style="margin-top:10px" *ngIf="exceedThreshold" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Er zijn meer dan 25 resultaten. Voer een gerichtere zoekactie uit...</h5>
+    </div>
+</div>
+<div class="containercls" *ngIf="noRecords" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Geen resultaten gevonden...</h5>
+    </div>
+</div>

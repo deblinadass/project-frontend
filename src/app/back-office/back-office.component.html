@@ -1,0 +1,23 @@
+<div [@routerTransition]>
+  <div class="col-xl-12">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i>BackOffice</li>
+    </ol>
+  </div>
+</div>
+
+<div class="mt-4">
+  <nav mat-tab-nav-bar>
+          <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive
+                  #rla="routerLinkActive" [active]="rla.isActive" id="{{'tab'+link.indexno}}"
+                  [ngClass]="{'highlight': currentUrl == link.link }" [state]="{id : id}"
+                  class="rounded shadow-5g p-2 mb-1 bg-green rounded">{{link.label}}
+          </a>
+  </nav>
+</div>
+
+<router-outlet></router-outlet>
+<app-backofficeauditlog></app-backofficeauditlog>
+
+
+

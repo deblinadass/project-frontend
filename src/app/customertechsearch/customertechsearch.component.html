@@ -1,0 +1,143 @@
+<div [@routerTransition]>
+    <div class="col-xl-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><i class="fa fa-fw fa-table"></i> Zoek Klant </li>
+        </ol>
+    </div>
+</div>
+
+<form (ngSubmit)="search(customerSearchInput.value,customerSearchType.value)">
+    <div class="design-process-content-form">
+        
+        <div class="form-row">
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>Zoeken</mat-label>
+                    <input autofocus matInput #customerSearchInput name="customer" placeholder="Voer zoeksleutel in">
+                    
+                    <!--<span style="position: absolute;bottom: 0px;right: -5px;"> 
+                        <button mat-button type="submit">
+                            <mat-icon class="mat-icon-cs">search</mat-icon>
+                        </button></span>-->
+                </mat-form-field>
+            </div>
+					
+            <div class="col-md-4">
+                <mat-form-field  appearance="outline" style="width: 100%;">
+                    <mat-label>Search type</mat-label>
+                    <mat-select disableOptionCentering #customerSearchType name="searchtype"
+                        panelClass="my-select-panel-class" placeholder="Restrictie op locatie"
+                        >
+                        <mat-option *ngFor="let searchname of techSearchTypeList"
+                            [value]="searchname.id">
+                            {{searchname.name}}
+                        </mat-option>
+                    </mat-select>
+                   <!-- <mat-error style="margin-top: 9px;" *ngIf="hasError('OnlineSCardOrderRestrictionOnLocation', 'required')">Restrictie op locatie is verplicht</mat-error>
+                   -->
+                   
+                </mat-form-field>
+                
+                
+            </div>
+
+            <div class="col-sm-1" style="padding-top: 5px;">
+                <span > 
+                <button mat-button type="submit">
+                    <mat-icon class="mat-icon-cs">search</mat-icon>
+                </button>
+            </span></div>
+            
+        </div>
+
+        
+        <div class="progress-spinner" id="progress-spinner-tech">
+            <div></div>
+        </div>
+
+        <div class="containercls" *ngIf="inputcheck">
+            <div class="col-12 text-center">
+
+                <h4>Voer een trefwoord in... </h4>
+
+            </div>
+        </div>
+
+        
+
+    </div>
+</form>
+
+
+<div class="demo-tab-content" style="margin-top:20px" *ngIf="dataSource.data.length > 0">
+    <mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="customername">
+            <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important" class="col-padding">
+                Bedrijfsnaam</mat-header-cell>
+            <mat-cell *matCellDef="let customer_details_table" class="col-padding"
+                style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+
+                <a routerLink="{{customer_details_table.linkPath}}" [state]="{id : customer_details_table.id}">
+                    <i class="{{customer_details_table.icon}}"></i> {{customer_details_table.customername}}
+                </a>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="chain">
+            <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important" class="col-padding">
+                Keten</mat-header-cell>
+            <mat-cell *matCellDef="let customer_details_table" class="col-padding"
+                style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+
+                {{customer_details_table.chain}}
+                
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="accountmanager">
+            <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important" class="col-padding">
+                Accountmanager</mat-header-cell>
+            <mat-cell *matCellDef="let customer_details_table" class="col-padding"
+                style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+
+                {{customer_details_table.accountmanager}}
+                
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="streetname">
+            <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 20% !important" class="col-padding">
+                Straatnaam </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="col-padding" style="justify-content: flex-start;flex: 0 0 20% !important;font-size: 13px;">
+                {{ element.streetname }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="postcode">
+            <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 10% !important" class="col-padding">
+                Postcode </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="col-padding" style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                {{ element.postcode }}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="city">
+            <mat-header-cell *matHeaderCellDef style="flex: 0 0 10% !important" class="col-padding"> Plaats </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="col-padding" style="justify-content: flex-start;flex: 0 0 10% !important;font-size: 13px;">
+                {{ element.city }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedMultiServiceColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedMultiServiceColumns"></mat-row>
+    </mat-table>
+
+    <!--  <mat-paginator class="mat-elevation-z8" [pageSizeOptions]="[2, 4, 6]" showFirstLastButtons></mat-paginator>-->
+</div>
+
+
+<div class="demo-tab-content" style="margin-top:10px" *ngIf="exceedThreshold" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Er zijn meer dan 25 resultaten. Voer een gerichtere zoekactie uit...</h5>
+    </div>
+</div>
+<div class="containercls" *ngIf="noRecords" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Geen resultaten gevonden...</h5>
+    </div>
+</div>

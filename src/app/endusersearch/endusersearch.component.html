@@ -1,0 +1,102 @@
+<div [@routerTransition]>
+    <div class="col-xl-12">
+        
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">
+                    <i><mat-icon>account_circle</mat-icon></i><span style="padding-top:5px;">Zoek Eindgebruiker</span> </li>
+
+
+    </ol>
+    </div>
+</div>
+
+<form (ngSubmit)="search(customerSearchInput.value)">
+    <div class="design-process-content-form">
+        <div class="half-row" fxLayoutGap="20px">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Zoeken</mat-label>
+                <input autofocus matInput #customerSearchInput name="customer" placeholder="Voer zoeksleutel in">
+                <span style="position: absolute;bottom: 14px;right: -5px;"> <button mat-button type="submit">
+                        <mat-icon class="mat-icon-cs">search</mat-icon>
+                    </button></span>
+            </mat-form-field>
+
+        </div>
+        <div class="progress-spinner">
+            <div></div>
+        </div>
+
+        <div class="containercls" *ngIf="inputcheck">
+            <div class="col-12 text-center">
+
+                <h4>Voer een trefwoord in... </h4>
+
+            </div>
+        </div>
+
+        <div class="full-column" style="text-align: right;padding-right: 2%;">
+            <div>
+                <a (click)="openDialogAdd('Add')" [hidden]="isShow" class="btn mst-button-primary"
+                    title="Toevoegen Hoofdlocatie">
+                    <mat-icon>add_box</mat-icon>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<!--- <div  *ngIf="dataSource.data.length > 0">   -->
+<!--<div class="containercls" fxLayoutGap="20px">-->
+    <div class="demo-tab-content" style="margin-top:20px" *ngIf="dataSource.data.length > 0">
+        <mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="AccountID">
+                <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 25% !important" class="col-padding">
+                    Account ID</mat-header-cell>
+                <mat-cell *matCellDef="let customer_details_table" class="col-padding"
+                    style="justify-content: flex-start;flex: 0 0 25% !important;font-size: 13px;">
+
+                    <a routerLink="{{customer_details_table.linkPath}}" [state]="{id : customer_details_table.id}">
+                        <i class="{{customer_details_table.icon}}"></i> {{customer_details_table.accountid}}
+                    </a>
+                </mat-cell>
+            </ng-container>
+            
+
+            <ng-container matColumnDef="Gebruikersnaam">
+                <mat-header-cell *matHeaderCellDef style="border-right: 1px solid #fff;flex: 0 0 25% !important" class="col-padding">
+                    Gebruikersnaam </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="col-padding" style="justify-content: flex-start;flex: 0 0 25% !important;font-size: 13px;">
+                    {{ element.username }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="E-mailadres">
+                <mat-header-cell *matHeaderCellDef style="flex: 0 0 25% !important" class="col-padding"> E-mailadres </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="col-padding" style="justify-content: flex-start;flex: 0 0 25% !important;font-size: 13px;">
+                    {{ element.emailaddress}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="createdate">
+                <mat-header-cell *matHeaderCellDef style="flex: 0 0 25% !important" class="col-padding"> Datum aangemaakt </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="col-padding" style="justify-content: flex-start;flex: 0 0 25% !important;font-size: 13px;">
+                    {{ element.createdate}} </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+
+        <!--  <mat-paginator class="mat-elevation-z8" [pageSizeOptions]="[2, 4, 6]" showFirstLastButtons></mat-paginator>-->
+    </div>
+<!--</div>-->
+
+<div class="demo-tab-content" style="margin-top:10px" *ngIf="exceedThreshold" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Er zijn meer dan 25 resultaten. Voer een gerichtere zoekactie uit...</h5>
+    </div>
+</div>
+<div class="containercls" *ngIf="noRecords" fxLayoutGap="20px">
+    <div class="col-12 text-center">
+        <h5>Geen resultaten gevonden...</h5>
+    </div>
+</div>

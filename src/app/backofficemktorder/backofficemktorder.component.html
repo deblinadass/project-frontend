@@ -1,0 +1,188 @@
+
+<mat-expansion-panel [expanded]="true" style="position: relative;">
+  <div [ngClass]="loading ? 'overlay-product' : ''">
+    <div *ngIf="loading" class="progress-spinner-product">
+      <div></div>
+    </div>
+  </div>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-card-title>
+        <mat-icon>apps</mat-icon>Orders
+      </mat-card-title>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <div class="half-row">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilterOrder($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+    <div class="col-sm-3 px-0"></div>
+    <div class="col-sm-1 px-0">
+      <button mat-button  *ngIf="dataSourceAccess.data.length > 0"
+        class="btn redir-main-loc row-btn" title="Wijzigingsorder">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+    <div class="col-sm-1 px-0">
+      <button mat-button  *ngIf="dataSourceAccess.data.length > 0"
+        class="btn redir-main-loc row-btn" title="Opheforder">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </div>
+    
+  </div>
+
+  <table mat-table #orderSort="matSort" [dataSource]="dataSourceOrder" multiTemplateDataRows class="mat-elevation-z8"
+    matSort>
+
+    <ng-container matColumnDef="orderid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12.96%;"> MKT Order ID </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.orderid}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Track&Trace">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 16%;"> Track & Trace link</th>
+      <td mat-cell *matCellDef="let element"> <a href="{{ element.ordertrackcode}}" target="_blank"> {{ element.ordertrackcode}}</a></td>
+    </ng-container>
+
+    <ng-container matColumnDef="locatienaam">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12.96%;"> Naam Locatie </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.location_name}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="orderstatusname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 6.29%;"> Orderstatus</th>
+      <td mat-cell *matCellDef="let element"> {{ element.orderstatusname}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="productname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 9.62%;"> Product </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.productname}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="aantalproducten">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 8.92%;"> Aantal Producten </th>
+      <td mat-cell *matCellDef="let element">
+        {{element.MktOrderAmount}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="opmerking">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 24%;"> Opmerking</th>
+      <td mat-cell *matCellDef="let element"> {{ element.opmerking}}</td>
+    </ng-container>
+
+    
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef style="width: 16.2%;"> </th>
+      <td mat-cell *matCellDef="let element" style="text-align: right;">
+        <button class="icon_btn" title="Wijzigen" *ngIf="element.ordertype != 2" mat-icon-button
+          (click)="openDialogOrderEdit('Update',element)" [disabled]="element.orderstatus >= 7">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <!--<button class="icon_btn" *ngIf="element.ordertype == 2" title="Wijzigen" mat-icon-button
+          (click)="onSecondPhaseEditModifyOrder('SecondPhaseEditModify',element,'')"
+          [disabled]="element.orderstatus >= 7">
+          <mat-icon>edit</mat-icon>
+        </button>-->
+
+        <button class="icon_btn" title="Wijzigen Orderstatus" mat-icon-button
+          (click)="openDialogOrderStatus('UpdateStatus',element)" [disabled]="element.orderstatus >= 8">
+          <mat-icon>event_note</mat-icon>
+        </button>
+
+        <button class="icon_btn" title="Informatie" id="{{'info_icon'+element.id}}" mat-icon-button
+          (click)="showExpand(element.id)">
+          <mat-icon> info</mat-icon>
+        </button>
+
+        <button class="icon_btn" title="Informatie" style="display:none;" id="{{'arrow_icon'+element.id}}"
+          mat-icon-button (click)="hideExpand(element.id)">
+          <i class="fa fa-chevron-circle-up" style="font-size: 1.05rem;" aria-hidden="true"></i>
+        </button>
+
+        <!--<button *ngIf="element.AccessAddOnsView!=''  && element.orderstatus == 2" class="icon_btn" title="Add-on Info"
+          id="{{'arrow_icon_addon'+element.id}}" mat-icon-button (click)="hideExpandAddon(element.id)">
+          <i class="fa fa-chevron-circle-up" style="font-size: 1.05rem;" aria-hidden="true"></i>
+        </button>-->
+
+        <!--<button *ngIf="element.AccessAddOnsView!=''  && element.orderstatus == 2" class="icon_btn" title="Add-on Info" style="display:none;"
+          id="{{'info_icon_addon'+element.id}}" mat-icon-button (click)="showExpandAddon(element.id)">
+          <i class="fa fa-bandcamp" style="font-size: 1.05rem;" aria-hidden="true"></i>
+        </button>-->
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="overlayrow">
+      <th mat-header-cell *matHeaderCellDef style="min-width: 0.1%;width: 0.1%;padding: 0px;"></th>
+      <td *matCellDef="let element" id="{{'rowoverlay'+element.id}}" class="overlaytr" style="display: none;">
+        <div class="progress-spinner-product">
+          <div></div>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedOrderColumns.length">
+
+        <div class="example-element-detail" *ngIf="element.secondlevel?.length" style="display:none;"
+          id="{{'expand_id'+element.id}}">
+
+          <div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
+
+            <table class="shadow-sm p-3 mb-5 text-dark rounded shadow-css" style="padding-top:10px;width:88%;">
+              <tr >
+                <td class="ml-1 td-space" style="width: 9%;padding: 5px 0 5px 4px;"><b>{{element.secondlevel[0].name}}
+                    :</b></td>
+                <td class="ml-1 td-space padding-td" style="width: 6%;">
+                  <span>{{element.secondlevel[0].value}}</span></td>
+                <td class="ml-1 td-space" style="width: 12%;padding: 5px 0 5px 4px;"><b>{{element.secondlevel[2].name}}
+                    :</b></td>
+                <td class="ml-1 td-space padding-td" style="width: 12%;">
+                  <span>{{element.secondlevel[2].value}}</span></td>
+                <td class="ml-1 td-space" style="width: 10%;padding: 5px 0 5px 4px;"><b>{{element.secondlevel[3].name}}
+                    :</b></td>
+                <td class="ml-1 td-space padding-td" style="width: 33%;">
+                  <span>{{element.secondlevel[3].value}}</span></td>
+              </tr>
+              <tr >
+                <td class="ml-1 td-space" style="padding: 5px 0 5px 4px;"><b>{{element.secondlevel[1].name}} :</b></td>
+                <td class="ml-1 td-space padding-td">
+                  <span>{{element.secondlevel[1].value}}</span></td>
+                <td class="ml-1 td-space" style="padding: 5px 0 5px 4px;"><b>{{element.secondlevel[4].name}} :</b></td>
+                <td class="ml-1 td-space padding-td">
+                  <span>{{element.secondlevel[4].value}}</span></td>
+                <td class="ml-1 td-space" style="padding: 5px 0 5px 4px;"><b>{{element.secondlevel[5].name}} :</b></td>
+                <td class="ml-1 td-space padding-td">
+                  <span>{{element.secondlevel[5].value}}</span></td>
+              </tr>
+              
+            </table>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetailAddon">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedOrderColumns.length"
+        style="padding-left: 0px;padding-right: 0px;">
+
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedOrderColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedOrderColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+    
+  </table>
+  <mat-paginator #paginatorOrder [pageSizeOptions]="[10, 25, 30]" showFirstLastButtons></mat-paginator>
+</mat-expansion-panel>
+
+<mat-divider></mat-divider>
